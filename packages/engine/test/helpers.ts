@@ -1,4 +1,11 @@
-import { applyAction, createCareer, type Action, type BackgroundId, type CareerConfig, type CareerState } from '../src';
+import {
+  applyAction,
+  createCareer,
+  type Action,
+  type BackgroundId,
+  type CareerConfig,
+  type CareerState,
+} from '../src';
 import { botAction } from '../src/bot';
 
 export function config(overrides: Partial<CareerConfig> = {}): CareerConfig {
@@ -13,7 +20,11 @@ export function config(overrides: Partial<CareerConfig> = {}): CareerConfig {
 }
 
 /** Play a whole career with the bot; returns the final state and the action log. */
-export function playCareer(seed: string, background: BackgroundId = 'wall', gender: 'M' | 'F' = 'M'): {
+export function playCareer(
+  seed: string,
+  background: BackgroundId = 'wall',
+  gender: 'M' | 'F' = 'M',
+): {
   state: CareerState;
   actions: Action[];
 } {

@@ -53,13 +53,27 @@ export function NewCareerScreen() {
           <div className="name-row">
             <label className="field">
               <span className="visually-hidden">{t('new.first')}</span>
-              <input className="input" value={name.first} maxLength={24} onChange={(e) => setName({ ...name, first: e.target.value })} />
+              <input
+                className="input"
+                value={name.first}
+                maxLength={24}
+                onChange={(e) => setName({ ...name, first: e.target.value })}
+              />
             </label>
             <label className="field">
               <span className="visually-hidden">{t('new.last')}</span>
-              <input className="input" value={name.last} maxLength={32} onChange={(e) => setName({ ...name, last: e.target.value })} />
+              <input
+                className="input"
+                value={name.last}
+                maxLength={32}
+                onChange={(e) => setName({ ...name, last: e.target.value })}
+              />
             </label>
-            <button className="btn" type="button" onClick={() => setName(suggestName(randomSeed(), gender))}>
+            <button
+              className="btn"
+              type="button"
+              onClick={() => setName(suggestName(randomSeed(), gender))}
+            >
               {t('new.random')}
             </button>
           </div>
@@ -81,11 +95,19 @@ export function NewCareerScreen() {
           <legend className="eyebrow">{t('new.start')}</legend>
           <div className="choices">
             {Object.values(BACKGROUNDS).map((b) => (
-              <button key={b.id} type="button" className="choice" aria-pressed={background === b.id} onClick={() => setBackground(b.id)}>
+              <button
+                key={b.id}
+                type="button"
+                className="choice"
+                aria-pressed={background === b.id}
+                onClick={() => setBackground(b.id)}
+              >
                 <span className="choice__title">{b.name[locale]}</span>
                 <span className={`score-tag ${b.multiplier === null ? 'score-tag--off' : ''}`}>
                   <small>{t('new.score')}</small>
-                  {b.multiplier === null ? t('new.unranked') : `×${b.multiplier.toFixed(1).replace('.', locale === 'pl' ? ',' : '.')}`}
+                  {b.multiplier === null
+                    ? t('new.unranked')
+                    : `×${b.multiplier.toFixed(1).replace('.', locale === 'pl' ? ',' : '.')}`}
                 </span>
                 <span className="choice__meta">{b.description[locale]}</span>
               </button>
@@ -97,10 +119,17 @@ export function NewCareerScreen() {
           <legend className="eyebrow">{t('new.difficulty')}</legend>
           <div className="choices">
             {Object.values(DIFFICULTIES).map((d) => (
-              <button key={d.id} type="button" className="choice" aria-pressed={difficulty === d.id} onClick={() => setDifficulty(d.id)}>
+              <button
+                key={d.id}
+                type="button"
+                className="choice"
+                aria-pressed={difficulty === d.id}
+                onClick={() => setDifficulty(d.id)}
+              >
                 <span className="choice__title">{d.name[locale]}</span>
                 <span className="score-tag">
-                  <small>{t('new.score')}</small>×{d.multiplier.toFixed(2).replace('.', locale === 'pl' ? ',' : '.')}
+                  <small>{t('new.score')}</small>×
+                  {d.multiplier.toFixed(2).replace('.', locale === 'pl' ? ',' : '.')}
                 </span>
                 <span className="choice__meta">{d.description[locale]}</span>
               </button>
@@ -115,7 +144,11 @@ export function NewCareerScreen() {
           {t('new.go')}
         </button>
       </div>
-      <button className="btn btn--ghost btn--block" style={{ marginTop: 12 }} onClick={() => go('/slots')}>
+      <button
+        className="btn btn--ghost btn--block"
+        style={{ marginTop: 12 }}
+        onClick={() => go('/slots')}
+      >
         {t('new.back')}
       </button>
       <Footer />

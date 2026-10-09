@@ -14,10 +14,13 @@ interface SettingsState {
 }
 
 const initial = load<Partial<SettingsState>>('settings', {});
-const prefersReduced = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const prefersReduced =
+  typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export const useSettings = create<SettingsState>((set, get) => ({
-  locale: initial.locale ?? (typeof navigator !== 'undefined' && !navigator.language.startsWith('pl') ? 'en' : 'pl'),
+  locale:
+    initial.locale ??
+    (typeof navigator !== 'undefined' && !navigator.language.startsWith('pl') ? 'en' : 'pl'),
   motion: initial.motion ?? (prefersReduced ? 'reduced' : 'full'),
   speed: initial.speed ?? 'normal',
   racket: initial.racket ?? 'classic',

@@ -1613,7 +1613,8 @@ button.tile:hover:not(:disabled) {
   padding: 18px 12px 14px;
   border-radius: var(--radius-lg);
   border: 1px solid var(--line);
-  background: radial-gradient(160px 160px at 50% 35%, rgba(79, 154, 74, 0.18), transparent 70%), var(--panel);
+  background:
+    radial-gradient(160px 160px at 50% 35%, rgba(79, 154, 74, 0.18), transparent 70%), var(--panel);
 }
 
 .racket-card[data-selected='true'] {

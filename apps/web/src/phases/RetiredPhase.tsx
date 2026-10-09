@@ -1,4 +1,11 @@
-import { ACHIEVEMENTS, LEVELS, VERDICTS_BY_ID, legacyMultiplier, tournament, type CareerState } from '@ttg/engine';
+import {
+  ACHIEVEMENTS,
+  LEVELS,
+  VERDICTS_BY_ID,
+  legacyMultiplier,
+  tournament,
+  type CareerState,
+} from '@ttg/engine';
 import { LevelBadge, SurfaceDot } from '../components/Badges';
 import { useContent, useT, type MessageKey } from '../i18n';
 import { money } from '../lib/format';
@@ -32,7 +39,9 @@ export function RetiredPhase({ state }: { state: CareerState }) {
         <div className="legacy-score">
           <span className="eyebrow">LEGACY</span>
           <span className="legacy-score__value num">{s.legacy}</span>
-          {mult !== null && mult !== 1 && <span className="muted">{t('retired.multiplier', { x: mult.toFixed(2) })}</span>}
+          {mult !== null && mult !== 1 && (
+            <span className="muted">{t('retired.multiplier', { x: mult.toFixed(2) })}</span>
+          )}
         </div>
 
         <dl className="stat-grid">
@@ -72,19 +81,38 @@ export function RetiredPhase({ state }: { state: CareerState }) {
 
         <div className="submission">
           {!s.rankable && <p className="muted">{t('retired.unranked')}</p>}
-          {s.rankable && sub?.status === 'offline' && <p className="muted">{t('retired.offline')}</p>}
+          {s.rankable && sub?.status === 'offline' && (
+            <p className="muted">{t('retired.offline')}</p>
+          )}
           {sub?.status === 'pending' && <p className="muted">{t('retired.submitting')}</p>}
           {sub?.status === 'done' && (
             <div className="row" style={{ flexWrap: 'wrap', gap: 6 }}>
               <span className="chip chip--up">✓ {t('retired.submitted')}</span>
-              {sub.result.positions.daily && <span className="chip">{t('retired.position', { board: t('menu.daily'), n: sub.result.positions.daily })}</span>}
-              {sub.result.positions.today && <span className="chip">{t('retired.position', { board: t('board.today'), n: sub.result.positions.today })}</span>}
-              {sub.result.positions.week && <span className="chip">{t('retired.position', { board: t('board.week'), n: sub.result.positions.week })}</span>}
+              {sub.result.positions.daily && (
+                <span className="chip">
+                  {t('retired.position', { board: t('menu.daily'), n: sub.result.positions.daily })}
+                </span>
+              )}
+              {sub.result.positions.today && (
+                <span className="chip">
+                  {t('retired.position', {
+                    board: t('board.today'),
+                    n: sub.result.positions.today,
+                  })}
+                </span>
+              )}
+              {sub.result.positions.week && (
+                <span className="chip">
+                  {t('retired.position', { board: t('board.week'), n: sub.result.positions.week })}
+                </span>
+              )}
             </div>
           )}
           {sub?.status === 'error' && (
             <div className="row">
-              <span className="chip chip--down">{t('retired.submitError', { reason: sub.reason })}</span>
+              <span className="chip chip--down">
+                {t('retired.submitError', { reason: sub.reason })}
+              </span>
               <button className="btn btn--sm" onClick={() => void submit()}>
                 {t('retired.retry')}
               </button>
@@ -112,12 +140,17 @@ export function RetiredPhase({ state }: { state: CareerState }) {
 
       <section className="panel">
         <h3 className="eyebrow panel__title">{t('retired.cabinet')}</h3>
-        {proTitles.length + juniorTitles.length === 0 && <p className="muted serif">{t('retired.noTitles')}</p>}
+        {proTitles.length + juniorTitles.length === 0 && (
+          <p className="muted serif">{t('retired.noTitles')}</p>
+        )}
         <ul className="cabinet">
           {[...proTitles, ...juniorTitles].slice(0, 60).map((ti, i) => {
             const def = tournament(ti.tournamentId);
             return (
-              <li key={i} className={`cabinet__item ${ti.level === 'gs' ? 'cabinet__item--slam' : ''}`}>
+              <li
+                key={i}
+                className={`cabinet__item ${ti.level === 'gs' ? 'cabinet__item--slam' : ''}`}
+              >
                 <SurfaceDot surface={def.surface} />
                 <span>{c(def.name)}</span>
                 <LevelBadge level={def.level} gender={gender} />

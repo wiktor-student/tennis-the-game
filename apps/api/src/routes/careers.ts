@@ -31,8 +31,15 @@ export const careerRoutes =
         seed = daily.seed;
         config = daily.config;
         dayKey = day;
-        const attempted = await db.dailyAttempt.findUnique({ where: { playerId_dayKey: { playerId: player.id, dayKey: day } } });
-        if (attempted) throw new HttpError(409, 'daily_already_attempted', 'Kariera Dnia została już dziś rozpoczęta');
+        const attempted = await db.dailyAttempt.findUnique({
+          where: { playerId_dayKey: { playerId: player.id, dayKey: day } },
+        });
+        if (attempted)
+          throw new HttpError(
+            409,
+            'daily_already_attempted',
+            'Kariera Dnia została już dziś rozpoczęta',
+          );
       } else {
         seed = newSeed();
         config = { ...body.config, mode: 'normal' };
@@ -54,11 +61,20 @@ export const careerRoutes =
             rankable: config.background !== 'chosen',
           },
         });
-        if (dayKey) await tx.dailyAttempt.create({ data: { playerId: player.id, dayKey, careerId: created.id } });
+        if (dayKey)
+          await tx.dailyAttempt.create({
+            data: { playerId: player.id, dayKey, careerId: created.id },
+          });
         return created;
       });
 
-      const response: StartCareerResponse = { careerId: career.id, seed, config, engineVersion: ENGINE_VERSION, dayKey };
+      const response: StartCareerResponse = {
+        careerId: career.id,
+        seed,
+        config,
+        engineVersion: ENGINE_VERSION,
+        dayKey,
+      };
       return reply.status(201).send(response);
     });
 
@@ -71,8 +87,10 @@ export const careerRoutes =
         const { id } = request.params as { id: string };
         const body = parse(FinishCareerSchema, request.body);
         const career = await db.career.findUnique({ where: { id } });
-        if (!career || career.playerId !== player.id) throw new HttpError(404, 'not_found', 'Career not found');
-        if (career.status !== 'ACTIVE') throw new HttpError(409, 'already_finished', 'Career already submitted');
+        if (!career || career.playerId !== player.id)
+          throw new HttpError(404, 'not_found', 'Career not found');
+        if (career.status !== 'ACTIVE')
+          throw new HttpError(409, 'already_finished', 'Career already submitted');
 
         const result = await pool.verify({
           config: career.config as unknown as CareerConfig,
@@ -81,9 +99,14 @@ export const careerRoutes =
           actions: body.actions as Action[],
         });
         if (!result.ok) {
-          await db.career.update({ where: { id }, data: { status: 'REJECTED', rejectReason: result.reason, finishedAt: new Date() } });
+          await db.career.update({
+            where: { id },
+            data: { status: 'REJECTED', rejectReason: result.reason, finishedAt: new Date() },
+          });
           request.log.warn({ careerId: id, reason: result.reason }, 'career rejected');
-          throw new HttpError(422, 'verification_failed', 'Career could not be verified', { reason: result.reason });
+          throw new HttpError(422, 'verification_failed', 'Career could not be verified', {
+            reason: result.reason,
+          });
         }
 
         const s = result.summary;
@@ -111,7 +134,10 @@ export const careerRoutes =
         });
 
         const streakDays = nextStreak(player, day);
-        await db.player.update({ where: { id: player.id }, data: { streakDays, lastPlayedDay: day } });
+        await db.player.update({
+          where: { id: player.id },
+          data: { streakDays, lastPlayedDay: day },
+        });
         const newAchievements = await unlockAchievements(db, player.id, id, result.achievements);
         await refreshGoals(db, player.id, day, week);
 
@@ -139,7 +165,8 @@ export const careerRoutes =
     app.get('/v1/careers/:id', async (request) => {
       const { id } = request.params as { id: string };
       const career = await db.career.findUnique({ where: { id } });
-      if (!career || career.status !== 'FINISHED') throw new HttpError(404, 'not_found', 'Career not found');
+      if (!career || career.status !== 'FINISHED')
+        throw new HttpError(404, 'not_found', 'Career not found');
       return { career: careerCard(career), summary: career.summary };
     });
   };

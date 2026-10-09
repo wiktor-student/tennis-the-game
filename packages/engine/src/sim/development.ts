@@ -41,7 +41,12 @@ export function developPlayer(state: CareerState, rng: Rng): Partial<Skills> {
       value += gap * BASE_GROWTH * growth * mult * rng.range(0.8, 1.2);
     }
     if (decline.skills > 0) {
-      let loss = id === 'fitness' ? decline.fitness : id === 'mental' ? decline.skills * 0.3 : decline.skills;
+      let loss =
+        id === 'fitness'
+          ? decline.fitness
+          : id === 'mental'
+            ? decline.skills * 0.3
+            : decline.skills;
       if (id === 'fitness' && state.team.fitnessCoach) loss *= FITNESS_COACH.declineReduction;
       value -= loss * rng.range(0.7, 1.3);
     }

@@ -32,7 +32,11 @@ export function SettingsScreen() {
     if (!apiEnabled) return;
     ensureSession().then((ok) => {
       setOnline(ok);
-      if (ok) api.me().then((me) => setName(me.displayName)).catch(() => undefined);
+      if (ok)
+        api
+          .me()
+          .then((me) => setName(me.displayName))
+          .catch(() => undefined);
     });
   }, []);
 
@@ -61,7 +65,12 @@ export function SettingsScreen() {
           />
         </Group>
         <Group label={t('settings.language')}>
-          <Segmented<Locale> value={settings.locale} options={['pl', 'en']} label={(v) => (v === 'pl' ? 'Polski' : 'English')} onChange={(locale) => settings.set({ locale })} />
+          <Segmented<Locale>
+            value={settings.locale}
+            options={['pl', 'en']}
+            label={(v) => (v === 'pl' ? 'Polski' : 'English')}
+            onChange={(locale) => settings.set({ locale })}
+          />
         </Group>
 
         <Group label={t('settings.online')}>
@@ -71,12 +80,20 @@ export function SettingsScreen() {
               onSubmit={(e) => {
                 e.preventDefault();
                 if (!nameValid) return;
-                api.updateMe({ displayName: name.trim() }).then(() => setSaved(true)).catch(() => setSaved(false));
+                api
+                  .updateMe({ displayName: name.trim() })
+                  .then(() => setSaved(true))
+                  .catch(() => setSaved(false));
               }}
             >
               <label className="field" style={{ flex: 1 }}>
                 <span className="eyebrow">{t('settings.profile')}</span>
-                <input className="input" value={name} maxLength={24} onChange={(e) => (setName(e.target.value), setSaved(false))} />
+                <input
+                  className="input"
+                  value={name}
+                  maxLength={24}
+                  onChange={(e) => (setName(e.target.value), setSaved(false))}
+                />
               </label>
               <button className="btn" disabled={!nameValid}>
                 {saved ? '✓' : t('settings.save')}
@@ -106,7 +123,11 @@ export function SettingsScreen() {
           </button>
         </Group>
       </div>
-      <button className="btn btn--ghost btn--block" style={{ marginTop: 16 }} onClick={() => go('/')}>
+      <button
+        className="btn btn--ghost btn--block"
+        style={{ marginTop: 16 }}
+        onClick={() => go('/')}
+      >
         {t('menu.back')}
       </button>
       <ConfirmDialog
@@ -138,7 +159,17 @@ function Group({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function Segmented<T extends string>({ value, options, label, onChange }: { value: T; options: T[]; label: (v: T) => string; onChange: (v: T) => void }) {
+function Segmented<T extends string>({
+  value,
+  options,
+  label,
+  onChange,
+}: {
+  value: T;
+  options: T[];
+  label: (v: T) => string;
+  onChange: (v: T) => void;
+}) {
   return (
     <div className="segmented">
       {options.map((o) => (

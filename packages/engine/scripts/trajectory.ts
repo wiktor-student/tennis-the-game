@@ -4,7 +4,16 @@ import { botAction } from '../src/bot';
 
 const bg = (process.argv[2] ?? 'wall') as BackgroundId;
 const seed = `traj-${bg}-${process.argv[3] ?? '1'}`;
-const state = createCareer({ name: { first: 'A', last: 'B' }, gender: 'M', background: bg, difficulty: 'normal', mode: 'normal' }, seed);
+const state = createCareer(
+  {
+    name: { first: 'A', last: 'B' },
+    gender: 'M',
+    background: bg,
+    difficulty: 'normal',
+    mode: 'normal',
+  },
+  seed,
+);
 console.info('potential', JSON.stringify(state.player.potential));
 let lastYear = 0;
 for (;;) {
@@ -15,6 +24,8 @@ for (;;) {
     const r = state.phase.record;
     lastYear = r.year;
     const ratings = state.field.map((f) => f.rating).sort((x, y) => y - x);
-    console.info(`${r.year} age ${r.age} ${r.stage.padEnd(10)} ovr ${r.ovr} rank ${r.rankEnd} titles ${r.titles.length} W-L ${r.won}-${r.lost} | field top ${ratings[0]?.toFixed(1)} #10 ${ratings[9]?.toFixed(1)} #100 ${ratings[99]?.toFixed(1)} med ${ratings[Math.floor(ratings.length/2)]?.toFixed(1)} | coach ${state.team.coach} budget ${Math.round(state.finance.budget/1000)}k`);
+    console.info(
+      `${r.year} age ${r.age} ${r.stage.padEnd(10)} ovr ${r.ovr} rank ${r.rankEnd} titles ${r.titles.length} W-L ${r.won}-${r.lost} | field top ${ratings[0]?.toFixed(1)} #10 ${ratings[9]?.toFixed(1)} #100 ${ratings[99]?.toFixed(1)} med ${ratings[Math.floor(ratings.length / 2)]?.toFixed(1)} | coach ${state.team.coach} budget ${Math.round(state.finance.budget / 1000)}k`,
+    );
   }
 }

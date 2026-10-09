@@ -44,26 +44,38 @@ export async function buildApp(deps: AppDeps): Promise<FastifyInstance> {
     if (player) {
       request.player = player;
       if (Date.now() - player.lastSeenAt.getTime() > 3_600_000) {
-        void deps.db.player.update({ where: { id: player.id }, data: { lastSeenAt: new Date() } }).catch(() => undefined);
+        void deps.db.player
+          .update({ where: { id: player.id }, data: { lastSeenAt: new Date() } })
+          .catch(() => undefined);
       }
     }
   });
 
-  app.setErrorHandler((error: Error & { statusCode?: number; validation?: unknown }, request, reply) => {
-    if (error instanceof HttpError) {
-      return reply.status(error.status).send({ error: error.code, message: error.message, details: error.details });
-    }
-    if (error.statusCode === 429) {
-      return reply.status(429).send({ error: 'rate_limited', message: 'Too many requests' });
-    }
-    if (error.validation || error.statusCode === 400 || error.statusCode === 413) {
-      return reply.status(error.statusCode ?? 400).send({ error: 'bad_request', message: error.message });
-    }
-    request.log.error(error);
-    return reply.status(500).send({ error: 'internal_error', message: 'Internal server error' });
-  });
+  app.setErrorHandler(
+    (error: Error & { statusCode?: number; validation?: unknown }, request, reply) => {
+      if (error instanceof HttpError) {
+        return reply
+          .status(error.status)
+          .send({ error: error.code, message: error.message, details: error.details });
+      }
+      if (error.statusCode === 429) {
+        return reply.status(429).send({ error: 'rate_limited', message: 'Too many requests' });
+      }
+      if (error.validation || error.statusCode === 400 || error.statusCode === 413) {
+        return reply
+          .status(error.statusCode ?? 400)
+          .send({ error: 'bad_request', message: error.message });
+      }
+      request.log.error(error);
+      return reply.status(500).send({ error: 'internal_error', message: 'Internal server error' });
+    },
+  );
 
-  app.get('/health', async () => ({ status: 'ok', engine: ENGINE_VERSION, queue: deps.pool.pending }));
+  app.get('/health', async () => ({
+    status: 'ok',
+    engine: ENGINE_VERSION,
+    queue: deps.pool.pending,
+  }));
   app.get('/health/db', async () => {
     await deps.db.$queryRaw`SELECT 1`;
     return { status: 'ok' };

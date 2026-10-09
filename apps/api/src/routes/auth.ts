@@ -12,15 +12,25 @@ export const authRoutes =
   ({ db }: AppDeps): FastifyPluginAsync =>
   async (app) => {
     /** Create an anonymous account. The token is shown once and stored only as a hash. */
-    app.post('/v1/auth/anonymous', { config: { rateLimit: { max: 10, timeWindow: '1 hour' } } }, async (request, reply) => {
-      const body = parse(AnonymousSchema, request.body ?? {});
-      const token = newToken();
-      const player = await db.player.create({
-        data: { displayName: body.displayName ?? defaultDisplayName(), tokenHash: hashToken(token) },
-      });
-      const response: AuthResponse = AuthResponseSchema.parse({ token, player: playerDto(player) });
-      return reply.status(201).send(response);
-    });
+    app.post(
+      '/v1/auth/anonymous',
+      { config: { rateLimit: { max: 10, timeWindow: '1 hour' } } },
+      async (request, reply) => {
+        const body = parse(AnonymousSchema, request.body ?? {});
+        const token = newToken();
+        const player = await db.player.create({
+          data: {
+            displayName: body.displayName ?? defaultDisplayName(),
+            tokenHash: hashToken(token),
+          },
+        });
+        const response: AuthResponse = AuthResponseSchema.parse({
+          token,
+          player: playerDto(player),
+        });
+        return reply.status(201).send(response);
+      },
+    );
 
     app.get('/v1/me', async (request) => playerDto(requirePlayer(request)));
 

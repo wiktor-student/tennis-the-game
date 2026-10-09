@@ -7,7 +7,12 @@ export function LevelBadge({ level, gender }: { level: LevelId; gender: Gender }
 
 export function SurfaceDot({ surface }: { surface: Surface }) {
   const locale = useSettings((s) => s.locale);
-  return <span className={`surface-dot surface-dot--${surface}`} title={SURFACE_INFO[surface].name[locale]} />;
+  return (
+    <span
+      className={`surface-dot surface-dot--${surface}`}
+      title={SURFACE_INFO[surface].name[locale]}
+    />
+  );
 }
 
 export function Flag({ nat }: { nat: string }) {
@@ -20,7 +25,10 @@ export function Chips({ chips }: { chips: { text: string; tone: 'up' | 'down' | 
   return (
     <div className="row" style={{ flexWrap: 'wrap', gap: 6 }}>
       {chips.map((c, i) => (
-        <span key={i} className={`chip ${c.tone === 'up' ? 'chip--up' : c.tone === 'down' ? 'chip--down' : ''}`}>
+        <span
+          key={i}
+          className={`chip ${c.tone === 'up' ? 'chip--up' : c.tone === 'down' ? 'chip--down' : ''}`}
+        >
           {c.text}
         </span>
       ))}

@@ -24,21 +24,35 @@ export function RacketsScreen() {
           const ach = r.unlock ? ACHIEVEMENTS.find((a) => a.id === r.unlock) : null;
           const available = !r.unlock || !!unlocked[r.unlock];
           return (
-            <li key={r.id} className="racket-card" data-locked={!available} data-selected={selected === r.id}>
+            <li
+              key={r.id}
+              className="racket-card"
+              data-locked={!available}
+              data-selected={selected === r.id}
+            >
               <Racket racketId={r.id} size={140} tilt={-12} />
               <strong className="racket-card__name">{c(r.name)}</strong>
               {available ? (
-                <button className={`btn btn--sm ${selected === r.id ? 'btn--primary' : ''}`} onClick={() => set({ racket: r.id })}>
+                <button
+                  className={`btn btn--sm ${selected === r.id ? 'btn--primary' : ''}`}
+                  onClick={() => set({ racket: r.id })}
+                >
                   {selected === r.id ? t('rackets.selected') : t('rackets.select')}
                 </button>
               ) : (
-                <span className="muted racket-card__lock">{t('rackets.unlock', { name: ach ? c(ach.name) : '?' })}</span>
+                <span className="muted racket-card__lock">
+                  {t('rackets.unlock', { name: ach ? c(ach.name) : '?' })}
+                </span>
               )}
             </li>
           );
         })}
       </ul>
-      <button className="btn btn--ghost btn--block" style={{ marginTop: 16 }} onClick={() => go('/')}>
+      <button
+        className="btn btn--ghost btn--block"
+        style={{ marginTop: 16 }}
+        onClick={() => go('/')}
+      >
         {t('menu.back')}
       </button>
       <Footer />

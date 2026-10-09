@@ -10,7 +10,13 @@ import type { FastifyPluginAsync } from 'fastify';
 import type { AppDeps } from '../app';
 import { parse, requirePlayer } from '../http';
 import { currentWeek, secondsUntilMidnight, today } from '../lib/time';
-import { boardFromDb, periodKey, reigningChampion, toEntries, topCareers } from '../services/leaderboards';
+import {
+  boardFromDb,
+  periodKey,
+  reigningChampion,
+  toEntries,
+  topCareers,
+} from '../services/leaderboards';
 import { careerCard } from '../services/serializers';
 
 const BoardQuery = z.object({
@@ -43,10 +49,17 @@ export const boardRoutes =
       const weekly = weeklyChallenge(week);
       const player = request.player;
       const progress = player
-        ? await db.goalProgress.findMany({ where: { playerId: player.id, goalKey: { in: [...goals.map((g) => g.key), weekly.key] } } })
+        ? await db.goalProgress.findMany({
+            where: {
+              playerId: player.id,
+              goalKey: { in: [...goals.map((g) => g.key), weekly.key] },
+            },
+          })
         : [];
       const attempted = player
-        ? !!(await db.dailyAttempt.findUnique({ where: { playerId_dayKey: { playerId: player.id, dayKey: day } } }))
+        ? !!(await db.dailyAttempt.findUnique({
+            where: { playerId_dayKey: { playerId: player.id, dayKey: day } },
+          }))
         : false;
       const byKey = new Map(progress.map((p) => [p.goalKey, p]));
       const response: DailyResponse = {
@@ -70,18 +83,36 @@ export const boardRoutes =
     app.get('/v1/me/progress', async (request) => {
       const player = requirePlayer(request);
       const [achievements, careers, trophies] = await Promise.all([
-        db.playerAchievement.findMany({ where: { playerId: player.id }, orderBy: { unlockedAt: 'asc' } }),
-        db.career.findMany({ where: { playerId: player.id, status: 'FINISHED' }, orderBy: { finishedAt: 'desc' }, take: 100 }),
-        db.periodChampion.findMany({ where: { playerId: player.id }, include: { career: true }, orderBy: { settledAt: 'desc' } }),
+        db.playerAchievement.findMany({
+          where: { playerId: player.id },
+          orderBy: { unlockedAt: 'asc' },
+        }),
+        db.career.findMany({
+          where: { playerId: player.id, status: 'FINISHED' },
+          orderBy: { finishedAt: 'desc' },
+          take: 100,
+        }),
+        db.periodChampion.findMany({
+          where: { playerId: player.id },
+          include: { career: true },
+          orderBy: { settledAt: 'desc' },
+        }),
       ]);
       const cards = careers.map(careerCard);
       const response: ProgressResponse = {
-        achievements: achievements.map((a) => ({ id: a.achievementId, unlockedAt: a.unlockedAt.toISOString() })),
+        achievements: achievements.map((a) => ({
+          id: a.achievementId,
+          unlockedAt: a.unlockedAt.toISOString(),
+        })),
         careers: cards,
         records: {
           bestLegacy: Math.max(0, ...cards.filter((c) => c.rankable).map((c) => c.legacy)),
           mostSlams: Math.max(0, ...cards.map((c) => c.slamTitles)),
-          bestPeakRank: cards.reduce<number | null>((best, c) => (c.peakRank !== null && (best === null || c.peakRank < best) ? c.peakRank : best), null),
+          bestPeakRank: cards.reduce<number | null>(
+            (best, c) =>
+              c.peakRank !== null && (best === null || c.peakRank < best) ? c.peakRank : best,
+            null,
+          ),
           richest: Math.max(0, ...cards.map((c) => c.prizeMoney)),
           careers: cards.length,
         },

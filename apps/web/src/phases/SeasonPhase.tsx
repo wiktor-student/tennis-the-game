@@ -51,7 +51,9 @@ export function SeasonPhase({ state }: { state: CareerState }) {
       <div className="panel panel--court">
         <div className="spread season-head">
           <div>
-            <h2 className="phase-title">{t('season.report', { n: state.history.length + 1, year: season.year })}</h2>
+            <h2 className="phase-title">
+              {t('season.report', { n: state.history.length + 1, year: season.year })}
+            </h2>
             <FormLine form={season.form} fresh={season.results.length === 0} />
           </div>
           <div className="row season-controls">
@@ -62,7 +64,11 @@ export function SeasonPhase({ state }: { state: CareerState }) {
             )}
             {!deciding && !finished && (
               <>
-                <button className="btn btn--primary" disabled={auto} onClick={() => dispatch({ t: 'play' })}>
+                <button
+                  className="btn btn--primary"
+                  disabled={auto}
+                  onClick={() => dispatch({ t: 'play' })}
+                >
                   {t('season.play')}
                 </button>
                 <button className="btn" onClick={() => setAuto((a) => !a)}>
@@ -95,7 +101,18 @@ export function SeasonPhase({ state }: { state: CareerState }) {
 function FormLine({ form, fresh }: { form: FormId; fresh: boolean }) {
   const t = useT();
   const motion = useSettings((s) => s.motion);
-  const forms: FormId[] = ['normal', 'weak', 'crisis', 'life', 'great', 'good', 'normal', 'weak', 'great', 'good'];
+  const forms: FormId[] = [
+    'normal',
+    'weak',
+    'crisis',
+    'life',
+    'great',
+    'good',
+    'normal',
+    'weak',
+    'great',
+    'good',
+  ];
   const [spinning, setSpinning] = useState(fresh && motion === 'full');
   useEffect(() => {
     if (!spinning) return;
@@ -144,7 +161,13 @@ function DecisionPanel({ state, decision }: { state: CareerState; decision: Pend
 
   return (
     <section className="panel decision" data-resolved={!!resolved}>
-      <p className="eyebrow decision__meta">{t('decision.round', { round: decision.round, opp: decision.oppName, score: decision.scoreText || '—' })}</p>
+      <p className="eyebrow decision__meta">
+        {t('decision.round', {
+          round: decision.round,
+          opp: decision.oppName,
+          score: decision.scoreText || '—',
+        })}
+      </p>
       <h3 ref={headingRef} tabIndex={-1} className="narrative decision__text">
         {c(situation.text, gender, vars)}
       </h3>
@@ -154,7 +177,12 @@ function DecisionPanel({ state, decision }: { state: CareerState; decision: Pend
           {situation.options.map((opt, i) => {
             const view = decision.options[i]!;
             return (
-              <button key={i} className="option" data-risky={view.risky} onClick={() => dispatch({ t: 'choose', option: i })}>
+              <button
+                key={i}
+                className="option"
+                data-risky={view.risky}
+                onClick={() => dispatch({ t: 'choose', option: i })}
+              >
                 <span className="option__head">
                   <span className="option__label">{c(opt.label, gender)}</span>
                   {view.risky && <span className="option__risk">{t('decision.risky')}</span>}
@@ -173,9 +201,16 @@ function DecisionPanel({ state, decision }: { state: CareerState; decision: Pend
       {resolved && chosen && chosenView && (
         <div className="decision__result stack">
           <p className="decision__chosen">▸ {c(chosen.label, gender)}</p>
-          <Roulette option={chosenView} roll={resolved.roll} outcome={resolved.outcome} onDone={() => setRevealed(true)} />
+          <Roulette
+            option={chosenView}
+            roll={resolved.roll}
+            outcome={resolved.outcome}
+            onDone={() => setRevealed(true)}
+          />
           <div className="legend">
-            <span className="legend__super">{pct(chosenView.superChance)}% {t('decision.super')}</span>
+            <span className="legend__super">
+              {pct(chosenView.superChance)}% {t('decision.super')}
+            </span>
             <span className="legend__success">
               {pct(chosenView.chance - chosenView.superChance)}% {t('decision.success')}
             </span>
@@ -185,10 +220,17 @@ function DecisionPanel({ state, decision }: { state: CareerState; decision: Pend
           </div>
           {revealed && (
             <div className={`verdict-line verdict-line--${resolved.outcome}`}>
-              <strong className="display">{t(`decision.outcome.${resolved.outcome}` as MessageKey)}</strong>
+              <strong className="display">
+                {t(`decision.outcome.${resolved.outcome}` as MessageKey)}
+              </strong>
               <p className="narrative">{c(chosen.result[resolved.outcome], gender, vars)}</p>
-              <p className="muted">{t('decision.momentum', { m: signed(resolved.momentum * 100, 1) })}</p>
-              <button className="btn btn--primary btn--block" onClick={() => dispatch({ t: 'continue' })}>
+              <p className="muted">
+                {t('decision.momentum', { m: signed(resolved.momentum * 100, 1) })}
+              </p>
+              <button
+                className="btn btn--primary btn--block"
+                onClick={() => dispatch({ t: 'continue' })}
+              >
                 {t('phase.next')}
               </button>
             </div>
@@ -216,7 +258,10 @@ function ResultCard({ state, result }: { state: CareerState; result: TournamentR
   const def = tournament(result.tournamentId);
   const champion = result.reached === 0;
   return (
-    <article className={`panel result-card ${champion ? 'result-card--title' : ''}`} data-surface={def.surface}>
+    <article
+      className={`panel result-card ${champion ? 'result-card--title' : ''}`}
+      data-surface={def.surface}
+    >
       <div className="spread">
         <span className="eyebrow">{t('season.latest')}</span>
         <span className="row" style={{ gap: 8 }}>
@@ -232,15 +277,23 @@ function ResultCard({ state, result }: { state: CareerState; result: TournamentR
         {result.entry === 'exempt' && ` · ${t('season.entry.exempt')}`}
       </p>
       <div className="result-card__outcome">
-        <span className={`result-tag result-tag--${result.reached === 0 ? 'w' : result.reached !== null && result.reached <= 2 ? 'deep' : 'out'}`}>
+        <span
+          className={`result-tag result-tag--${result.reached === 0 ? 'w' : result.reached !== null && result.reached <= 2 ? 'deep' : 'out'}`}
+        >
           {result.medal ? t(`medal.${result.medal}` as MessageKey) : resultLabel(t, result)}
         </span>
-        {result.points > 0 && <span className="chip">{t('season.points', { n: result.points })}</span>}
+        {result.points > 0 && (
+          <span className="chip">{t('season.points', { n: result.points })}</span>
+        )}
         {result.prize > 0 && <span className="chip chip--up">+{money(result.prize, locale)}</span>}
         {result.rankAfter && <span className="chip">#{result.rankAfter}</span>}
       </div>
       <MatchList matches={result.matches} />
-      {result.championName && result.reached !== 0 && <p className="muted result-card__champ">{t('season.champion', { name: result.championName })}</p>}
+      {result.championName && result.reached !== 0 && (
+        <p className="muted result-card__champ">
+          {t('season.champion', { name: result.championName })}
+        </p>
+      )}
     </article>
   );
 }
@@ -274,7 +327,11 @@ function Roadmap({ state }: { state: CareerState }) {
   const results = new Map(season.results.map((r) => [r.tournamentId, r]));
   const rows = season.slots
     .map((slot, i) => ({ slot, i, id: season.plan[i] ?? null }))
-    .filter((r) => r.id !== null) as { slot: (typeof season.slots)[number]; i: number; id: string }[];
+    .filter((r) => r.id !== null) as {
+    slot: (typeof season.slots)[number];
+    i: number;
+    id: string;
+  }[];
 
   return (
     <section className="panel">
@@ -283,16 +340,30 @@ function Roadmap({ state }: { state: CareerState }) {
         {rows.map(({ i, id }, n) => {
           const def = tournament(id);
           const r = results.get(id);
-          const isNext = !r && i >= season.cursor && rows.findIndex((x) => x.i >= season.cursor && !results.get(x.id)) === n;
+          const isNext =
+            !r &&
+            i >= season.cursor &&
+            rows.findIndex((x) => x.i >= season.cursor && !results.get(x.id)) === n;
           const expanded = open === id;
           return (
-            <li key={id} className="roadmap__row" data-state={r ? 'done' : isNext ? 'next' : 'todo'}>
-              <button className="roadmap__line" aria-expanded={expanded} disabled={!r || r.matches.length === 0} onClick={() => setOpen(expanded ? null : id)}>
+            <li
+              key={id}
+              className="roadmap__row"
+              data-state={r ? 'done' : isNext ? 'next' : 'todo'}
+            >
+              <button
+                className="roadmap__line"
+                aria-expanded={expanded}
+                disabled={!r || r.matches.length === 0}
+                onClick={() => setOpen(expanded ? null : id)}
+              >
                 <span className="roadmap__n num">R{n + 1}</span>
                 <SurfaceDot surface={def.surface} />
                 <span className="roadmap__name">{c(def.name)}</span>
                 <LevelBadge level={def.level} gender={state.config.gender} />
-                <span className={`roadmap__result ${r?.reached === 0 ? 'is-title' : ''}`}>{r ? resultLabel(t, r) : '–'}</span>
+                <span className={`roadmap__result ${r?.reached === 0 ? 'is-title' : ''}`}>
+                  {r ? resultLabel(t, r) : '–'}
+                </span>
                 <span className="roadmap__pts num">{r && r.points > 0 ? r.points : ''}</span>
               </button>
               {expanded && r && <MatchList matches={r.matches} />}

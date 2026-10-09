@@ -8,7 +8,12 @@ const EnvSchema = z.object({
   CORS_ORIGINS: z
     .string()
     .default('http://localhost:5173')
-    .transform((v) => v.split(',').map((s) => s.trim()).filter(Boolean)),
+    .transform((v) =>
+      v
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean),
+    ),
   VERIFY_WORKERS: z.coerce.number().int().min(0).max(16).default(2),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 });

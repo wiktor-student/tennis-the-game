@@ -53,7 +53,10 @@ export function ConfirmDialog(p: ConfirmProps) {
         <button className="btn btn--ghost" onClick={p.onCancel}>
           {p.cancelLabel}
         </button>
-        <button className={`btn ${p.danger ? 'btn--danger' : 'btn--primary'}`} onClick={p.onConfirm}>
+        <button
+          className={`btn ${p.danger ? 'btn--danger' : 'btn--primary'}`}
+          onClick={p.onConfirm}
+        >
           {p.confirmLabel}
         </button>
       </div>

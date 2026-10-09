@@ -68,7 +68,11 @@ export const useMeta = create<MetaState>((set, get) => ({
     const achievements = { ...state.achievements };
     for (const id of unlocked) achievements[id] = now;
     const streak =
-      state.lastPlayedDay === day ? state.streak : state.lastPlayedDay === previousDay(day) ? state.streak + 1 : 1;
+      state.lastPlayedDay === day
+        ? state.streak
+        : state.lastPlayedDay === previousDay(day)
+          ? state.streak + 1
+          : 1;
     const entry: MuseumEntry = {
       id: `${now}-${Math.random().toString(36).slice(2, 8)}`,
       finishedAt: now,
@@ -100,7 +104,13 @@ export function localGoals(museum: MuseumEntry[], day = warsawDayKey()) {
   const weekly = weeklyChallenge(week);
   return {
     goals: dailyGoals(day).map((g) => ({ ...g, ...goalProgress(g, todays) })),
-    weekly: { ...weekly, done: weeklyDone(weekly.templateId, museum.filter((m) => m.week === week).map((m) => m.summary)) },
+    weekly: {
+      ...weekly,
+      done: weeklyDone(
+        weekly.templateId,
+        museum.filter((m) => m.week === week).map((m) => m.summary),
+      ),
+    },
   };
 }
 

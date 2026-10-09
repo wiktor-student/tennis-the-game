@@ -33,13 +33,21 @@ export function AchievementsScreen() {
               <div>
                 <strong className="ach__name">{hidden ? t('ach.secret') : c(a.name)}</strong>
                 <p className="ach__desc">{hidden ? '???' : c(a.description)}</p>
-                <p className="ach__date">{at ? new Date(at).toLocaleDateString(locale === 'pl' ? 'pl-PL' : 'en-GB') : t('ach.locked')}</p>
+                <p className="ach__date">
+                  {at
+                    ? new Date(at).toLocaleDateString(locale === 'pl' ? 'pl-PL' : 'en-GB')
+                    : t('ach.locked')}
+                </p>
               </div>
             </li>
           );
         })}
       </ul>
-      <button className="btn btn--ghost btn--block" style={{ marginTop: 16 }} onClick={() => go('/')}>
+      <button
+        className="btn btn--ghost btn--block"
+        style={{ marginTop: 16 }}
+        onClick={() => go('/')}
+      >
         {t('menu.back')}
       </button>
       <Footer />

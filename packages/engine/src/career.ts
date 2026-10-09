@@ -2,7 +2,14 @@ import { BACKGROUNDS } from './content/backgrounds';
 import { COACHES } from './content/coaches';
 import { EVENTS_BY_ID } from './content/events';
 import { polishName } from './content/names';
-import { DEBT_LIMIT_JUNIOR, DEBT_LIMIT_PRO, MAX_AGE, MIN_RETIRE_AGE, START_AGE, START_YEAR } from './model/constants';
+import {
+  DEBT_LIMIT_JUNIOR,
+  DEBT_LIMIT_PRO,
+  MAX_AGE,
+  MIN_RETIRE_AGE,
+  START_AGE,
+  START_YEAR,
+} from './model/constants';
 import { SKILL_IDS } from './model/skills';
 import type {
   Action,
@@ -18,8 +25,21 @@ import { acceptSponsors, generateSponsorOffers } from './sim/economy';
 import { buildJuniorField } from './sim/field';
 import { computeLegacy } from './sim/legacy';
 import { applyTraining } from './sim/development';
-import { buildPendingEvent, isOptionAvailable, pickOffseasonEvents, resolveEvent } from './sim/story';
-import { autoPlan, endSeason, newSeasonState, playNext, startSeason, turnPro, validatePlan } from './sim/season';
+import {
+  buildPendingEvent,
+  isOptionAvailable,
+  pickOffseasonEvents,
+  resolveEvent,
+} from './sim/story';
+import {
+  autoPlan,
+  endSeason,
+  newSeasonState,
+  playNext,
+  startSeason,
+  turnPro,
+  validatePlan,
+} from './sim/season';
 import { applyDecisionToRun } from './sim/tournament';
 import { ENGINE_VERSION } from './version';
 
@@ -44,7 +64,9 @@ export function createCareer(config: CareerConfig, seed: string): CareerState {
   const gender = config.gender;
 
   const avgHeight = gender === 'M' ? 185 : 172;
-  const heightCm = Math.round(Math.max(avgHeight - 18, Math.min(avgHeight + 20, rng.normal(avgHeight, 7))));
+  const heightCm = Math.round(
+    Math.max(avgHeight - 18, Math.min(avgHeight + 20, rng.normal(avgHeight, 7))),
+  );
   const overallPotential = rng.range(bg.potential[0], bg.potential[1]);
   const heightDelta = heightCm - avgHeight;
 
@@ -184,7 +206,8 @@ function dispatch(state: CareerState, rng: Rng, action: Action): void {
     case 'event': {
       const event = phase.event;
       if (action.t === 'choose' && !event.resolved) {
-        if (!isOptionAvailable(state, event.eventId, action.option)) throw new EngineError('Option unavailable');
+        if (!isOptionAvailable(state, event.eventId, action.option))
+          throw new EngineError('Option unavailable');
         resolveEvent(state, rng, event, action.option);
         return;
       }
@@ -267,7 +290,13 @@ function dispatch(state: CareerState, rng: Rng, action: Action): void {
       if (action.t === 'continue' && decision.resolved) {
         const run = state.season.run;
         if (run) {
-          applyDecisionToRun(run, decision.situationId, decision.resolved.option, decision.resolved.outcome, decision.resolved.momentum);
+          applyDecisionToRun(
+            run,
+            decision.situationId,
+            decision.resolved.option,
+            decision.resolved.outcome,
+            decision.resolved.momentum,
+          );
         }
         state.phase = { kind: 'season' };
         const status = playNext(state, rng);

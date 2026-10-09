@@ -122,7 +122,12 @@ function randomSeed(): string {
   return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
 }
 
-function freshData(config: CareerConfig, seed: string, careerId: string | null, dayKey: string | null): SaveData {
+function freshData(
+  config: CareerConfig,
+  seed: string,
+  careerId: string | null,
+  dayKey: string | null,
+): SaveData {
   return {
     version: 1,
     engineVersion: ENGINE_VERSION,

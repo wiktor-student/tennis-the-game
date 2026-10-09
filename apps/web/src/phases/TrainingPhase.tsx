@@ -1,4 +1,12 @@
-import { BACKGROUNDS, COACHES, SKILL_IDS, SKILL_INFO, trainingGain, type CareerState, type SkillId } from '@ttg/engine';
+import {
+  BACKGROUNDS,
+  COACHES,
+  SKILL_IDS,
+  SKILL_INFO,
+  trainingGain,
+  type CareerState,
+  type SkillId,
+} from '@ttg/engine';
 import { useState } from 'react';
 import { useContent, useT } from '../i18n';
 import { useGame } from '../store/game';
@@ -24,18 +32,32 @@ export function TrainingPhase({ state }: { state: CareerState }) {
       )}
       <div>
         <h2 className="phase-title">{t('phase.training')}</h2>
-        <p className="muted">{t('phase.trainingHint', { coach: c(COACHES[state.team.coach].name), gain: gain.toFixed(1) })}</p>
+        <p className="muted">
+          {t('phase.trainingHint', {
+            coach: c(COACHES[state.team.coach].name),
+            gain: gain.toFixed(1),
+          })}
+        </p>
       </div>
       <div className="choices">
         {SKILL_IDS.map((id) => (
-          <button key={id} className="choice" aria-pressed={skill === id} onClick={() => setSkill(id)}>
+          <button
+            key={id}
+            className="choice"
+            aria-pressed={skill === id}
+            onClick={() => setSkill(id)}
+          >
             <span className="choice__title">{SKILL_INFO[id].name[locale]}</span>
             <span className="choice__aside num">{Math.round(p.skills[id])}</span>
             <span className="choice__meta">{SKILL_INFO[id].hint[locale]}</span>
           </button>
         ))}
       </div>
-      <button className="btn btn--primary btn--block" disabled={!skill} onClick={() => skill && dispatch({ t: 'train', skill })}>
+      <button
+        className="btn btn--primary btn--block"
+        disabled={!skill}
+        onClick={() => skill && dispatch({ t: 'train', skill })}
+      >
         {t('phase.next')}
       </button>
     </div>

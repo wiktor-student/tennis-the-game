@@ -58,13 +58,15 @@ export function playerCompetitor(
   };
 }
 
-const STYLE_OFFSETS: Record<PlayStyle, { serve: number; ret: number; rally: number; fitness: number }> =
-  {
-    server: { serve: 5, ret: -3, rally: -3, fitness: -2 },
-    grinder: { serve: -4, ret: 3, rally: 4, fitness: 5 },
-    netrusher: { serve: 3, ret: -2, rally: -3, fitness: 0 },
-    allround: { serve: 0, ret: 0, rally: 0, fitness: 0 },
-  };
+const STYLE_OFFSETS: Record<
+  PlayStyle,
+  { serve: number; ret: number; rally: number; fitness: number }
+> = {
+  server: { serve: 5, ret: -3, rally: -3, fitness: -2 },
+  grinder: { serve: -4, ret: 3, rally: 4, fitness: 5 },
+  netrusher: { serve: 3, ret: -2, rally: -3, fitness: 0 },
+  allround: { serve: 0, ret: 0, rally: 0, fitness: 0 },
+};
 
 /** Surface proficiency for an AI player: grows with age, boosted on the preferred surface. */
 export function aiSurfaceProficiency(ai: AIPlayer, surface: Surface, year: number): number {
@@ -140,7 +142,13 @@ function pointProb(ctx: SetContext, server: 'A' | 'B', pressure: boolean): numbe
     : servePointProbability(B, A, surface, pressure);
 }
 
-function playGamePoints(rng: Rng, ctx: SetContext, server: 'A' | 'B', gamesA: number, gamesB: number): 'A' | 'B' {
+function playGamePoints(
+  rng: Rng,
+  ctx: SetContext,
+  server: 'A' | 'B',
+  gamesA: number,
+  gamesB: number,
+): 'A' | 'B' {
   let s = 0;
   let r = 0;
   const lateSet = ctx.deciding && gamesA + gamesB >= 8;
@@ -154,7 +162,12 @@ function playGamePoints(rng: Rng, ctx: SetContext, server: 'A' | 'B', gamesA: nu
   }
 }
 
-function playTiebreakPoints(rng: Rng, ctx: SetContext, firstServer: 'A' | 'B', target: number): { winner: 'A' | 'B'; a: number; b: number } {
+function playTiebreakPoints(
+  rng: Rng,
+  ctx: SetContext,
+  firstServer: 'A' | 'B',
+  target: number,
+): { winner: 'A' | 'B'; a: number; b: number } {
   let a = 0;
   let b = 0;
   let point = 0;
@@ -168,7 +181,8 @@ function playTiebreakPoints(rng: Rng, ctx: SetContext, firstServer: 'A' | 'B', t
     if (winner === 'A') a++;
     else b++;
     point++;
-    if ((a >= target || b >= target) && Math.abs(a - b) >= 2) return { winner: a > b ? 'A' : 'B', a, b };
+    if ((a >= target || b >= target) && Math.abs(a - b) >= 2)
+      return { winner: a > b ? 'A' : 'B', a, b };
   }
 }
 
@@ -188,7 +202,12 @@ function fastSet(ctx: SetContext): FastSet {
   return { pA, pB, holdA: holdProbability(pA), holdB: holdProbability(pB) };
 }
 
-function playTiebreakFast(rng: Rng, f: FastSet, firstServer: 'A' | 'B', target: number): { winner: 'A' | 'B'; a: number; b: number } {
+function playTiebreakFast(
+  rng: Rng,
+  f: FastSet,
+  firstServer: 'A' | 'B',
+  target: number,
+): { winner: 'A' | 'B'; a: number; b: number } {
   let a = 0;
   let b = 0;
   for (let point = 0; ; point++) {
@@ -198,7 +217,8 @@ function playTiebreakFast(rng: Rng, f: FastSet, firstServer: 'A' | 'B', target: 
     const serverWins = rng.float() < p;
     if ((server === 'A') === serverWins) a++;
     else b++;
-    if ((a >= target || b >= target) && Math.abs(a - b) >= 2) return { winner: a > b ? 'A' : 'B', a, b };
+    if ((a >= target || b >= target) && Math.abs(a - b) >= 2)
+      return { winner: a > b ? 'A' : 'B', a, b };
   }
 }
 
@@ -233,10 +253,14 @@ export function simulateSet(
   for (;;) {
     if (ga === 6 && gb === 6) {
       const target = deciding && setup.decidingTiebreak10 ? 10 : 7;
-      const tb = fast ? playTiebreakFast(rng, fast, server, target) : playTiebreakPoints(rng, ctx, server, target);
+      const tb = fast
+        ? playTiebreakFast(rng, fast, server, target)
+        : playTiebreakPoints(rng, ctx, server, target);
       const winner = tb.winner;
       const score: SetScore =
-        winner === 'A' ? { a: 7, b: 6, tb: Math.min(tb.a, tb.b) } : { a: 6, b: 7, tb: Math.min(tb.a, tb.b) };
+        winner === 'A'
+          ? { a: 7, b: 6, tb: Math.min(tb.a, tb.b) }
+          : { a: 6, b: 7, tb: Math.min(tb.a, tb.b) };
       // The player who received first in the tie-break serves first in the next set.
       return { score, winner, nextServer: server === 'A' ? 'B' : 'A' };
     }

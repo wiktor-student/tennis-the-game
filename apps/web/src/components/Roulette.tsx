@@ -59,7 +59,7 @@ export function Roulette({ option, roll, outcome, onDone }: Props) {
   }, [roll, motion]);
 
   return (
-    <div className="roulette" data-settled={settled} data-outcome={settled ? outcome ?? '' : ''}>
+    <div className="roulette" data-settled={settled} data-outcome={settled ? (outcome ?? '') : ''}>
       <div className="roulette__strip">
         {cells.map((c, i) => (
           <span key={i} className={`roulette__cell roulette__cell--${c}`} />

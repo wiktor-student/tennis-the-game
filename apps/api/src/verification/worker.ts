@@ -7,7 +7,10 @@ parentPort?.on('message', (msg: { id: number; input: VerifyInput }) => {
   try {
     result = verifyCareer(msg.input);
   } catch (error) {
-    result = { ok: false as const, reason: `worker_error:${(error as Error).message}`.slice(0, 200) };
+    result = {
+      ok: false as const,
+      reason: `worker_error:${(error as Error).message}`.slice(0, 200),
+    };
   }
   parentPort?.postMessage({ id: msg.id, result });
 });

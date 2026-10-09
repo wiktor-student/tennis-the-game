@@ -84,7 +84,8 @@ export function buildDraw(
   }
   // Unseeded entrants fill positions with natural numbers in (seedCount, count].
   const open: number[] = [];
-  for (let natural = seedCount + 1; natural <= count; natural++) open.push(positionOf.get(natural) as number);
+  for (let natural = seedCount + 1; natural <= count; natural++)
+    open.push(positionOf.get(natural) as number);
   rng.shuffle(open);
   const unseeded = entrants.slice(seedCount, count);
   unseeded.forEach((id, i) => {
@@ -146,13 +147,17 @@ export function wildcardChance(state: CareerState, def: TournamentDef): number {
 export type EntryProjection = 'direct' | 'qualifier' | 'wildcard' | 'exempt' | 'none';
 
 /** Entry status with the player's current ranking (used by the planner and at play time). */
-export function projectEntry(state: CareerState, def: TournamentDef): { status: EntryProjection; wildcard: number } {
+export function projectEntry(
+  state: CareerState,
+  def: TournamentDef,
+): { status: EntryProjection; wildcard: number } {
   const level = LEVELS[def.level];
   if (!level.pro) return { status: 'direct', wildcard: 0 };
   const rank = state.pro.rank ?? 99_999;
   const wildcard = wildcardChance(state, def);
   if (def.level === 'finals') return { status: rank <= 8 ? 'direct' : 'none', wildcard: 0 };
-  if (def.level === 'olympics') return { status: rank <= level.cutoffMain ? 'direct' : 'none', wildcard: 0 };
+  if (def.level === 'olympics')
+    return { status: rank <= level.cutoffMain ? 'direct' : 'none', wildcard: 0 };
   if (rank <= level.cutoffMain) return { status: 'direct', wildcard };
   if (state.pro.exemptions > 0 && ['ch175', 'ch125', 'ch75'].includes(def.level)) {
     return { status: 'exempt', wildcard };
@@ -179,7 +184,9 @@ export function assignWeek(
   excluded: Set<string>,
 ): { byEvent: Map<string, string[]>; leftover: string[] } {
   const result = new Map<string, string[]>();
-  const sortedEvents = [...events].sort((a, b) => LEVELS[b.level].prestige - LEVELS[a.level].prestige);
+  const sortedEvents = [...events].sort(
+    (a, b) => LEVELS[b.level].prestige - LEVELS[a.level].prestige,
+  );
   const majorWeek = events.some((e) => ['gs', 'm1000', 'olympics', 'finals'].includes(e.level));
   const available = state.field
     .filter((ai) => !excluded.has(ai.id))
@@ -206,7 +213,9 @@ export function assignWeek(
     result.set(event.id, entrants);
   }
   // Only the lower half of the tour fills the off-screen ITF weeks.
-  const leftover = available.filter((ai) => !used.has(ai.id) && (ai.rank ?? 9999) > 200).map((ai) => ai.id);
+  const leftover = available
+    .filter((ai) => !used.has(ai.id) && (ai.rank ?? 9999) > 200)
+    .map((ai) => ai.id);
   return { byEvent: result, leftover };
 }
 
@@ -215,7 +224,12 @@ export function assignWeek(
  * events play these off-screen brackets (rating-based, one roll per match) so that the whole
  * pool keeps earning points and the ranking stays realistic.
  */
-export function simulateVirtualEvents(state: CareerState, rng: Rng, ids: string[], week: number): void {
+export function simulateVirtualEvents(
+  state: CareerState,
+  rng: Rng,
+  ids: string[],
+  week: number,
+): void {
   const ai = aiById(state);
   const gw = globalWeek(state.season.year, week);
   for (let g = 0; g * 32 < ids.length; g++) {
@@ -251,7 +265,12 @@ export function simulateVirtualEvents(state: CareerState, rng: Rng, ids: string[
 
 // ─── Junior entrants ─────────────────────────────────────────────────────────
 
-export function juniorEntrants(state: CareerState, rng: Rng, def: TournamentDef, withPlayer: boolean): string[] {
+export function juniorEntrants(
+  state: CareerState,
+  rng: Rng,
+  def: TournamentDef,
+  withPlayer: boolean,
+): string[] {
   const size = LEVELS[def.level].drawSize - (withPlayer ? 1 : 0);
   let ids = state.field.map((ai) => ai.id);
   if (ids.length > size) {
@@ -268,7 +287,8 @@ export function juniorEntrants(state: CareerState, rng: Rng, def: TournamentDef,
   const ai = aiById(state);
   return ids.sort(
     (a, b) =>
-      (standings[b] ?? 0) - (standings[a] ?? 0) || (ai.get(b)?.rating ?? 0) - (ai.get(a)?.rating ?? 0),
+      (standings[b] ?? 0) - (standings[a] ?? 0) ||
+      (ai.get(b)?.rating ?? 0) - (ai.get(a)?.rating ?? 0),
   );
 }
 
@@ -301,11 +321,18 @@ export function simulateAITournament(
         const w = quickAI(ctx, x, y);
         rrWins[w] = (rrWins[w] ?? 0) + 1;
       }
-      const sorted = [...group].sort((x, y) => (rrWins[y] ?? 0) - (rrWins[x] ?? 0) || strength(ctx, y) - strength(ctx, x));
+      const sorted = [...group].sort(
+        (x, y) => (rrWins[y] ?? 0) - (rrWins[x] ?? 0) || strength(ctx, y) - strength(ctx, x),
+      );
       for (const id of sorted.slice(2)) reached[id] = 3;
       qualifiers.push(sorted.slice(0, 2));
     }
-    bracket = [qualifiers[0]?.[0] ?? null, qualifiers[1]?.[1] ?? null, qualifiers[1]?.[0] ?? null, qualifiers[0]?.[1] ?? null];
+    bracket = [
+      qualifiers[0]?.[0] ?? null,
+      qualifiers[1]?.[1] ?? null,
+      qualifiers[1]?.[0] ?? null,
+      qualifiers[0]?.[1] ?? null,
+    ];
   } else {
     bracket = buildDraw(rng, entrants, LEVELS[def.level].drawSize).draw;
   }
@@ -331,9 +358,18 @@ export function simulateAITournament(
 }
 
 const RR_PAIRINGS: [number, number][][] = [
-  [[0, 1], [2, 3]],
-  [[0, 2], [1, 3]],
-  [[0, 3], [1, 2]],
+  [
+    [0, 1],
+    [2, 3],
+  ],
+  [
+    [0, 2],
+    [1, 3],
+  ],
+  [
+    [0, 3],
+    [1, 2],
+  ],
 ];
 
 /** Points an AI earns for a round reached (season finals use round-robin wins). */
@@ -345,7 +381,12 @@ export function aiPoints(def: TournamentDef, reached: number, rrWins = 0): numbe
   return pointsFor(level, reached);
 }
 
-export function awardAI(state: CareerState, def: TournamentDef, reached: Record<string, number>, rrWins: Record<string, number> = {}): void {
+export function awardAI(
+  state: CareerState,
+  def: TournamentDef,
+  reached: Record<string, number>,
+  rrWins: Record<string, number> = {},
+): void {
   const level = LEVELS[def.level];
   if (level.pro) {
     const gw = globalWeek(state.season.year, def.week);
@@ -383,7 +424,11 @@ export function startRun(
   let qualifying: TournamentRun['qualifying'] = null;
 
   if (level.pro) {
-    if (projection.status === 'none' || projection.status === 'wildcard' || projection.status === 'qualifier') {
+    if (
+      projection.status === 'none' ||
+      projection.status === 'wildcard' ||
+      projection.status === 'qualifier'
+    ) {
       const wcRoll = projection.wildcard > 0 && rng.chance(projection.wildcard);
       if (wcRoll && def.level !== 'itf15') entry = 'wildcard';
       else if (projection.status === 'qualifier') entry = 'qualifier';
@@ -466,7 +511,13 @@ function sortEntrants(state: CareerState, ids: string[]): string[] {
   return [...ids].sort((a, b) => key(a) - key(b));
 }
 
-function setupMainDraw(state: CareerState, rng: Rng, run: TournamentRun, def: TournamentDef, entrants: string[]): void {
+function setupMainDraw(
+  state: CareerState,
+  rng: Rng,
+  run: TournamentRun,
+  def: TournamentDef,
+  entrants: string[],
+): void {
   if (def.level === 'finals') {
     const field = entrants.slice(0, 8);
     const a = [field[0], field[3], field[4], field[7]].filter(Boolean) as string[];
@@ -483,8 +534,24 @@ function setupMainDraw(state: CareerState, rng: Rng, run: TournamentRun, def: To
   run.seeds = built.seeds;
 }
 
-function isKeyMatch(ctx: Ctx, roundsLeft: number, opp: AIPlayer | undefined): { key: boolean; max: number } {
-  const big = ['gs', 'm1000', 'finals', 'olympics', 'j_slam', 'te_super', 'te_euro', 'j_mini_pl', 'j_nat_pl', 'j_ob', 'j500'].includes(ctx.def.level);
+function isKeyMatch(
+  ctx: Ctx,
+  roundsLeft: number,
+  opp: AIPlayer | undefined,
+): { key: boolean; max: number } {
+  const big = [
+    'gs',
+    'm1000',
+    'finals',
+    'olympics',
+    'j_slam',
+    'te_super',
+    'te_euro',
+    'j_mini_pl',
+    'j_nat_pl',
+    'j_ob',
+    'j500',
+  ].includes(ctx.def.level);
   if (opp?.nemesis) return { key: true, max: 2 };
   if (roundsLeft <= 1) return { key: true, max: 2 };
   if (roundsLeft <= 2) return { key: true, max: big ? 2 : 1 };
@@ -506,7 +573,13 @@ const INJURIES: InjuryKind[] = ['wrist', 'ankle', 'back', 'shoulder', 'abdominal
 type MatchOutcome = 'won' | 'lost' | 'paused';
 
 /** Play (or resume) the player's match against `oppId`. */
-function playPlayerMatch(ctx: Ctx, run: TournamentRun, oppId: string, round: string, roundsLeft: number): MatchOutcome {
+function playPlayerMatch(
+  ctx: Ctx,
+  run: TournamentRun,
+  oppId: string,
+  round: string,
+  roundsLeft: number,
+): MatchOutcome {
   const { state, rng } = ctx;
   const opp = ctx.ai.get(oppId);
   if (!opp) throw new Error(`Unknown opponent ${oppId}`);
@@ -514,7 +587,9 @@ function playPlayerMatch(ctx: Ctx, run: TournamentRun, oppId: string, round: str
   let progress = run.pending;
   let injuredNow = false;
   if (!progress) {
-    const key = round.startsWith('Q') ? { key: !!opp.nemesis, max: 1 } : isKeyMatch(ctx, roundsLeft, opp);
+    const key = round.startsWith('Q')
+      ? { key: !!opp.nemesis, max: 1 }
+      : isKeyMatch(ctx, roundsLeft, opp);
     progress = {
       oppId,
       round,
@@ -583,17 +658,38 @@ function playPlayerMatch(ctx: Ctx, run: TournamentRun, oppId: string, round: str
     if (canAsk) {
       progress.asked.push(progress.sets.length);
       run.pending = progress;
-      const decision = buildDecision(state, rng, progress, opp, ctx.def.surface, scoreText({ sets: progress.sets, retired: null }));
+      const decision = buildDecision(
+        state,
+        rng,
+        progress,
+        opp,
+        ctx.def.surface,
+        scoreText({ sets: progress.sets, retired: null }),
+      );
       state.phase = { kind: 'decision', decision };
       return 'paused';
     }
-    const next = continueMatch(rng, setup, progress.sets, progress.nextServer, true, progress.sets.length + 1);
+    const next = continueMatch(
+      rng,
+      setup,
+      progress.sets,
+      progress.nextServer,
+      true,
+      progress.sets.length + 1,
+    );
     progress.sets = next.sets;
     progress.nextServer = next.nextServer;
   }
 }
 
-function recordMatch(ctx: Ctx, run: TournamentRun, progress: MatchProgress, opp: AIPlayer, won: boolean, score: MatchScore): void {
+function recordMatch(
+  ctx: Ctx,
+  run: TournamentRun,
+  progress: MatchProgress,
+  opp: AIPlayer,
+  won: boolean,
+  score: MatchScore,
+): void {
   const { state } = ctx;
   const stats = state.stats;
   const isPro = ctx.level.pro;
@@ -618,14 +714,16 @@ function recordMatch(ctx: Ctx, run: TournamentRun, progress: MatchProgress, opp:
   if (isPro) {
     if (won) stats.proMatchesWon += 1;
     else stats.proMatchesLost += 1;
-    if (won && (state.pro.rank === null || state.pro.rank > 100) && (opp.rank ?? 999) <= 10) stats.bigUpsets += 1;
+    if (won && (state.pro.rank === null || state.pro.rank > 100) && (opp.rank ?? 999) <= 10)
+      stats.bigUpsets += 1;
   }
   if (opp.nemesis) {
     if (won) stats.nemesisWon += 1;
     else stats.nemesisLost += 1;
   }
   if (won && score.sets.length === 5) stats.fiveSetWins += 1;
-  if (won && score.sets.length >= 2 && score.sets.every((s) => s.a === 6 && s.b === 0)) stats.doubleBagels += 1;
+  if (won && score.sets.length >= 2 && score.sets.every((s) => s.a === 6 && s.b === 0))
+    stats.doubleBagels += 1;
 
   const p = state.player;
   const sets = score.sets.length;
@@ -634,7 +732,13 @@ function recordMatch(ctx: Ctx, run: TournamentRun, progress: MatchProgress, opp:
 }
 
 /** Apply a resolved decision's momentum to the paused match. */
-export function applyDecisionToRun(run: TournamentRun, situationId: string, option: number, outcome: PlayedMatch['decisions'][number]['outcome'], momentum: number): void {
+export function applyDecisionToRun(
+  run: TournamentRun,
+  situationId: string,
+  option: number,
+  outcome: PlayedMatch['decisions'][number]['outcome'],
+  momentum: number,
+): void {
   if (!run.pending) return;
   run.pending.momentum += momentum;
   run.pending.decisionsTaken += 1;
@@ -657,7 +761,12 @@ export function advanceRun(state: CareerState, rng: Rng): 'paused' | 'done' {
       if (outcome === 'paused') return 'paused';
       if (outcome === 'lost') {
         // Main draw still happens without the player.
-        const result = simulateAITournament(state, rng, def, run.draw.filter((x): x is string => !!x));
+        const result = simulateAITournament(
+          state,
+          rng,
+          def,
+          run.draw.filter((x): x is string => !!x),
+        );
         run.aiReached = result.reached;
         awardAI(state, def, result.reached, result.rrWins);
         run.done = true;
@@ -698,7 +807,8 @@ function advanceRoundRobin(ctx: Ctx, run: TournamentRun): 'paused' | 'continue' 
         if (!x || !y) continue;
         if (x === PLAYER_ID || y === PLAYER_ID) {
           const opp = x === PLAYER_ID ? y : x;
-          if (run.matches.some((m) => m.round === `RR${run.roundIndex + 1}`) && !run.pending) continue;
+          if (run.matches.some((m) => m.round === `RR${run.roundIndex + 1}`) && !run.pending)
+            continue;
           const outcome = playPlayerMatch(ctx, run, opp, `RR${run.roundIndex + 1}`, 3);
           if (outcome === 'paused') return 'paused';
           const w = outcome === 'won' ? PLAYER_ID : opp;
@@ -721,7 +831,10 @@ function advanceRoundRobin(ctx: Ctx, run: TournamentRun): 'paused' | 'continue' 
   }
   // Group standings → semi-finals A1–B2, B1–A2.
   const order = (group: string[]) =>
-    [...group].sort((x, y) => (groups.wins[y] ?? 0) - (groups.wins[x] ?? 0) || strength(ctx, y) - strength(ctx, x));
+    [...group].sort(
+      (x, y) =>
+        (groups.wins[y] ?? 0) - (groups.wins[x] ?? 0) || strength(ctx, y) - strength(ctx, x),
+    );
   const a = order(groups.a);
   const b = order(groups.b);
   for (const id of [...a.slice(2), ...b.slice(2)]) {
@@ -782,10 +895,19 @@ function advanceKnockout(ctx: Ctx, run: TournamentRun): 'paused' | 'done' {
     run.roundIndex += 1;
 
     // Olympic bronze medal match after the semi-finals.
-    if (def.level === 'olympics' && run.draw.length === 2 && run.sfLosers.includes(PLAYER_ID) && !run.bronze) {
+    if (
+      def.level === 'olympics' &&
+      run.draw.length === 2 &&
+      run.sfLosers.includes(PLAYER_ID) &&
+      !run.bronze
+    ) {
       run.bronze = true;
     }
-    if (run.bronze && run.reached === 2 && !run.matches.some((m) => m.round === 'BRONZE' && !run.pending)) {
+    if (
+      run.bronze &&
+      run.reached === 2 &&
+      !run.matches.some((m) => m.round === 'BRONZE' && !run.pending)
+    ) {
       const opp = run.sfLosers.find((id) => id !== PLAYER_ID);
       if (opp) {
         const outcome = playPlayerMatch(ctx, run, opp, 'BRONZE', 1);
@@ -817,12 +939,18 @@ export function finalizeRun(state: CareerState, _rng: Rng): TournamentResult {
   let prize = 0;
   let medal: TournamentResult['medal'] = null;
   if (def.level === 'finals') {
-    points = run.rrWins * 200 + (reached !== null && reached <= 1 ? 400 : 0) + (reached === 0 ? 500 : 0);
-    prize = 1_200_000 + run.rrWins * 1_400_000 + (reached !== null && reached <= 1 ? 2_800_000 : 0) + (reached === 0 ? 4_600_000 : 0);
+    points =
+      run.rrWins * 200 + (reached !== null && reached <= 1 ? 400 : 0) + (reached === 0 ? 500 : 0);
+    prize =
+      1_200_000 +
+      run.rrWins * 1_400_000 +
+      (reached !== null && reached <= 1 ? 2_800_000 : 0) +
+      (reached === 0 ? 4_600_000 : 0);
   } else if (def.level === 'olympics') {
     if (reached === 0) medal = 'gold';
     else if (reached === 1) medal = 'silver';
-    else if (reached === 2 && run.matches.some((m) => m.round === 'BRONZE' && m.won)) medal = 'bronze';
+    else if (reached === 2 && run.matches.some((m) => m.round === 'BRONZE' && m.won))
+      medal = 'bronze';
   } else {
     points = pointsFor(level, reached) + run.qualPoints;
     prize = prizeFor(level, reached);
@@ -841,7 +969,10 @@ export function finalizeRun(state: CareerState, _rng: Rng): TournamentResult {
 
   applyResultStats(state, def, run, reached, medal);
 
-  const championId = reached === 0 ? PLAYER_ID : (Object.entries(run.aiReached).find(([, r]) => r === 0)?.[0] ?? null);
+  const championId =
+    reached === 0
+      ? PLAYER_ID
+      : (Object.entries(run.aiReached).find(([, r]) => r === 0)?.[0] ?? null);
   const champion = championId && championId !== PLAYER_ID ? ai.get(championId) : null;
   const label =
     reached === null
@@ -866,7 +997,12 @@ export function finalizeRun(state: CareerState, _rng: Rng): TournamentResult {
     travel: travelCost(state, def),
     matches: run.matches,
     championId,
-    championName: championId === PLAYER_ID ? `${state.player.first} ${state.player.last}` : champion ? displayName(champion) : null,
+    championName:
+      championId === PLAYER_ID
+        ? `${state.player.first} ${state.player.last}`
+        : champion
+          ? displayName(champion)
+          : null,
     rankAfter: null,
     medal,
   };
@@ -897,7 +1033,13 @@ function applyResultStats(
   }
   if (reached <= 1) stats.finals += 1;
   if (reached === 0) {
-    stats.titles.push({ year: state.season.year, tournamentId: def.id, level: def.level, surface: def.surface, slam: def.slam ?? null });
+    stats.titles.push({
+      year: state.season.year,
+      tournamentId: def.id,
+      level: def.level,
+      surface: def.surface,
+      slam: def.slam ?? null,
+    });
     stats.proTitlesByLevel[def.level] = (stats.proTitlesByLevel[def.level] ?? 0) + 1;
     if (def.level === 'gs' && def.slam) stats.slamTitles[def.slam] += 1;
     if (def.level === 'j_slam') stats.juniorSlamTitles += 1;
@@ -916,7 +1058,11 @@ function applyResultStats(
   }
 }
 
-export function notEnteredResult(state: CareerState, def: TournamentDef, label: 'DNE' | 'INJ'): TournamentResult {
+export function notEnteredResult(
+  state: CareerState,
+  def: TournamentDef,
+  label: 'DNE' | 'INJ',
+): TournamentResult {
   return {
     tournamentId: def.id,
     year: state.season.year,

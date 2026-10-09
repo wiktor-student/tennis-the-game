@@ -94,13 +94,19 @@ function Hud({ state }: { state: CareerState }) {
         </p>
       </div>
       <dl className="hud__stats">
-        <Stat label={t('hud.budget')} value={money(state.finance.budget, locale, false)} tone={state.finance.budget < 0 ? 'down' : undefined} />
+        <Stat
+          label={t('hud.budget')}
+          value={money(state.finance.budget, locale, false)}
+          tone={state.finance.budget < 0 ? 'down' : undefined}
+        />
         <Stat label={t('hud.age')} value={String(p.age)} />
         <Stat label={t('hud.media')} value={String(Math.round(p.media))} />
         <Stat label={t('hud.rep')} value={String(Math.round(p.reputation))} />
         <Stat
           label={isPro ? t('hud.rank') : t('hud.standing')}
-          value={isPro ? (standing ? `#${standing}` : '—') : state.season.started ? `P${juniorPos}` : '—'}
+          value={
+            isPro ? (standing ? `#${standing}` : '—') : state.season.started ? `P${juniorPos}` : '—'
+          }
         />
       </dl>
       <div className="hud__season">
@@ -142,7 +148,11 @@ function Stepper({ state }: { state: CareerState }) {
   return (
     <div className="stepper" aria-hidden="true">
       {STEPS.map((s, i) => (
-        <span key={s} className="stepper__bar" data-state={i < current ? 'done' : i === current ? 'now' : 'todo'} />
+        <span
+          key={s}
+          className="stepper__bar"
+          data-state={i < current ? 'done' : i === current ? 'now' : 'todo'}
+        />
       ))}
     </div>
   );
@@ -228,7 +238,11 @@ function Sidebar({ state }: { state: CareerState }) {
       </section>
 
       <BudgetPanel state={state} />
-      {state.season.stage === 'pro' ? <RankingPanel state={state} /> : <StandingsPanel state={state} />}
+      {state.season.stage === 'pro' ? (
+        <RankingPanel state={state} />
+      ) : (
+        <StandingsPanel state={state} />
+      )}
     </aside>
   );
 }
@@ -253,7 +267,9 @@ function BudgetPanel({ state }: { state: CareerState }) {
   return (
     <section className="panel">
       <h2 className="eyebrow panel__title">{t('side.budget')}</h2>
-      <p className={`budget-total num ${state.finance.budget < 0 ? 'is-negative' : ''}`}>{money(state.finance.budget, locale)}</p>
+      <p className={`budget-total num ${state.finance.budget < 0 ? 'is-negative' : ''}`}>
+        {money(state.finance.budget, locale)}
+      </p>
       {ledger.length > 0 && (
         <ul className="ledger">
           {ledger.map((e, i) => (
@@ -289,7 +305,11 @@ function StandingsPanel({ state }: { state: CareerState }) {
               <tr key={r.id} className={r.id === 'P' ? 'is-me' : ''}>
                 <td className={`pos pos--${r.pos}`}>P{r.pos}</td>
                 <td>
-                  {r.id === 'P' ? `${state.player.first} ${state.player.last}` : ai ? displayName(ai) : '—'}
+                  {r.id === 'P'
+                    ? `${state.player.first} ${state.player.last}`
+                    : ai
+                      ? displayName(ai)
+                      : '—'}
                   {ai?.nemesis && <span className="nemesis-tag">N</span>}
                 </td>
                 <td className="r num">{r.points}</td>
@@ -304,20 +324,67 @@ function StandingsPanel({ state }: { state: CareerState }) {
 
 function RankingPanel({ state }: { state: CareerState }) {
   const t = useT();
-  const ranked = state.field.filter((a) => a.rank !== null).sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0));
+  const ranked = state.field
+    .filter((a) => a.rank !== null)
+    .sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0));
   const myRank = state.pro.rank;
   const top = ranked.slice(0, 3);
-  const near = myRank && myRank > 4 ? ranked.filter((a) => a.rank === myRank - 1 || a.rank === myRank + 1) : [];
-  type Row = { key: string; pos: number | null; name: string; nat: string; points: number; me: boolean; nemesis: boolean };
-  const rows: Row[] = top.map((a) => ({ key: a.id, pos: a.rank, name: displayName(a), nat: a.nat, points: a.points, me: false, nemesis: !!a.nemesis }));
-  const me: Row = { key: 'P', pos: myRank, name: `${state.player.first} ${state.player.last}`, nat: 'PL', points: state.pro.points, me: true, nemesis: false };
+  const near =
+    myRank && myRank > 4
+      ? ranked.filter((a) => a.rank === myRank - 1 || a.rank === myRank + 1)
+      : [];
+  type Row = {
+    key: string;
+    pos: number | null;
+    name: string;
+    nat: string;
+    points: number;
+    me: boolean;
+    nemesis: boolean;
+  };
+  const rows: Row[] = top.map((a) => ({
+    key: a.id,
+    pos: a.rank,
+    name: displayName(a),
+    nat: a.nat,
+    points: a.points,
+    me: false,
+    nemesis: !!a.nemesis,
+  }));
+  const me: Row = {
+    key: 'P',
+    pos: myRank,
+    name: `${state.player.first} ${state.player.last}`,
+    nat: 'PL',
+    points: state.pro.points,
+    me: true,
+    nemesis: false,
+  };
   if (myRank && myRank <= 3) rows.splice(myRank - 1, 0, me);
   else {
     const before = near.filter((a) => (a.rank ?? 0) < (myRank ?? 0));
     const after = near.filter((a) => (a.rank ?? 0) > (myRank ?? 0));
-    for (const a of before) rows.push({ key: a.id, pos: a.rank, name: displayName(a), nat: a.nat, points: a.points, me: false, nemesis: !!a.nemesis });
+    for (const a of before)
+      rows.push({
+        key: a.id,
+        pos: a.rank,
+        name: displayName(a),
+        nat: a.nat,
+        points: a.points,
+        me: false,
+        nemesis: !!a.nemesis,
+      });
     rows.push(me);
-    for (const a of after) rows.push({ key: a.id, pos: a.rank, name: displayName(a), nat: a.nat, points: a.points, me: false, nemesis: !!a.nemesis });
+    for (const a of after)
+      rows.push({
+        key: a.id,
+        pos: a.rank,
+        name: displayName(a),
+        nat: a.nat,
+        points: a.points,
+        me: false,
+        nemesis: !!a.nemesis,
+      });
   }
   return (
     <section className="panel">

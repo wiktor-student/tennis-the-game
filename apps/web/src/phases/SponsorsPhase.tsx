@@ -53,18 +53,28 @@ export function SponsorsPhase({ state }: { state: CareerState }) {
             const on = accepted.includes(o.id);
             return (
               <li key={o.id}>
-                <button className="sponsor" aria-pressed={on} onClick={() => toggle(o.id, o.category)}>
+                <button
+                  className="sponsor"
+                  aria-pressed={on}
+                  onClick={() => toggle(o.id, o.category)}
+                >
                   <span className="sponsor__logo">{o.name.slice(0, 2)}</span>
                   <div>
                     <strong>{o.name}</strong>
                     <span className="muted"> · {SPONSOR_CATEGORY_NAME[o.category][locale]}</span>
                     <p className="muted sponsor__perk">{c(o.perk)}</p>
-                    {o.condition && <p className="sponsor__cond">{t('phase.condition', { n: o.condition.value })}</p>}
+                    {o.condition && (
+                      <p className="sponsor__cond">
+                        {t('phase.condition', { n: o.condition.value })}
+                      </p>
+                    )}
                   </div>
                   <span className="num sponsor__amount">
                     {money(o.amount, locale)}
                     <small className="muted"> /{t('phase.seasons', { n: o.seasons })}</small>
-                    <span className={`chip ${on ? 'chip--ball' : ''}`}>{on ? t('phase.signed') : t('phase.accept')}</span>
+                    <span className={`chip ${on ? 'chip--ball' : ''}`}>
+                      {on ? t('phase.signed') : t('phase.accept')}
+                    </span>
                   </span>
                 </button>
               </li>
@@ -72,7 +82,10 @@ export function SponsorsPhase({ state }: { state: CareerState }) {
           })}
         </ul>
       )}
-      <button className="btn btn--primary btn--block" onClick={() => dispatch({ t: 'sponsors', accept: accepted })}>
+      <button
+        className="btn btn--primary btn--block"
+        onClick={() => dispatch({ t: 'sponsors', accept: accepted })}
+      >
         {t('phase.next')}
       </button>
     </div>

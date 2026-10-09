@@ -21,7 +21,9 @@ export function SeasonEndPhase({ state }: { state: CareerState }) {
   const vars = r.headline
     ? {
         ...r.headline.vars,
-        ...(typeof r.headline.vars.eventId === 'string' ? { event: c(tournament(r.headline.vars.eventId).name) } : {}),
+        ...(typeof r.headline.vars.eventId === 'string'
+          ? { event: c(tournament(r.headline.vars.eventId).name) }
+          : {}),
       }
     : {};
 
@@ -34,14 +36,18 @@ export function SeasonEndPhase({ state }: { state: CareerState }) {
           <figcaption className="newspaper__outlet">
             {outlet} · {r.year}
           </figcaption>
-          <blockquote className="newspaper__headline">{c(headline, state.config.gender, vars)}</blockquote>
+          <blockquote className="newspaper__headline">
+            {c(headline, state.config.gender, vars)}
+          </blockquote>
         </figure>
       )}
 
       <dl className="stat-grid">
         <div>
           <dt>{t('end.rank')}</dt>
-          <dd className="num">{r.rankEnd === null ? '—' : isPro ? `#${r.rankEnd}` : `P${r.rankEnd}`}</dd>
+          <dd className="num">
+            {r.rankEnd === null ? '—' : isPro ? `#${r.rankEnd}` : `P${r.rankEnd}`}
+          </dd>
         </div>
         <div>
           <dt>{t('end.titles')}</dt>
@@ -67,7 +73,9 @@ export function SeasonEndPhase({ state }: { state: CareerState }) {
           <dt>{t('end.legacy')}</dt>
           <dd className="num">
             {r.legacyAfter}
-            {prev && r.legacyAfter !== prev.legacyAfter && <small className="is-positive"> {signed(r.legacyAfter - prev.legacyAfter)}</small>}
+            {prev && r.legacyAfter !== prev.legacyAfter && (
+              <small className="is-positive"> {signed(r.legacyAfter - prev.legacyAfter)}</small>
+            )}
           </dd>
         </div>
       </dl>
@@ -81,14 +89,28 @@ export function SeasonEndPhase({ state }: { state: CareerState }) {
       )}
 
       <div className="row" style={{ flexWrap: 'wrap' }}>
-        <button className="btn btn--primary" style={{ flex: 2 }} onClick={() => dispatch({ t: 'continue' })}>
+        <button
+          className="btn btn--primary"
+          style={{ flex: 2 }}
+          onClick={() => dispatch({ t: 'continue' })}
+        >
           {t('end.next')}
         </button>
-        <button className="btn btn--danger" style={{ flex: 1 }} disabled={!canRetire(state)} title={canRetire(state) ? undefined : t('end.retireLocked')} onClick={() => setConfirm(true)}>
+        <button
+          className="btn btn--danger"
+          style={{ flex: 1 }}
+          disabled={!canRetire(state)}
+          title={canRetire(state) ? undefined : t('end.retireLocked')}
+          onClick={() => setConfirm(true)}
+        >
           {t('end.retire')}
         </button>
       </div>
-      {!canRetire(state) && <p className="muted" style={{ fontSize: 'var(--text-sm)' }}>{t('end.retireLocked')}</p>}
+      {!canRetire(state) && (
+        <p className="muted" style={{ fontSize: 'var(--text-sm)' }}>
+          {t('end.retireLocked')}
+        </p>
+      )}
 
       <ConfirmDialog
         open={confirm}

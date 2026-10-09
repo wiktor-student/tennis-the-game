@@ -13,7 +13,12 @@ import type {
 } from '../model/types';
 import type { Rng } from '../rng';
 
-export function addLedger(state: CareerState, kind: LedgerEntry['kind'], label: L, amount: number): void {
+export function addLedger(
+  state: CareerState,
+  kind: LedgerEntry['kind'],
+  label: L,
+  amount: number,
+): void {
   if (amount === 0) return;
   state.finance.budget += amount;
   state.finance.ledger.push({ kind, label, amount });
@@ -24,9 +29,16 @@ function costFactor(state: CareerState): number {
   return DIFFICULTIES[state.config.difficulty].costFactor;
 }
 
-export function staffCost(state: CareerState, coach = state.team.coach, physio = state.team.physio, fitnessCoach = state.team.fitnessCoach): number {
+export function staffCost(
+  state: CareerState,
+  coach = state.team.coach,
+  physio = state.team.physio,
+  fitnessCoach = state.team.fitnessCoach,
+): number {
   return Math.round(
-    (COACHES[coach].salary + (physio ? PHYSIO.salary : 0) + (fitnessCoach ? FITNESS_COACH.salary : 0)) *
+    (COACHES[coach].salary +
+      (physio ? PHYSIO.salary : 0) +
+      (fitnessCoach ? FITNESS_COACH.salary : 0)) *
       costFactor(state),
   );
 }
@@ -61,7 +73,9 @@ export function applySeasonStartFinances(state: CareerState): void {
 
   // Federation grant for juniors who finished near the top of their standings.
   const last = state.history[state.history.length - 1];
-  const grant = { mini: 0, national: 8_000, europe: 20_000, itf_junior: 35_000, pro: 0 }[state.season.stage];
+  const grant = { mini: 0, national: 8_000, europe: 20_000, itf_junior: 35_000, pro: 0 }[
+    state.season.stage
+  ];
   if (grant > 0 && last && last.rankEnd !== null && last.rankEnd <= 5) {
     addLedger(state, 'bonus', l('Stypendium związkowe PZT', 'PZT federation grant'), grant);
   }
@@ -72,7 +86,12 @@ export function applySeasonStartFinances(state: CareerState): void {
   }
   const staff = staffCost(state);
   if (staff > 0) addLedger(state, 'staff', l('Sztab szkoleniowy', 'Coaching staff'), -staff);
-  addLedger(state, 'equipment', l('Sprzęt i naciągi', 'Equipment and strings'), -equipmentCost(state));
+  addLedger(
+    state,
+    'equipment',
+    l('Sprzęt i naciągi', 'Equipment and strings'),
+    -equipmentCost(state),
+  );
 }
 
 /** Marketability drives sponsor tiers and amounts. */
@@ -115,7 +134,10 @@ export function generateSponsorOffers(state: CareerState, rng: Rng): SponsorOffe
   const usedCategories = new Set<string>();
   const pool = [...eligible];
   while (offers.length < count && pool.length > 0) {
-    const template = rng.weighted(pool, (t) => (usedCategories.has(t.category) ? 0.3 : 1) * t.tier ** 1.5);
+    const template = rng.weighted(
+      pool,
+      (t) => (usedCategories.has(t.category) ? 0.3 : 1) * t.tier ** 1.5,
+    );
     pool.splice(pool.indexOf(template), 1);
     usedCategories.add(template.category);
     offers.push(makeOffer(state, rng, template, m));
@@ -124,7 +146,8 @@ export function generateSponsorOffers(state: CareerState, rng: Rng): SponsorOffe
 }
 
 function makeOffer(state: CareerState, rng: Rng, t: SponsorTemplate, m: number): SponsorOffer {
-  const factor = DIFFICULTIES[state.config.difficulty].sponsorFactor * (state.flags.includes('agent') ? 1.4 : 1);
+  const factor =
+    DIFFICULTIES[state.config.difficulty].sponsorFactor * (state.flags.includes('agent') ? 1.4 : 1);
   const amount = rng.range(t.amount[0], t.amount[1]) * (0.8 + m / 120) * factor;
   state.nextId += 1;
   return {
@@ -154,8 +177,7 @@ export function settleSponsors(state: CareerState): string[] {
   const dropped: string[] = [];
   state.sponsors = state.sponsors.filter((s) => {
     s.seasonsLeft -= 1;
-    const failed =
-      s.condition?.kind === 'rank_top' && (state.pro.rank ?? 9999) > s.condition.value;
+    const failed = s.condition?.kind === 'rank_top' && (state.pro.rank ?? 9999) > s.condition.value;
     if (failed) dropped.push(s.name);
     return s.seasonsLeft > 0 && !failed;
   });

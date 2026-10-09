@@ -16,7 +16,8 @@ export function eligibleEvents(state: CareerState, context: StoryEvent['context'
     if (e.stages && !e.stages.includes(stage)) return false;
     if (e.minAge !== undefined && age < e.minAge) return false;
     if (e.maxAge !== undefined && age > e.maxAge) return false;
-    if ((e.once || e.oncePerSeason) && state.seenEvents.includes(seenKey(e, state.season.year))) return false;
+    if ((e.once || e.oncePerSeason) && state.seenEvents.includes(seenKey(e, state.season.year)))
+      return false;
     if (e.condition && !e.condition(state)) return false;
     return true;
   });
@@ -57,7 +58,11 @@ export function optionChance(state: CareerState, option: StoryOption): number | 
   return Math.max(0.05, Math.min(0.95, Math.round(chance * 100) / 100));
 }
 
-export function buildPendingEvent(state: CareerState, eventId: string, context: PendingEvent['context']): PendingEvent {
+export function buildPendingEvent(
+  state: CareerState,
+  eventId: string,
+  context: PendingEvent['context'],
+): PendingEvent {
   const event = EVENTS_BY_ID[eventId];
   if (!event) throw new Error(`Unknown event ${eventId}`);
   const key = seenKey(event, state.season.year);
@@ -82,7 +87,12 @@ export function isOptionAvailable(state: CareerState, eventId: string, option: n
   return opt.cost === undefined || state.finance.budget >= opt.cost;
 }
 
-export function resolveEvent(state: CareerState, rng: Rng, pending: PendingEvent, option: number): void {
+export function resolveEvent(
+  state: CareerState,
+  rng: Rng,
+  pending: PendingEvent,
+  option: number,
+): void {
   const event = EVENTS_BY_ID[pending.eventId];
   const opt = event?.options[option];
   if (!event || !opt) throw new Error('Invalid event option');

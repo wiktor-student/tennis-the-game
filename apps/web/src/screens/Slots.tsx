@@ -42,7 +42,9 @@ export function SlotsScreen() {
           </h1>
           <p className="muted">{t('slots.subtitle')}</p>
         </div>
-        {error === 'daily_already_attempted' && <p className="chip chip--down">{t('menu.dailyDone')}</p>}
+        {error === 'daily_already_attempted' && (
+          <p className="chip chip--down">{t('menu.dailyDone')}</p>
+        )}
         {Array.from({ length: SLOT_COUNT }, (_, i) => {
           const s = slots[i] ?? null;
           return (
@@ -84,7 +86,11 @@ export function SlotsScreen() {
                   </button>
                 </div>
               ) : (
-                <button className="btn btn--primary btn--block" disabled={busy || (daily && !!s && !s.retired)} onClick={() => start(i)}>
+                <button
+                  className="btn btn--primary btn--block"
+                  disabled={busy || (daily && !!s && !s.retired)}
+                  onClick={() => start(i)}
+                >
                   {t('slots.start')} ▸
                 </button>
               )}
@@ -92,7 +98,11 @@ export function SlotsScreen() {
           );
         })}
       </div>
-      <button className="btn btn--ghost btn--block" style={{ marginTop: 12 }} onClick={() => go('/')}>
+      <button
+        className="btn btn--ghost btn--block"
+        style={{ marginTop: 12 }}
+        onClick={() => go('/')}
+      >
         {t('menu.back')}
       </button>
       <ConfirmDialog

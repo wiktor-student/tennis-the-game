@@ -12,7 +12,15 @@ import {
 } from '../src/sim/match';
 import type { SetScore, Skills } from '../src';
 
-const flat = (v: number): Skills => ({ serve: v, return: v, forehand: v, backhand: v, net: v, fitness: v, mental: v });
+const flat = (v: number): Skills => ({
+  serve: v,
+  return: v,
+  forehand: v,
+  backhand: v,
+  net: v,
+  fitness: v,
+  mental: v,
+});
 
 function setup(a: number, b: number, bestOf: 3 | 5 = 3): MatchSetup {
   return {
@@ -42,8 +50,12 @@ describe('match model', () => {
   it('serve probability favours the stronger server and grass over clay', () => {
     const strong = playerCompetitor(flat(85), 70, false, 0);
     const weak = playerCompetitor(flat(70), 70, false, 0);
-    expect(servePointProbability(strong, weak, 'hard', false)).toBeGreaterThan(servePointProbability(weak, strong, 'hard', false));
-    expect(servePointProbability(strong, strong, 'grass', false)).toBeGreaterThan(servePointProbability(strong, strong, 'clay', false));
+    expect(servePointProbability(strong, weak, 'hard', false)).toBeGreaterThan(
+      servePointProbability(weak, strong, 'hard', false),
+    );
+    expect(servePointProbability(strong, strong, 'grass', false)).toBeGreaterThan(
+      servePointProbability(strong, strong, 'clay', false),
+    );
   });
 
   it('produces only legal set scores', () => {
@@ -82,7 +94,14 @@ describe('match model', () => {
   });
 
   it('renders scores from either perspective', () => {
-    const score = { sets: [{ a: 6, b: 4, tb: null }, { a: 6, b: 7, tb: 5 }, { a: 7, b: 6, tb: 8 }], retired: null };
+    const score = {
+      sets: [
+        { a: 6, b: 4, tb: null },
+        { a: 6, b: 7, tb: 5 },
+        { a: 7, b: 6, tb: 8 },
+      ],
+      retired: null,
+    };
     expect(scoreText(score)).toBe('6-4 6-7(5) 7-6(8)');
     expect(scoreText(score, 'B')).toBe('4-6 7-6(5) 6-7(8)');
   });

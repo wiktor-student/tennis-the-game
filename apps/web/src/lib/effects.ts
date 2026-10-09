@@ -22,34 +22,55 @@ export function effectChips(effects: EffectTarget[], locale: Locale): EffectChip
   for (const e of effects) {
     switch (e.kind) {
       case 'skill':
-        chips.push({ text: `${t(SKILL_INFO[e.skill].short, locale)} ${signed(e.delta, e.delta % 1 ? 1 : 0)}`, tone: e.delta >= 0 ? 'up' : 'down' });
+        chips.push({
+          text: `${t(SKILL_INFO[e.skill].short, locale)} ${signed(e.delta, e.delta % 1 ? 1 : 0)}`,
+          tone: e.delta >= 0 ? 'up' : 'down',
+        });
         break;
       case 'potential':
         chips.push({ text: pl ? 'Potencjał ↑' : 'Potential ↑', tone: 'up' });
         break;
       case 'budget':
-        chips.push({ text: `${e.delta > 0 ? '+' : ''}${money(e.delta, locale)}`, tone: e.delta >= 0 ? 'up' : 'down' });
+        chips.push({
+          text: `${e.delta > 0 ? '+' : ''}${money(e.delta, locale)}`,
+          tone: e.delta >= 0 ? 'up' : 'down',
+        });
         break;
       case 'media':
         chips.push({ text: `Media ${signed(e.delta)}`, tone: e.delta >= 0 ? 'up' : 'down' });
         break;
       case 'reputation':
-        chips.push({ text: `${pl ? 'Reputacja' : 'Reputation'} ${signed(e.delta)}`, tone: e.delta >= 0 ? 'up' : 'down' });
+        chips.push({
+          text: `${pl ? 'Reputacja' : 'Reputation'} ${signed(e.delta)}`,
+          tone: e.delta >= 0 ? 'up' : 'down',
+        });
         break;
       case 'morale':
         chips.push({ text: `Morale ${signed(e.delta)}`, tone: e.delta >= 0 ? 'up' : 'down' });
         break;
       case 'fatigue':
-        chips.push({ text: `${pl ? 'Zmęczenie' : 'Fatigue'} ${signed(e.delta)}`, tone: e.delta <= 0 ? 'up' : 'down' });
+        chips.push({
+          text: `${pl ? 'Zmęczenie' : 'Fatigue'} ${signed(e.delta)}`,
+          tone: e.delta <= 0 ? 'up' : 'down',
+        });
         break;
       case 'surface':
-        chips.push({ text: `${t(SURFACE[e.surface] as L, locale)} ${signed(e.delta)}`, tone: 'up' });
+        chips.push({
+          text: `${t(SURFACE[e.surface] as L, locale)} ${signed(e.delta)}`,
+          tone: 'up',
+        });
         break;
       case 'injury':
-        chips.push({ text: pl ? `Kontuzja ${e.weeks} tyg.` : `Injury ${e.weeks} wk`, tone: 'down' });
+        chips.push({
+          text: pl ? `Kontuzja ${e.weeks} tyg.` : `Injury ${e.weeks} wk`,
+          tone: 'down',
+        });
         break;
       case 'coach':
-        chips.push({ text: `${pl ? 'Trener' : 'Coach'}: ${t(COACHES[e.coach].name, locale)}`, tone: 'neutral' });
+        chips.push({
+          text: `${pl ? 'Trener' : 'Coach'}: ${t(COACHES[e.coach].name, locale)}`,
+          tone: 'neutral',
+        });
         break;
       case 'davis_cup':
         chips.push({ text: pl ? 'Tytuł drużynowy!' : 'Team title!', tone: 'up' });

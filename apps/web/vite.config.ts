@@ -10,7 +10,10 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // The engine (simulation + content) changes less often than the UI.
-        manualChunks: { engine: ['@ttg/engine'], react: ['react', 'react-dom', 'react-router-dom'] },
+        manualChunks: {
+          engine: ['@ttg/engine'],
+          react: ['react', 'react-dom', 'react-router-dom'],
+        },
       },
     },
   },

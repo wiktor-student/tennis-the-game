@@ -43,7 +43,11 @@ export function pickSituation(state: CareerState, rng: Rng, ctx: DecisionContext
   return rng.weighted(candidates, (s) => s.weight);
 }
 
-export function situationChances(state: CareerState, situation: Situation, opp: AIPlayer): PendingDecision['options'] {
+export function situationChances(
+  state: CareerState,
+  situation: Situation,
+  opp: AIPlayer,
+): PendingDecision['options'] {
   const skills = state.player.skills;
   const coach = COACHES[state.team.coach];
   return situation.options.map((opt) => {
@@ -98,7 +102,12 @@ export function buildDecision(
 }
 
 /** Roll the chosen option. The UI's roulette animates towards `roll`. */
-export function resolveDecision(state: CareerState, rng: Rng, decision: PendingDecision, option: number): {
+export function resolveDecision(
+  state: CareerState,
+  rng: Rng,
+  decision: PendingDecision,
+  option: number,
+): {
   outcome: DecisionOutcome;
   momentum: number;
 } {

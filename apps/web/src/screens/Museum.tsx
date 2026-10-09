@@ -20,7 +20,11 @@ export function MuseumScreen() {
   useEffect(() => {
     if (!apiEnabled) return;
     ensureSession().then((ok) => {
-      if (ok) api.progress().then(setServer).catch(() => undefined);
+      if (ok)
+        api
+          .progress()
+          .then(setServer)
+          .catch(() => undefined);
     });
   }, []);
 
@@ -28,7 +32,10 @@ export function MuseumScreen() {
   const rankable = summaries.filter((s) => s.rankable);
   const records = [
     { label: t('museum.bestLegacy'), value: String(Math.max(0, ...rankable.map((s) => s.legacy))) },
-    { label: t('museum.mostSlams'), value: String(Math.max(0, ...summaries.map((s) => s.slamTitles))) },
+    {
+      label: t('museum.mostSlams'),
+      value: String(Math.max(0, ...summaries.map((s) => s.slamTitles))),
+    },
     {
       label: t('museum.bestRank'),
       value: (() => {
@@ -36,7 +43,10 @@ export function MuseumScreen() {
         return best.length ? `#${Math.min(...best)}` : '—';
       })(),
     },
-    { label: t('museum.richest'), value: money(Math.max(0, ...summaries.map((s) => s.prizeMoney)), locale) },
+    {
+      label: t('museum.richest'),
+      value: money(Math.max(0, ...summaries.map((s) => s.prizeMoney)), locale),
+    },
     { label: t('museum.careers'), value: String(summaries.length) },
   ];
 
@@ -100,7 +110,11 @@ export function MuseumScreen() {
                         {m.summary.mode === 'daily' && ` · ${t('menu.daily')}`}
                       </span>
                     </td>
-                    <td>{VERDICTS_BY_ID[m.summary.verdict] ? c(VERDICTS_BY_ID[m.summary.verdict]!.title, m.summary.gender) : ''}</td>
+                    <td>
+                      {VERDICTS_BY_ID[m.summary.verdict]
+                        ? c(VERDICTS_BY_ID[m.summary.verdict]!.title, m.summary.gender)
+                        : ''}
+                    </td>
                     <td className="r num">{m.summary.peakRank ? `#${m.summary.peakRank}` : '—'}</td>
                     <td className="r num">{m.summary.slamTitles}</td>
                     <td className="r num board__legacy">{m.summary.legacy}</td>
@@ -111,7 +125,11 @@ export function MuseumScreen() {
           </section>
         </div>
       )}
-      <button className="btn btn--ghost btn--block" style={{ marginTop: 16 }} onClick={() => go('/')}>
+      <button
+        className="btn btn--ghost btn--block"
+        style={{ marginTop: 16 }}
+        onClick={() => go('/')}
+      >
         {t('menu.back')}
       </button>
       <Footer />

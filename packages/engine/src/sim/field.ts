@@ -10,11 +10,23 @@ import {
   ageDecline,
   ageGrowthFactor,
 } from '../model/constants';
-import type { AIPlayer, CareerState, Gender, PlayStyle, StageId, SurfaceGroup } from '../model/types';
+import type {
+  AIPlayer,
+  CareerState,
+  Gender,
+  PlayStyle,
+  StageId,
+  SurfaceGroup,
+} from '../model/types';
 import type { Rng } from '../rng';
 
 const STYLES: PlayStyle[] = ['server', 'grinder', 'allround', 'netrusher'];
-const STYLE_WEIGHTS: Record<PlayStyle, number> = { server: 3, grinder: 4, allround: 5, netrusher: 1 };
+const STYLE_WEIGHTS: Record<PlayStyle, number> = {
+  server: 3,
+  grinder: 4,
+  allround: 5,
+  netrusher: 1,
+};
 const SURFACES: (SurfaceGroup | null)[] = ['clay', 'hard', 'grass', null];
 
 export function globalWeek(year: number, week: number): number {
@@ -64,7 +76,8 @@ function round1(v: number): number {
 function juniorRatingAt(rng: Rng, potential: number, age: number): number {
   let rating = rng.normal(24, 4);
   for (let a = START_AGE; a < age; a++) {
-    rating += Math.max(0, potential - rating) * BASE_GROWTH * ageGrowthFactor(a) * rng.range(0.8, 1.2);
+    rating +=
+      Math.max(0, potential - rating) * BASE_GROWTH * ageGrowthFactor(a) * rng.range(0.8, 1.2);
   }
   return rating;
 }
@@ -98,7 +111,9 @@ export function buildJuniorField(state: CareerState, rng: Rng, stage: StageId): 
   const def = STAGES[stage];
   const gender = state.config.gender;
   const carry = { mini: 0, national: 12, europe: 9, itf_junior: 16, pro: 0 }[stage];
-  const previous = [...state.field].sort((a, b) => Number(!!b.nemesis) - Number(!!a.nemesis) || b.rating - a.rating);
+  const previous = [...state.field].sort(
+    (a, b) => Number(!!b.nemesis) - Number(!!a.nemesis) || b.rating - a.rating,
+  );
   const kept = previous.slice(0, carry);
   const field: AIPlayer[] = [...kept];
   while (field.length < def.fieldSize) field.push(createJuniorRival(state, rng, stage, gender));
@@ -113,9 +128,12 @@ export function developAI(ai: AIPlayer, rng: Rng, year: number): void {
     ai.rating += Math.max(0, ai.potential - ai.rating) * BASE_GROWTH * growth * rng.range(0.7, 1.3);
   }
   const decline = ageDecline(age);
-  if (decline.skills > 0) ai.rating -= (decline.skills * 0.7 + decline.fitness * 0.3) * rng.range(0.6, 1.4);
+  if (decline.skills > 0)
+    ai.rating -= (decline.skills * 0.7 + decline.fitness * 0.3) * rng.range(0.6, 1.4);
   ai.rating = round1(Math.max(10, Math.min(97, ai.rating)));
-  ai.mental = round1(Math.max(10, Math.min(99, ai.mental + (ai.rating - ai.mental) * 0.2 + rng.normal(0, 1))));
+  ai.mental = round1(
+    Math.max(10, Math.min(99, ai.mental + (ai.rating - ai.mental) * 0.2 + rng.normal(0, 1))),
+  );
 }
 
 // ─── Professional pool ───────────────────────────────────────────────────────
@@ -266,7 +284,9 @@ export function evolveProPool(state: CareerState, rng: Rng, nextYear: number): v
     const age = rng.int(18, 20);
     const potential = Math.min(96, rng.normal(80, 6));
     const rating = Math.min(potential, rng.normal(68, 3.5));
-    survivors.push(baseAI(state, rng, foreignOrPolish(rng, gender), nextYear - age, rating, potential));
+    survivors.push(
+      baseAI(state, rng, foreignOrPolish(rng, gender), nextYear - age, rating, potential),
+    );
   }
   calibratePool(survivors);
   state.field = survivors;

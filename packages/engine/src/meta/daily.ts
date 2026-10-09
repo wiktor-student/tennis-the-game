@@ -40,7 +40,11 @@ export function dailyGoals(dayKey: string): DailyGoal[] {
   for (let i = 0; i < 3 && pool.length > 0; i++) {
     const template = rng.pick(pool);
     pool.splice(pool.indexOf(template), 1);
-    goals.push({ key: `daily:${dayKey}:${i}`, templateId: template.id, target: rng.pick(template.targets) });
+    goals.push({
+      key: `daily:${dayKey}:${i}`,
+      templateId: template.id,
+      target: rng.pick(template.targets),
+    });
   }
   return goals;
 }
@@ -52,14 +56,18 @@ export function weeklyChallenge(weekKey: string): { key: string; templateId: str
 }
 
 /** Progress of a daily goal across the careers finished in its period. */
-export function goalProgress(goal: DailyGoal, summaries: CareerSummary[]): { value: number; done: boolean } {
+export function goalProgress(
+  goal: DailyGoal,
+  summaries: CareerSummary[],
+): { value: number; done: boolean } {
   const template = GOAL_TEMPLATES.find((t) => t.id === goal.templateId) as GoalTemplate;
   if (template.unit === 'rank') {
     const best = Math.min(9999, ...summaries.map((s) => template.value(s)));
     return { value: best, done: best <= goal.target };
   }
   const values = summaries.map((s) => template.value(s));
-  const value = template.aggregate === 'sum' ? values.reduce((a, b) => a + b, 0) : Math.max(0, ...values);
+  const value =
+    template.aggregate === 'sum' ? values.reduce((a, b) => a + b, 0) : Math.max(0, ...values);
   return { value, done: value >= goal.target };
 }
 

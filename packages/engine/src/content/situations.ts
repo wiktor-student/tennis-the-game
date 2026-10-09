@@ -53,9 +53,18 @@ export const SITUATIONS: Situation[] = [
         skills: { serve: 0.5, net: 0.5 },
         base: 0.42,
         result: {
-          super: l('As, potem wolej-stop. Publiczność wstaje z miejsc.', 'An ace, then a drop volley. The crowd is on its feet.'),
-          success: l('Wolej w pusty kort. Gem obroniony, [[rywal|rywalka]] kręci głową.', 'Volley into the open court. Game saved, your rival shakes [[his|her]] head.'),
-          fail: l('Mijający po linii. Przełamanie — i to boli.', 'A passing shot down the line. Broken — and it hurts.'),
+          super: l(
+            'As, potem wolej-stop. Publiczność wstaje z miejsc.',
+            'An ace, then a drop volley. The crowd is on its feet.',
+          ),
+          success: l(
+            'Wolej w pusty kort. Gem obroniony, [[rywal|rywalka]] kręci głową.',
+            'Volley into the open court. Game saved, your rival shakes [[his|her]] head.',
+          ),
+          fail: l(
+            'Mijający po linii. Przełamanie — i to boli.',
+            'A passing shot down the line. Broken — and it hurts.',
+          ),
         },
       },
       {
@@ -65,9 +74,18 @@ export const SITUATIONS: Situation[] = [
         skills: { serve: 0.3, mental: 0.4, backhand: 0.3 },
         base: 0.64,
         result: {
-          super: l('[[Rywal|Rywalka]] pęka w dwudziestej wymianie. Od tej chwili gra spięty.', 'Your rival cracks on the twentieth shot. From now on [[he|she]] plays tight.'),
-          success: l('Wymiana, wymiana, błąd [[rywala|rywalkę]]. Wychodzisz z opresji.', 'Rally, rally, unforced error. You escape.'),
-          fail: l('Za krótko. [[Rywal|Rywalka]] wchodzi w kort i zamyka punkt.', 'Too short. Your rival steps in and finishes the point.'),
+          super: l(
+            '[[Rywal|Rywalka]] pęka w dwudziestej wymianie. Od tej chwili gra spięty.',
+            'Your rival cracks on the twentieth shot. From now on [[he|she]] plays tight.',
+          ),
+          success: l(
+            'Wymiana, wymiana, błąd [[rywala|rywalkę]]. Wychodzisz z opresji.',
+            'Rally, rally, unforced error. You escape.',
+          ),
+          fail: l(
+            'Za krótko. [[Rywal|Rywalka]] wchodzi w kort i zamyka punkt.',
+            'Too short. Your rival steps in and finishes the point.',
+          ),
         },
       },
     ],
@@ -88,9 +106,18 @@ export const SITUATIONS: Situation[] = [
         skills: { forehand: 0.5, return: 0.5 },
         base: 0.45,
         result: {
-          super: l('Przełamanie do zera w pierwszym gemie. Mecz się odwraca.', 'Love break in the first game. The match turns.'),
-          success: l('Narzucasz tempo. [[Rywal|Rywalka]] zaczyna się cofać.', 'You set the pace. Your rival starts backing off.'),
-          fail: l('Trzy błędy z rzędu. [[Rywal|Rywalka]] tylko przebija i wygrywa.', 'Three errors in a row. Your rival just puts it back and wins.'),
+          super: l(
+            'Przełamanie do zera w pierwszym gemie. Mecz się odwraca.',
+            'Love break in the first game. The match turns.',
+          ),
+          success: l(
+            'Narzucasz tempo. [[Rywal|Rywalka]] zaczyna się cofać.',
+            'You set the pace. Your rival starts backing off.',
+          ),
+          fail: l(
+            'Trzy błędy z rzędu. [[Rywal|Rywalka]] tylko przebija i wygrywa.',
+            'Three errors in a row. Your rival just puts it back and wins.',
+          ),
         },
       },
       {
@@ -100,9 +127,18 @@ export const SITUATIONS: Situation[] = [
         skills: { mental: 0.7, fitness: 0.3 },
         base: 0.66,
         result: {
-          super: l('Zupełnie inna osoba wychodzi na kort. Spokój i precyzja.', 'A different person walks back on court. Calm and precise.'),
-          success: l('Wracasz do swojego rytmu. Seta zaczynasz pewnie.', 'You find your rhythm again and start the set solidly.'),
-          fail: l('W głowie wciąż ten tie-break. Wszystko dzieje się za szybko.', 'That tie-break is still in your head. Everything happens too fast.'),
+          super: l(
+            'Zupełnie inna osoba wychodzi na kort. Spokój i precyzja.',
+            'A different person walks back on court. Calm and precise.',
+          ),
+          success: l(
+            'Wracasz do swojego rytmu. Seta zaczynasz pewnie.',
+            'You find your rhythm again and start the set solidly.',
+          ),
+          fail: l(
+            'W głowie wciąż ten tie-break. Wszystko dzieje się za szybko.',
+            'That tie-break is still in your head. Everything happens too fast.',
+          ),
         },
       },
     ],
@@ -123,21 +159,42 @@ export const SITUATIONS: Situation[] = [
         skills: { mental: 0.6, fitness: 0.4 },
         base: 0.68,
         result: {
-          super: l('[[Rywal|Rywalka]] wraca, a ty wygrywasz pierwsze dwanaście punktów.', 'Your rival returns and you win the first twelve points.'),
-          success: l('Nie dajesz się wybić z rytmu. Przewaga zostaje.', "You don't lose your rhythm. The lead holds."),
-          fail: l('Po przerwie [[rywal|rywalka]] biega jak [[nowo narodzony|nowo narodzona]]. Ty — [[zimny|zimna]] jak lód.', 'After the break your rival runs like new. You — stone cold.'),
+          super: l(
+            '[[Rywal|Rywalka]] wraca, a ty wygrywasz pierwsze dwanaście punktów.',
+            'Your rival returns and you win the first twelve points.',
+          ),
+          success: l(
+            'Nie dajesz się wybić z rytmu. Przewaga zostaje.',
+            "You don't lose your rhythm. The lead holds.",
+          ),
+          fail: l(
+            'Po przerwie [[rywal|rywalka]] biega jak [[nowo narodzony|nowo narodzona]]. Ty — [[zimny|zimna]] jak lód.',
+            'After the break your rival runs like new. You — stone cold.',
+          ),
         },
       },
       {
         label: l('Protest u sędziego', 'Protest to the umpire'),
-        desc: l('może wybić [[rywala|rywalkę]] z rytmu… albo ciebie', 'might unsettle [[him|her]]… or you'),
+        desc: l(
+          'może wybić [[rywala|rywalkę]] z rytmu… albo ciebie',
+          'might unsettle [[him|her]]… or you',
+        ),
         risky: true,
         skills: { mental: 0.5, return: 0.5 },
         base: 0.4,
         result: {
-          super: l('Sędzia skraca przerwę, [[rywal|rywalka]] jest wściekły i oddaje gema serwisowego.', 'The umpire cuts the break short; your rival is furious and drops serve.'),
-          success: l('Sędzia upomina [[rywala|rywalkę]]. Mała psychologiczna wygrana.', 'The umpire warns your rival. A small psychological win.'),
-          fail: l('Ostrzeżenie dla ciebie i gwizdy trybun. Tracisz koncentrację.', 'A warning for you and whistles from the stands. Focus gone.'),
+          super: l(
+            'Sędzia skraca przerwę, [[rywal|rywalka]] jest wściekły i oddaje gema serwisowego.',
+            'The umpire cuts the break short; your rival is furious and drops serve.',
+          ),
+          success: l(
+            'Sędzia upomina [[rywala|rywalkę]]. Mała psychologiczna wygrana.',
+            'The umpire warns your rival. A small psychological win.',
+          ),
+          fail: l(
+            'Ostrzeżenie dla ciebie i gwizdy trybun. Tracisz koncentrację.',
+            'A warning for you and whistles from the stands. Focus gone.',
+          ),
         },
         side: { fail: [{ kind: 'media', delta: -2 }], super: [{ kind: 'media', delta: 1 }] },
       },
@@ -159,9 +216,18 @@ export const SITUATIONS: Situation[] = [
         skills: { mental: 0.5, forehand: 0.5 },
         base: 0.43,
         result: {
-          super: l('Trybuny milkną, a potem… zaczynają bić ci brawo.', 'The stands go quiet, then… start applauding you.'),
-          success: l('Grasz przeciwko wszystkim i to cię niesie.', 'You play against everyone and it carries you.'),
-          fail: l('Trybuny ryczą jeszcze głośniej. Ręka zaczyna drżeć.', 'The crowd roars even louder. Your arm starts to shake.'),
+          super: l(
+            'Trybuny milkną, a potem… zaczynają bić ci brawo.',
+            'The stands go quiet, then… start applauding you.',
+          ),
+          success: l(
+            'Grasz przeciwko wszystkim i to cię niesie.',
+            'You play against everyone and it carries you.',
+          ),
+          fail: l(
+            'Trybuny ryczą jeszcze głośniej. Ręka zaczyna drżeć.',
+            'The crowd roars even louder. Your arm starts to shake.',
+          ),
         },
         side: { super: [{ kind: 'media', delta: 3 }] },
       },
@@ -172,9 +238,18 @@ export const SITUATIONS: Situation[] = [
         skills: { mental: 0.8, serve: 0.2 },
         base: 0.62,
         result: {
-          super: l('Wchodzisz w strefę. Nie słyszysz nawet sędziego.', "You're in the zone. You can't even hear the umpire."),
-          success: l('Hałas zostaje za siatką. Grasz swoje.', 'The noise stays behind the fence. You play your game.'),
-          fail: l('Hałas wygrywa. Dwa podwójne błędy w kluczowym gemie.', 'The noise wins. Two double faults in a key game.'),
+          super: l(
+            'Wchodzisz w strefę. Nie słyszysz nawet sędziego.',
+            "You're in the zone. You can't even hear the umpire.",
+          ),
+          success: l(
+            'Hałas zostaje za siatką. Grasz swoje.',
+            'The noise stays behind the fence. You play your game.',
+          ),
+          fail: l(
+            'Hałas wygrywa. Dwa podwójne błędy w kluczowym gemie.',
+            'The noise wins. Two double faults in a key game.',
+          ),
         },
       },
     ],
@@ -195,9 +270,18 @@ export const SITUATIONS: Situation[] = [
         skills: { mental: 0.4, return: 0.3, forehand: 0.3 },
         base: 0.6,
         result: {
-          super: l('Znaleźliście to: [[rywal|rywalka]] zawsze serwuje na T przy 30:30. Czytasz go jak książkę.', 'Found it: [[he|she]] always serves down the T at 30–30. You read [[him|her]] like a book.'),
-          success: l('Wracasz z planem i trzymasz się go.', 'You come back with a plan and stick to it.'),
-          fail: l('Za dużo informacji. Na korcie myślisz zamiast grać.', 'Too much information. On court you think instead of play.'),
+          super: l(
+            'Znaleźliście to: [[rywal|rywalka]] zawsze serwuje na T przy 30:30. Czytasz go jak książkę.',
+            'Found it: [[he|she]] always serves down the T at 30–30. You read [[him|her]] like a book.',
+          ),
+          success: l(
+            'Wracasz z planem i trzymasz się go.',
+            'You come back with a plan and stick to it.',
+          ),
+          fail: l(
+            'Za dużo informacji. Na korcie myślisz zamiast grać.',
+            'Too much information. On court you think instead of play.',
+          ),
         },
       },
       {
@@ -207,9 +291,18 @@ export const SITUATIONS: Situation[] = [
         skills: { fitness: 0.7, mental: 0.3 },
         base: 0.6,
         result: {
-          super: l('Budzisz się jak po urlopie. [[Rywal|Rywalka]] wygląda na zmęczonego.', 'You wake up like after a holiday. Your rival looks tired.'),
-          success: l('Nogi niosą. Pierwszy gem po przerwie twój.', 'Legs feel light. First game after the break is yours.'),
-          fail: l('[[Zaspany|Zaspana]] wychodzisz na kort i tracisz serwis.', 'You walk out groggy and get broken.'),
+          super: l(
+            'Budzisz się jak po urlopie. [[Rywal|Rywalka]] wygląda na zmęczonego.',
+            'You wake up like after a holiday. Your rival looks tired.',
+          ),
+          success: l(
+            'Nogi niosą. Pierwszy gem po przerwie twój.',
+            'Legs feel light. First game after the break is yours.',
+          ),
+          fail: l(
+            '[[Zaspany|Zaspana]] wychodzisz na kort i tracisz serwis.',
+            'You walk out groggy and get broken.',
+          ),
         },
       },
     ],
@@ -230,9 +323,18 @@ export const SITUATIONS: Situation[] = [
         skills: { net: 0.4, forehand: 0.4, serve: 0.2 },
         base: 0.44,
         result: {
-          super: l('Pięć dropszotów, pięć punktów. [[Rywal|Rywalka]] biega, ty stoisz.', 'Five drop shots, five points. Your rival runs, you stand still.'),
-          success: l('Kończysz akcje w trzech uderzeniach. Wystarcza.', 'You finish points in three shots. It is enough.'),
-          fail: l('Dropszot w siatkę, drugi w aut. Skurcz i tak przychodzi.', 'Drop shot into the net, another one long. The cramp comes anyway.'),
+          super: l(
+            'Pięć dropszotów, pięć punktów. [[Rywal|Rywalka]] biega, ty stoisz.',
+            'Five drop shots, five points. Your rival runs, you stand still.',
+          ),
+          success: l(
+            'Kończysz akcje w trzech uderzeniach. Wystarcza.',
+            'You finish points in three shots. It is enough.',
+          ),
+          fail: l(
+            'Dropszot w siatkę, drugi w aut. Skurcz i tak przychodzi.',
+            'Drop shot into the net, another one long. The cramp comes anyway.',
+          ),
         },
         side: { fail: [{ kind: 'fatigue', delta: 6 }] },
       },
@@ -243,9 +345,18 @@ export const SITUATIONS: Situation[] = [
         skills: { fitness: 0.7, mental: 0.3 },
         base: 0.6,
         result: {
-          super: l('Mięsień puszcza, a ty przyspieszasz. [[Rywal|Rywalka]] nie wierzy.', 'The muscle relaxes and you speed up. Your rival cannot believe it.'),
-          success: l('Ból jest, ale nogi pracują. Trzymasz się.', 'It hurts, but the legs work. You hang on.'),
-          fail: l('Kulejesz do końca meczu. Każdy sprint to loteria.', 'You limp through the rest. Every sprint is a lottery.'),
+          super: l(
+            'Mięsień puszcza, a ty przyspieszasz. [[Rywal|Rywalka]] nie wierzy.',
+            'The muscle relaxes and you speed up. Your rival cannot believe it.',
+          ),
+          success: l(
+            'Ból jest, ale nogi pracują. Trzymasz się.',
+            'It hurts, but the legs work. You hang on.',
+          ),
+          fail: l(
+            'Kulejesz do końca meczu. Każdy sprint to loteria.',
+            'You limp through the rest. Every sprint is a lottery.',
+          ),
         },
         side: { fail: [{ kind: 'fatigue', delta: 10 }] },
       },
@@ -267,9 +378,18 @@ export const SITUATIONS: Situation[] = [
         skills: { serve: 0.6, mental: 0.4 },
         base: 0.6,
         result: {
-          super: l('[[Rywal|Rywalka]] stoi w złym miejscu trzy razy z rzędu. Asy jak z automatu.', 'Your rival is in the wrong spot three times in a row. Aces on demand.'),
-          success: l('Return przestaje boleć. Gemy serwisowe znów idą gładko.', 'The return stops hurting. Service games flow again.'),
-          fail: l('[[Rywal|Rywalka]] czyta wszystko. Zmiany tylko cię rozpraszają.', 'Your rival reads everything. The changes only distract you.'),
+          super: l(
+            '[[Rywal|Rywalka]] stoi w złym miejscu trzy razy z rzędu. Asy jak z automatu.',
+            'Your rival is in the wrong spot three times in a row. Aces on demand.',
+          ),
+          success: l(
+            'Return przestaje boleć. Gemy serwisowe znów idą gładko.',
+            'The return stops hurting. Service games flow again.',
+          ),
+          fail: l(
+            '[[Rywal|Rywalka]] czyta wszystko. Zmiany tylko cię rozpraszają.',
+            'Your rival reads everything. The changes only distract you.',
+          ),
         },
       },
       {
@@ -279,9 +399,18 @@ export const SITUATIONS: Situation[] = [
         skills: { serve: 0.8, fitness: 0.2 },
         base: 0.4,
         result: {
-          super: l('218 km/h na tablicy. Trybuny gwiżdżą z wrażenia.', '218 km/h on the board. The crowd whistles in awe.'),
-          success: l('Mocniej znaczy skuteczniej. [[Rywal|Rywalka]] przestaje sięgać.', "Harder means better. Your rival can't reach it."),
-          fail: l('Procent pierwszego serwisu spada poniżej 40. Drugi serwis jest rzeźnią.', 'First-serve percentage drops below 40. Second serves get punished.'),
+          super: l(
+            '218 km/h na tablicy. Trybuny gwiżdżą z wrażenia.',
+            '218 km/h on the board. The crowd whistles in awe.',
+          ),
+          success: l(
+            'Mocniej znaczy skuteczniej. [[Rywal|Rywalka]] przestaje sięgać.',
+            "Harder means better. Your rival can't reach it.",
+          ),
+          fail: l(
+            'Procent pierwszego serwisu spada poniżej 40. Drugi serwis jest rzeźnią.',
+            'First-serve percentage drops below 40. Second serves get punished.',
+          ),
         },
       },
     ],
@@ -302,9 +431,18 @@ export const SITUATIONS: Situation[] = [
         skills: { backhand: 0.35, forehand: 0.25, fitness: 0.4 },
         base: 0.6,
         result: {
-          super: l('[[Rywal|Rywalka]] pierwszy sięga po skrót i myli się. Raz, drugi, piąty.', 'Your rival goes for the shortcut first and misses. Once, twice, five times.'),
-          success: l('Wymiany są długie, ale kończą się po twojej myśli.', 'Rallies are long, but they end your way.'),
-          fail: l('Po godzinie to ty pierwszy mrugasz. Mączka nie wybacza.', 'After an hour you blink first. Clay forgives nothing.'),
+          super: l(
+            '[[Rywal|Rywalka]] pierwszy sięga po skrót i myli się. Raz, drugi, piąty.',
+            'Your rival goes for the shortcut first and misses. Once, twice, five times.',
+          ),
+          success: l(
+            'Wymiany są długie, ale kończą się po twojej myśli.',
+            'Rallies are long, but they end your way.',
+          ),
+          fail: l(
+            'Po godzinie to ty pierwszy mrugasz. Mączka nie wybacza.',
+            'After an hour you blink first. Clay forgives nothing.',
+          ),
         },
       },
       {
@@ -314,9 +452,18 @@ export const SITUATIONS: Situation[] = [
         skills: { net: 0.5, forehand: 0.3, mental: 0.2 },
         base: 0.42,
         result: {
-          super: l('[[Rywal|Rywalka]] stoi metr za linią i nie dobiega do żadnego skrótu.', "Your rival is a metre behind the baseline and can't reach a single drop."),
-          success: l('Rytm [[rywala|rywalkę]] rozbity. Zaczyna grać nerwowo.', "Your rival's rhythm is broken. [[He|She]] starts to rush."),
-          fail: l('Skróty za długie. [[Rywal|Rywalka]] dobiega i mija cię po linii.', 'The drops sit up. Your rival runs them down and passes you.'),
+          super: l(
+            '[[Rywal|Rywalka]] stoi metr za linią i nie dobiega do żadnego skrótu.',
+            "Your rival is a metre behind the baseline and can't reach a single drop.",
+          ),
+          success: l(
+            'Rytm [[rywala|rywalkę]] rozbity. Zaczyna grać nerwowo.',
+            "Your rival's rhythm is broken. [[He|She]] starts to rush.",
+          ),
+          fail: l(
+            'Skróty za długie. [[Rywal|Rywalka]] dobiega i mija cię po linii.',
+            'The drops sit up. Your rival runs them down and passes you.',
+          ),
         },
       },
     ],
@@ -337,9 +484,18 @@ export const SITUATIONS: Situation[] = [
         skills: { net: 0.6, serve: 0.2, backhand: 0.2 },
         base: 0.44,
         result: {
-          super: l('Wolej, wolej, smecz. Wyglądasz jak z kaset VHS z lat 90.', 'Volley, volley, smash. You look like a 90s VHS tape.'),
-          success: l('Siatka jest twoja. [[Rywal|Rywalka]] musi ryzykować mijające.', 'The net is yours. Your rival has to risk passing shots.'),
-          fail: l('Piłka pada ci pod nogi. Półwolej w siatkę, raz za razem.', 'The ball dies at your feet. Half-volleys into the net, again and again.'),
+          super: l(
+            'Wolej, wolej, smecz. Wyglądasz jak z kaset VHS z lat 90.',
+            'Volley, volley, smash. You look like a 90s VHS tape.',
+          ),
+          success: l(
+            'Siatka jest twoja. [[Rywal|Rywalka]] musi ryzykować mijające.',
+            'The net is yours. Your rival has to risk passing shots.',
+          ),
+          fail: l(
+            'Piłka pada ci pod nogi. Półwolej w siatkę, raz za razem.',
+            'The ball dies at your feet. Half-volleys into the net, again and again.',
+          ),
         },
       },
       {
@@ -349,9 +505,15 @@ export const SITUATIONS: Situation[] = [
         skills: { forehand: 0.35, backhand: 0.35, fitness: 0.3 },
         base: 0.6,
         result: {
-          super: l('Płaskie piłki ślizgają się po trawie. [[Rywal|Rywalka]] nie nadąża.', "Flat balls skid through the grass. Your rival can't keep up."),
+          super: l(
+            'Płaskie piłki ślizgają się po trawie. [[Rywal|Rywalka]] nie nadąża.',
+            "Flat balls skid through the grass. Your rival can't keep up.",
+          ),
           success: l('Bez fajerwerków, ale skutecznie.', 'No fireworks, but it works.'),
-          fail: l('Piłka podskakuje na nierówności i lecisz w aut.', 'A bad bounce off a patchy lawn and you miss.'),
+          fail: l(
+            'Piłka podskakuje na nierówności i lecisz w aut.',
+            'A bad bounce off a patchy lawn and you miss.',
+          ),
         },
       },
     ],
@@ -372,9 +534,15 @@ export const SITUATIONS: Situation[] = [
         skills: { mental: 0.6, serve: 0.4 },
         base: 0.63,
         result: {
-          super: l('Cztery pierwsze serwisy w kort. Gem do zera.', 'Four first serves in. Love hold.'),
+          super: l(
+            'Cztery pierwsze serwisy w kort. Gem do zera.',
+            'Four first serves in. Love hold.',
+          ),
           success: l('Ręka nie drży. Domykasz.', "The arm doesn't shake. You close it out."),
-          fail: l('Ręka drży. Podwójny błąd przy 30:30. [[Rywal|Rywalka]] wraca do gry.', 'The arm shakes. Double fault at 30–30. Your rival is back.'),
+          fail: l(
+            'Ręka drży. Podwójny błąd przy 30:30. [[Rywal|Rywalka]] wraca do gry.',
+            'The arm shakes. Double fault at 30–30. Your rival is back.',
+          ),
         },
       },
       {
@@ -384,8 +552,14 @@ export const SITUATIONS: Situation[] = [
         skills: { forehand: 0.5, serve: 0.3, net: 0.2 },
         base: 0.45,
         result: {
-          super: l('Trzy winnery z forhendu. Rakieta leci w górę.', 'Three forehand winners. The racket goes up in the air.'),
-          success: l('Agresja się opłaca. [[Rywal|Rywalka]] tylko patrzy.', 'Aggression pays off. Your rival just watches.'),
+          super: l(
+            'Trzy winnery z forhendu. Rakieta leci w górę.',
+            'Three forehand winners. The racket goes up in the air.',
+          ),
+          success: l(
+            'Agresja się opłaca. [[Rywal|Rywalka]] tylko patrzy.',
+            'Aggression pays off. Your rival just watches.',
+          ),
           fail: l('Dwa forhendy w aut. Przełamanie powrotne.', 'Two forehands long. Broken back.'),
         },
       },
@@ -407,11 +581,26 @@ export const SITUATIONS: Situation[] = [
         skills: { mental: 0.7, return: 0.3 },
         base: 0.36,
         result: {
-          super: l('Sędzia schodzi z krzesła, ogląda ślad i przyznaje ci punkt. Trybuny szaleją.', 'The umpire climbs down, checks the mark and gives you the point. The crowd goes wild.'),
-          success: l('Punktu nie dostajesz, ale złość daje ci energię.', "You don't get the point, but the anger fuels you."),
-          fail: l('Ostrzeżenie za niesportowe zachowanie i nagłówki w mediach.', 'Code violation and headlines in the media.'),
+          super: l(
+            'Sędzia schodzi z krzesła, ogląda ślad i przyznaje ci punkt. Trybuny szaleją.',
+            'The umpire climbs down, checks the mark and gives you the point. The crowd goes wild.',
+          ),
+          success: l(
+            'Punktu nie dostajesz, ale złość daje ci energię.',
+            "You don't get the point, but the anger fuels you.",
+          ),
+          fail: l(
+            'Ostrzeżenie za niesportowe zachowanie i nagłówki w mediach.',
+            'Code violation and headlines in the media.',
+          ),
         },
-        side: { fail: [{ kind: 'media', delta: -3 }, { kind: 'budget', delta: -5000 }], super: [{ kind: 'media', delta: 2 }] },
+        side: {
+          fail: [
+            { kind: 'media', delta: -3 },
+            { kind: 'budget', delta: -5000 },
+          ],
+          super: [{ kind: 'media', delta: 2 }],
+        },
       },
       {
         label: l('Odpuszczasz i grasz dalej', 'Let it go and play on'),
@@ -420,9 +609,18 @@ export const SITUATIONS: Situation[] = [
         skills: { mental: 0.8, serve: 0.2 },
         base: 0.6,
         result: {
-          super: l('Następne cztery punkty twoje. [[Rywal|Rywalka]] nie wie, co się stało.', "The next four points are yours. Your rival doesn't know what happened."),
-          success: l('Zostawiasz to za sobą. Profesjonalnie.', 'You leave it behind. Professional.'),
-          fail: l('Ta piłka siedzi ci w głowie do końca seta.', 'That ball stays in your head for the rest of the set.'),
+          super: l(
+            'Następne cztery punkty twoje. [[Rywal|Rywalka]] nie wie, co się stało.',
+            "The next four points are yours. Your rival doesn't know what happened.",
+          ),
+          success: l(
+            'Zostawiasz to za sobą. Profesjonalnie.',
+            'You leave it behind. Professional.',
+          ),
+          fail: l(
+            'Ta piłka siedzi ci w głowie do końca seta.',
+            'That ball stays in your head for the rest of the set.',
+          ),
         },
       },
     ],
@@ -443,9 +641,15 @@ export const SITUATIONS: Situation[] = [
         skills: { return: 0.6, backhand: 0.4 },
         base: 0.58,
         result: {
-          super: l('[[Rywal|Rywalka]] serwuje na T prosto w twój forhend. Dwa breaki z rzędu.', '[[He|She]] serves down the T right into your forehand. Two breaks in a row.'),
+          super: l(
+            '[[Rywal|Rywalka]] serwuje na T prosto w twój forhend. Dwa breaki z rzędu.',
+            '[[He|She]] serves down the T right into your forehand. Two breaks in a row.',
+          ),
           success: l('Szeroki serwis przestaje działać.', 'The wide serve stops working.'),
-          fail: l('Teraz asy idą środkiem. [[Rywal|Rywalka]] się uśmiecha.', 'Now the aces go down the middle. [[He|She]] smiles.'),
+          fail: l(
+            'Teraz asy idą środkiem. [[Rywal|Rywalka]] się uśmiecha.',
+            'Now the aces go down the middle. [[He|She]] smiles.',
+          ),
         },
       },
       {
@@ -455,9 +659,18 @@ export const SITUATIONS: Situation[] = [
         skills: { net: 0.5, return: 0.5 },
         base: 0.4,
         result: {
-          super: l('[[Rywal|Rywalka]] po raz pierwszy w życiu widzi taki return. Gubi się kompletnie.', 'Your rival has never seen this return in [[his|her]] life. Completely lost.'),
-          success: l('Zaskoczenie działa. Kilka tanich punktów.', 'The surprise works. A few cheap points.'),
-          fail: l('Mijający bekhend, raz po raz. [[Rywal|Rywalka]] się bawi.', 'Backhand passing shots, again and again. [[He|She]] is enjoying it.'),
+          super: l(
+            '[[Rywal|Rywalka]] po raz pierwszy w życiu widzi taki return. Gubi się kompletnie.',
+            'Your rival has never seen this return in [[his|her]] life. Completely lost.',
+          ),
+          success: l(
+            'Zaskoczenie działa. Kilka tanich punktów.',
+            'The surprise works. A few cheap points.',
+          ),
+          fail: l(
+            'Mijający bekhend, raz po raz. [[Rywal|Rywalka]] się bawi.',
+            'Backhand passing shots, again and again. [[He|She]] is enjoying it.',
+          ),
         },
       },
     ],
@@ -478,9 +691,15 @@ export const SITUATIONS: Situation[] = [
         skills: { mental: 0.5, fitness: 0.5 },
         base: 0.66,
         result: {
-          super: l('[[Rywal|Rywalka]] się poddaje psychicznie. Drugi set to formalność.', 'Your rival gives up mentally. The second set is a formality.'),
+          super: l(
+            '[[Rywal|Rywalka]] się poddaje psychicznie. Drugi set to formalność.',
+            'Your rival gives up mentally. The second set is a formality.',
+          ),
           success: l('Koncentracja do końca. Bez przestojów.', 'Focus till the end. No lapses.'),
-          fail: l('Myśli odpływają. [[Rywal|Rywalka]] wygrywa trzy gemy z rzędu.', 'Your mind drifts. [[He|She]] wins three games in a row.'),
+          fail: l(
+            'Myśli odpływają. [[Rywal|Rywalka]] wygrywa trzy gemy z rzędu.',
+            'Your mind drifts. [[He|She]] wins three games in a row.',
+          ),
         },
       },
       {
@@ -490,9 +709,18 @@ export const SITUATIONS: Situation[] = [
         skills: { net: 0.4, forehand: 0.4, mental: 0.2 },
         base: 0.42,
         result: {
-          super: l('Tweener-winner. Klip ma milion wyświetleń przed końcem meczu.', 'Tweener winner. The clip has a million views before the match ends.'),
-          success: l('Publiczność kupiona, wynik pod kontrolą.', 'The crowd is yours, the score under control.'),
-          fail: l('Popis nie wyszedł, a [[rywal|rywalka]] [[złapał|złapała]] wiatr w żagle.', 'The show fails and your rival gets [[his|her]] second wind.'),
+          super: l(
+            'Tweener-winner. Klip ma milion wyświetleń przed końcem meczu.',
+            'Tweener winner. The clip has a million views before the match ends.',
+          ),
+          success: l(
+            'Publiczność kupiona, wynik pod kontrolą.',
+            'The crowd is yours, the score under control.',
+          ),
+          fail: l(
+            'Popis nie wyszedł, a [[rywal|rywalka]] [[złapał|złapała]] wiatr w żagle.',
+            'The show fails and your rival gets [[his|her]] second wind.',
+          ),
         },
         side: { super: [{ kind: 'media', delta: 5 }], success: [{ kind: 'media', delta: 1 }] },
       },
@@ -514,9 +742,15 @@ export const SITUATIONS: Situation[] = [
         skills: { mental: 0.8, fitness: 0.2 },
         base: 0.6,
         result: {
-          super: l('Tata siada, kiwa głową i zaczyna klaskać. Grasz jak z nut.', 'Dad sits down, nods and starts clapping. You play like clockwork.'),
+          super: l(
+            'Tata siada, kiwa głową i zaczyna klaskać. Grasz jak z nut.',
+            'Dad sits down, nods and starts clapping. You play like clockwork.',
+          ),
           success: l('Robi się ciszej. Możesz się skupić.', 'It gets quieter. You can focus.'),
-          fail: l('Tata obraża się na cały turniej. Ty grasz z poczuciem winy.', 'Dad sulks for the whole tournament. You play feeling guilty.'),
+          fail: l(
+            'Tata obraża się na cały turniej. Ty grasz z poczuciem winy.',
+            'Dad sulks for the whole tournament. You play feeling guilty.',
+          ),
         },
       },
       {
@@ -526,9 +760,15 @@ export const SITUATIONS: Situation[] = [
         skills: { forehand: 0.5, return: 0.5 },
         base: 0.4,
         result: {
-          super: l('„Graj na bekhend!” — i to działa. Tata jest geniuszem przez jeden dzień.', '“Hit to the backhand!” — and it works. Dad is a genius for a day.'),
+          super: l(
+            '„Graj na bekhend!” — i to działa. Tata jest geniuszem przez jeden dzień.',
+            '“Hit to the backhand!” — and it works. Dad is a genius for a day.',
+          ),
           success: l('Kilka rad trafia w punkt.', 'A couple of tips hit the mark.'),
-          fail: l('Grasz cudzy tenis. [[Rywal|Rywalka]] to widzi i wykorzystuje.', "You play someone else's tennis. Your rival sees it and pounces."),
+          fail: l(
+            'Grasz cudzy tenis. [[Rywal|Rywalka]] to widzi i wykorzystuje.',
+            "You play someone else's tennis. Your rival sees it and pounces.",
+          ),
         },
       },
     ],
@@ -549,9 +789,18 @@ export const SITUATIONS: Situation[] = [
         skills: { mental: 0.4, forehand: 0.3, backhand: 0.3 },
         base: 0.55,
         result: {
-          super: l('Twarde naciągi dają ci kontrolę, jakiej nigdy nie [[miałeś|miałaś]].', 'The tight strings give you control you never had.'),
-          success: l('Kilka gemów adaptacji i jest dobrze.', 'A few games to adapt and you are fine.'),
-          fail: l('Piłki lecą w siatkę jak z armaty. Nic nie pasuje.', 'Balls fly into the net. Nothing feels right.'),
+          super: l(
+            'Twarde naciągi dają ci kontrolę, jakiej nigdy nie [[miałeś|miałaś]].',
+            'The tight strings give you control you never had.',
+          ),
+          success: l(
+            'Kilka gemów adaptacji i jest dobrze.',
+            'A few games to adapt and you are fine.',
+          ),
+          fail: l(
+            'Piłki lecą w siatkę jak z armaty. Nic nie pasuje.',
+            'Balls fly into the net. Nothing feels right.',
+          ),
         },
       },
       {
@@ -561,11 +810,26 @@ export const SITUATIONS: Situation[] = [
         skills: { mental: 0.5, serve: 0.5 },
         base: 0.4,
         result: {
-          super: l('Grasz jego rakietą lepiej niż on. Zdjęcie obiega internet.', 'You play better with [[his|her]] racket than [[he|she]] does. The photo goes viral.'),
-          success: l('Gest docenia publiczność, a ty łapiesz rytm.', 'The crowd appreciates the gesture and you find your rhythm.'),
-          fail: l('Rączka za gruba, balans zły. Przegrywasz własny gem.', 'Grip too thick, balance off. You drop serve.'),
+          super: l(
+            'Grasz jego rakietą lepiej niż on. Zdjęcie obiega internet.',
+            'You play better with [[his|her]] racket than [[he|she]] does. The photo goes viral.',
+          ),
+          success: l(
+            'Gest docenia publiczność, a ty łapiesz rytm.',
+            'The crowd appreciates the gesture and you find your rhythm.',
+          ),
+          fail: l(
+            'Rączka za gruba, balans zły. Przegrywasz własny gem.',
+            'Grip too thick, balance off. You drop serve.',
+          ),
         },
-        side: { super: [{ kind: 'media', delta: 4 }, { kind: 'reputation', delta: 2 }], success: [{ kind: 'reputation', delta: 1 }] },
+        side: {
+          super: [
+            { kind: 'media', delta: 4 },
+            { kind: 'reputation', delta: 2 },
+          ],
+          success: [{ kind: 'reputation', delta: 1 }],
+        },
       },
     ],
   },
@@ -585,9 +849,15 @@ export const SITUATIONS: Situation[] = [
         skills: { forehand: 0.4, backhand: 0.3, fitness: 0.3 },
         base: 0.6,
         result: {
-          super: l('[[Rywal|Rywalka]] nie ma pomysłu na wysokie piłki. Każda wymiana twoja.', 'Your rival has no answer to the high balls. Every rally is yours.'),
+          super: l(
+            '[[Rywal|Rywalka]] nie ma pomysłu na wysokie piłki. Każda wymiana twoja.',
+            'Your rival has no answer to the high balls. Every rally is yours.',
+          ),
           success: l('Margines bezpieczeństwa wystarcza.', 'The safety margin is enough.'),
-          fail: l('Piłki nie dochodzą. [[Rywal|Rywalka]] atakuje każdą krótką.', 'Balls fall short. Your rival attacks every one.'),
+          fail: l(
+            'Piłki nie dochodzą. [[Rywal|Rywalka]] atakuje każdą krótką.',
+            'Balls fall short. Your rival attacks every one.',
+          ),
         },
       },
       {
@@ -597,9 +867,15 @@ export const SITUATIONS: Situation[] = [
         skills: { forehand: 0.5, serve: 0.5 },
         base: 0.42,
         result: {
-          super: l('Każda piłka jak pocisk. O 0:30 jesteś w następnej rundzie.', 'Every ball like a bullet. By 12:30 am you are through.'),
+          super: l(
+            'Każda piłka jak pocisk. O 0:30 jesteś w następnej rundzie.',
+            'Every ball like a bullet. By 12:30 am you are through.',
+          ),
           success: l('Siła wygrywa z wilgocią.', 'Power beats the damp.'),
-          fail: l('Siatka, aut, siatka. Noc należy do [[rywala|rywalkę]].', 'Net, long, net. The night belongs to your rival.'),
+          fail: l(
+            'Siatka, aut, siatka. Noc należy do [[rywala|rywalkę]].',
+            'Net, long, net. The night belongs to your rival.',
+          ),
         },
       },
     ],
@@ -620,20 +896,35 @@ export const SITUATIONS: Situation[] = [
         skills: { mental: 0.7, serve: 0.3 },
         base: 0.58,
         result: {
-          super: l('Plakat zdejmiesz po meczu. Teraz to ty jesteś na okładce.', "You'll take the poster down tonight. Now you're on the cover."),
+          super: l(
+            'Plakat zdejmiesz po meczu. Teraz to ty jesteś na okładce.',
+            "You'll take the poster down tonight. Now you're on the cover.",
+          ),
           success: l('Respekt zostaje w szatni.', 'The respect stays in the locker room.'),
-          fail: l('Ręka sztywnieje przy każdym jego serwisie.', 'Your arm stiffens at every one of [[his|her]] serves.'),
+          fail: l(
+            'Ręka sztywnieje przy każdym jego serwisie.',
+            'Your arm stiffens at every one of [[his|her]] serves.',
+          ),
         },
       },
       {
         label: l('Kopiujesz jego styl', 'Copy [[his|her]] style'),
-        desc: l('znasz każde jego zagranie z YouTube', 'you know every shot of [[his|her]] from YouTube'),
+        desc: l(
+          'znasz każde jego zagranie z YouTube',
+          'you know every shot of [[his|her]] from YouTube',
+        ),
         risky: true,
         skills: { forehand: 0.4, net: 0.3, return: 0.3 },
         base: 0.4,
         result: {
-          super: l('Lustro, tylko szybsze. [[Mistrz jest zaskoczony|Mistrzyni jest zaskoczona]].', 'A mirror, only faster. The master is stunned.'),
-          success: l('Grasz [[jego|jej]] tenis lepiej, niż się [[spodziewał|spodziewała]].', 'You play [[his|her]] tennis better than [[he|she]] expected.'),
+          super: l(
+            'Lustro, tylko szybsze. [[Mistrz jest zaskoczony|Mistrzyni jest zaskoczona]].',
+            'A mirror, only faster. The master is stunned.',
+          ),
+          success: l(
+            'Grasz [[jego|jej]] tenis lepiej, niż się [[spodziewał|spodziewała]].',
+            'You play [[his|her]] tennis better than [[he|she]] expected.',
+          ),
           fail: l('Oryginał jest lepszy od kopii.', 'The original beats the copy.'),
         },
       },
@@ -655,9 +946,15 @@ export const SITUATIONS: Situation[] = [
         skills: { serve: 0.4, mental: 0.3, backhand: 0.3 },
         base: 0.6,
         result: {
-          super: l('[[Rywal|Rywalka]] walczy z wiatrem, ty z nim tańczysz.', 'Your rival fights the wind, you dance with it.'),
+          super: l(
+            '[[Rywal|Rywalka]] walczy z wiatrem, ty z nim tańczysz.',
+            'Your rival fights the wind, you dance with it.',
+          ),
           success: l('Mało asów, ale i mało błędów.', 'Few aces, but few errors.'),
-          fail: l('Wiatr i tak wygrywa. Dwa podwójne w kluczowym gemie.', 'The wind still wins. Two double faults in a key game.'),
+          fail: l(
+            'Wiatr i tak wygrywa. Dwa podwójne w kluczowym gemie.',
+            'The wind still wins. Two double faults in a key game.',
+          ),
         },
       },
       {
@@ -667,9 +964,15 @@ export const SITUATIONS: Situation[] = [
         skills: { forehand: 0.4, net: 0.3, mental: 0.3 },
         base: 0.4,
         result: {
-          super: l('Trzy loby, trzy punkty. [[Rywal|Rywalka]] przestaje podchodzić do siatki.', 'Three lobs, three points. Your rival stops coming in.'),
+          super: l(
+            'Trzy loby, trzy punkty. [[Rywal|Rywalka]] przestaje podchodzić do siatki.',
+            'Three lobs, three points. Your rival stops coming in.',
+          ),
           success: l('Wiatr jest twoim sojusznikiem.', 'The wind is your ally.'),
-          fail: l('Podmuch wynosi lob w aut. I kolejny.', 'A gust carries the lob long. And the next.'),
+          fail: l(
+            'Podmuch wynosi lob w aut. I kolejny.',
+            'A gust carries the lob long. And the next.',
+          ),
         },
       },
     ],
@@ -690,9 +993,15 @@ export const SITUATIONS: Situation[] = [
         skills: { forehand: 0.4, return: 0.3, mental: 0.3 },
         base: 0.55,
         result: {
-          super: l('Lata analiz w końcu procentują. {opp} nie wie, co robić.', 'Years of analysis finally pay off. {opp} has no idea what to do.'),
+          super: l(
+            'Lata analiz w końcu procentują. {opp} nie wie, co robić.',
+            'Years of analysis finally pay off. {opp} has no idea what to do.',
+          ),
           success: l('Tym razem to ty dyktujesz warunki.', 'This time you set the terms.'),
-          fail: l('{opp} zna cię zbyt dobrze. Każdy twój ruch jest przewidziany.', '{opp} knows you too well. Every move is anticipated.'),
+          fail: l(
+            '{opp} zna cię zbyt dobrze. Każdy twój ruch jest przewidziany.',
+            '{opp} knows you too well. Every move is anticipated.',
+          ),
         },
       },
       {
@@ -702,9 +1011,15 @@ export const SITUATIONS: Situation[] = [
         skills: { net: 0.6, serve: 0.4 },
         base: 0.38,
         result: {
-          super: l('Totalne zaskoczenie. {opp} patrzy na boks trenera z niedowierzaniem.', 'Total surprise. {opp} stares at the coaching box in disbelief.'),
+          super: l(
+            'Totalne zaskoczenie. {opp} patrzy na boks trenera z niedowierzaniem.',
+            'Total surprise. {opp} stares at the coaching box in disbelief.',
+          ),
           success: l('Nowy plan działa wystarczająco długo.', 'The new plan works long enough.'),
-          fail: l('Eksperyment w złym meczu. {opp} się uśmiecha.', 'Wrong match for an experiment. {opp} smiles.'),
+          fail: l(
+            'Eksperyment w złym meczu. {opp} się uśmiecha.',
+            'Wrong match for an experiment. {opp} smiles.',
+          ),
         },
       },
     ],

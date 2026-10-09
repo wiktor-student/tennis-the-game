@@ -36,7 +36,12 @@ describe('career verification', () => {
 
   it('rejects the log against a different seed or config', () => {
     const wrongSeed = verifyCareer({ config, seed: 'other-seed', engineVersion: '1.0.0', actions });
-    const wrongConfig = verifyCareer({ config: { ...config, background: 'chosen' }, seed: 'verify-seed', engineVersion: '1.0.0', actions });
+    const wrongConfig = verifyCareer({
+      config: { ...config, background: 'chosen' },
+      seed: 'verify-seed',
+      engineVersion: '1.0.0',
+      actions,
+    });
     // A foreign log either breaks on an illegal action or ends at a different result.
     for (const r of [wrongSeed, wrongConfig]) {
       if (r.ok) expect(r.summary.legacy).not.toBe(legacy + 1_000_000);
@@ -45,17 +50,28 @@ describe('career verification', () => {
   });
 
   it('rejects unfinished and tampered logs', () => {
-    expect(verifyCareer({ config, seed: 'verify-seed', engineVersion: '1.0.0', actions: actions.slice(0, 50) })).toMatchObject({
+    expect(
+      verifyCareer({
+        config,
+        seed: 'verify-seed',
+        engineVersion: '1.0.0',
+        actions: actions.slice(0, 50),
+      }),
+    ).toMatchObject({
       ok: false,
       reason: 'career_not_finished',
     });
     const tampered = [...actions];
     tampered.splice(3, 0, { t: 'retire' });
-    expect(verifyCareer({ config, seed: 'verify-seed', engineVersion: '1.0.0', actions: tampered }).ok).toBe(false);
+    expect(
+      verifyCareer({ config, seed: 'verify-seed', engineVersion: '1.0.0', actions: tampered }).ok,
+    ).toBe(false);
   });
 
   it('rejects other engine versions', () => {
-    expect(verifyCareer({ config, seed: 'verify-seed', engineVersion: '0.9.0', actions })).toMatchObject({ ok: false });
+    expect(
+      verifyCareer({ config, seed: 'verify-seed', engineVersion: '0.9.0', actions }),
+    ).toMatchObject({ ok: false });
   });
 });
 

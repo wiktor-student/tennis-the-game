@@ -33,13 +33,21 @@ export function EventPhase({ state }: { state: CareerState }) {
             const affordable = opt.cost === undefined || state.finance.budget >= opt.cost;
             const preview = effectChips(opt.effects, locale);
             return (
-              <button key={i} className="choice" disabled={!affordable} onClick={() => dispatch({ t: 'choose', option: i })}>
+              <button
+                key={i}
+                className="choice"
+                disabled={!affordable}
+                onClick={() => dispatch({ t: 'choose', option: i })}
+              >
                 <span className="choice__title">{c(opt.label, gender, vars)}</span>
-                {chance !== null && chance !== undefined && <span className="choice__aside num">{t('phase.chance', { p: pct(chance) })}</span>}
+                {chance !== null && chance !== undefined && (
+                  <span className="choice__aside num">{t('phase.chance', { p: pct(chance) })}</span>
+                )}
                 <span className="choice__meta">
                   {preview.map((p) => p.text).join(' · ')}
                   {opt.hint ? `${preview.length ? ', ' : ''}${c(opt.hint, gender)}` : ''}
-                  {opt.cost !== undefined && ` · ${t('phase.cost', { amount: money(opt.cost, locale) })}`}
+                  {opt.cost !== undefined &&
+                    ` · ${t('phase.cost', { amount: money(opt.cost, locale) })}`}
                 </span>
               </button>
             );
@@ -50,7 +58,11 @@ export function EventPhase({ state }: { state: CareerState }) {
       {resolved && chosen && (
         <>
           <p className="narrative event__result">
-            {c(resolved.success === false ? (chosen.failResult ?? chosen.result) : chosen.result, gender, vars)}
+            {c(
+              resolved.success === false ? (chosen.failResult ?? chosen.result) : chosen.result,
+              gender,
+              vars,
+            )}
           </p>
           <div>
             <p className="eyebrow" style={{ marginBottom: 6 }}>
@@ -58,8 +70,15 @@ export function EventPhase({ state }: { state: CareerState }) {
             </p>
             <Chips chips={effectChips(resolved.effects, locale)} />
           </div>
-          <button className="btn btn--primary btn--block" onClick={() => dispatch({ t: 'continue' })}>
-            {pending.context === 'midseason' ? t('phase.next') : lastInQueue ? t('phase.next') : t('phase.next')}
+          <button
+            className="btn btn--primary btn--block"
+            onClick={() => dispatch({ t: 'continue' })}
+          >
+            {pending.context === 'midseason'
+              ? t('phase.next')
+              : lastInQueue
+                ? t('phase.next')
+                : t('phase.next')}
           </button>
         </>
       )}

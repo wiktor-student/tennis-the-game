@@ -50,10 +50,7 @@ export const SKILL_INFO: Record<SkillId, { name: L; short: L; hint: L }> = {
   fitness: {
     name: l('Kondycja', 'Fitness'),
     short: l('Kondycja', 'Fitness'),
-    hint: l(
-      'Długie mecze, mączka, mniej kontuzji',
-      'Long matches, clay, fewer injuries',
-    ),
+    hint: l('Długie mecze, mączka, mniej kontuzji', 'Long matches, clay, fewer injuries'),
   },
   mental: {
     name: l('Psychika', 'Mental'),

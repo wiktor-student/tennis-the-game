@@ -6,7 +6,9 @@ export function money(amount: number, locale: Locale, withUnit = true): string {
   const abs = Math.abs(amount);
   const unit = withUnit ? ' zł' : '';
   if (abs >= 1_000_000) {
-    const v = (abs / 1_000_000).toLocaleString(locale === 'pl' ? 'pl-PL' : 'en-GB', { maximumFractionDigits: abs >= 10_000_000 ? 0 : 1 });
+    const v = (abs / 1_000_000).toLocaleString(locale === 'pl' ? 'pl-PL' : 'en-GB', {
+      maximumFractionDigits: abs >= 10_000_000 ? 0 : 1,
+    });
     return `${sign}${v}${locale === 'pl' ? ' mln' : 'm'}${unit}`;
   }
   if (abs >= 1000) {

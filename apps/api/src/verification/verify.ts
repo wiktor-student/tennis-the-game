@@ -27,11 +27,15 @@ export type VerifyResult =
  */
 export function verifyCareer(input: VerifyInput): VerifyResult {
   if (input.engineVersion !== ENGINE_VERSION) {
-    return { ok: false, reason: `engine_version_mismatch:${input.engineVersion}->${ENGINE_VERSION}` };
+    return {
+      ok: false,
+      reason: `engine_version_mismatch:${input.engineVersion}->${ENGINE_VERSION}`,
+    };
   }
   const state = createCareer(input.config, input.seed);
   for (let i = 0; i < input.actions.length; i++) {
-    if (state.phase.kind === 'retired') return { ok: false, reason: `actions_after_retirement:${i}` };
+    if (state.phase.kind === 'retired')
+      return { ok: false, reason: `actions_after_retirement:${i}` };
     try {
       applyAction(state, input.actions[i] as Action);
     } catch (error) {
@@ -41,5 +45,10 @@ export function verifyCareer(input: VerifyInput): VerifyResult {
   }
   if (state.phase.kind !== 'retired') return { ok: false, reason: 'career_not_finished' };
   const summary = buildSummary(state, state.phase.reason);
-  return { ok: true, summary, achievements: evaluateAchievements(summary), actionCount: input.actions.length };
+  return {
+    ok: true,
+    summary,
+    achievements: evaluateAchievements(summary),
+    actionCount: input.actions.length,
+  };
 }

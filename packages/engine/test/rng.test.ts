@@ -40,6 +40,7 @@ describe('Rng', () => {
 
   it('weighted() never picks zero-weight items', () => {
     const rng = Rng.fromSeed('weights');
-    for (let i = 0; i < 500; i++) expect(rng.weighted(['a', 'b', 'c'], (x) => (x === 'b' ? 0 : 1))).not.toBe('b');
+    for (let i = 0; i < 500; i++)
+      expect(rng.weighted(['a', 'b', 'c'], (x) => (x === 'b' ? 0 : 1))).not.toBe('b');
   });
 });

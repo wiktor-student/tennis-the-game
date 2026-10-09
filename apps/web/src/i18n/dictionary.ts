@@ -6,7 +6,8 @@ export const pl = {
   'app.title': 'Symulator Polskiego Tenisisty',
   'app.titleTop': 'Symulator',
   'app.titleBottom': 'Polskiego Tenisisty',
-  'app.tagline': 'Od ściany za blokiem po Centre Court. Tata już naciągnął rakietę, reszta należy do ciebie.',
+  'app.tagline':
+    'Od ściany za blokiem po Centre Court. Tata już naciągnął rakietę, reszta należy do ciebie.',
   'app.disclaimer':
     'Nieoficjalna gra fanowska. Nazwy turniejów i rozgrywek służą wyłącznie identyfikacji rzeczywistości sportowej. Projekt niepowiązany z ATP, WTA, ITF, PZT, AELTC ani żadną organizacją tenisową. Wszyscy zawodnicy, trenerzy i sponsorzy w grze są fikcyjni.',
 
@@ -110,11 +111,13 @@ export const pl = {
   'phase.training': 'Trening zimowy — co podkręcasz?',
   'phase.trainingHint': 'Trener {coach}: +{gain} do wybranej umiejętności.',
   'phase.team': 'Sztab na sezon',
-  'phase.teamHint': 'Trener wpływa na rozwój i decyzje meczowe. Pensje płacisz z góry na start sezonu.',
+  'phase.teamHint':
+    'Trener wpływa na rozwój i decyzje meczowe. Pensje płacisz z góry na start sezonu.',
   'phase.sponsors': 'Sponsorzy',
   'phase.sponsorsNone': 'W tym roku nikt nie dzwonił. Może po dobrym sezonie.',
   'phase.schedule': 'Plan sezonu',
-  'phase.scheduleHint': 'Zaznacz turnieje, w których grasz. Wejście zależy od rankingu w dniu startu.',
+  'phase.scheduleHint':
+    'Zaznacz turnieje, w których grasz. Wejście zależy od rankingu w dniu startu.',
   'phase.event': 'Wydarzenie',
   'phase.effects': 'Skutki',
   'phase.next': 'Dalej ▸',
@@ -278,7 +281,8 @@ export const en: Record<MessageKey, string> = {
   'app.title': 'Polish Tennis Player Simulator',
   'app.titleTop': 'Polish Tennis',
   'app.titleBottom': 'Player Simulator',
-  'app.tagline': 'From the wall behind the block to Centre Court. Dad has already strung the racket — the rest is up to you.',
+  'app.tagline':
+    'From the wall behind the block to Centre Court. Dad has already strung the racket — the rest is up to you.',
   'app.disclaimer':
     'Unofficial fan game. Tournament and competition names are used only to identify sporting reality. Not affiliated with the ATP, WTA, ITF, PZT, AELTC or any tennis organisation. All players, coaches and sponsors in the game are fictional.',
 
@@ -315,7 +319,8 @@ export const en: Record<MessageKey, string> = {
   'board.legacy': 'Legacy',
   'board.seasons': 'Seas.',
   'board.empty': 'Nobody has finished a career in this period yet. Your turn.',
-  'board.offline': 'Online rankings are unavailable — you are playing offline. Careers are saved locally.',
+  'board.offline':
+    'Online rankings are unavailable — you are playing offline. Careers are saved locally.',
 
   'slots.title': 'Saves',
   'slots.subtitle': 'Pick a career slot.',
@@ -382,7 +387,8 @@ export const en: Record<MessageKey, string> = {
   'phase.training': 'Winter training — what do you work on?',
   'phase.trainingHint': 'Coach {coach}: +{gain} to the chosen skill.',
   'phase.team': 'Team for the season',
-  'phase.teamHint': 'Your coach shapes development and match decisions. Salaries are paid up front.',
+  'phase.teamHint':
+    'Your coach shapes development and match decisions. Salaries are paid up front.',
   'phase.sponsors': 'Sponsors',
   'phase.sponsorsNone': 'Nobody called this year. Maybe after a good season.',
   'phase.schedule': 'Season plan',

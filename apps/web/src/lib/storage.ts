@@ -32,7 +32,8 @@ export function remove(key: string): void {
 
 export function wipeAll(): void {
   try {
-    for (const key of Object.keys(localStorage)) if (key.startsWith(PREFIX)) localStorage.removeItem(key);
+    for (const key of Object.keys(localStorage))
+      if (key.startsWith(PREFIX)) localStorage.removeItem(key);
   } catch {
     /* ignore */
   }

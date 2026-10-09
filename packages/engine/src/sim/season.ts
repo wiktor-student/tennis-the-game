@@ -19,7 +19,15 @@ import type {
 import type { Rng } from '../rng';
 import { developPlayer } from './development';
 import { applySeasonStartFinances, settleSponsors, travelCost } from './economy';
-import { buildJuniorField, buildProPool, developAI, evolveProPool, globalWeek, ratingForRank, updateRankings } from './field';
+import {
+  buildJuniorField,
+  buildProPool,
+  developAI,
+  evolveProPool,
+  globalWeek,
+  ratingForRank,
+  updateRankings,
+} from './field';
 import { computeLegacy } from './legacy';
 import { maybeMidseasonEvent, buildPendingEvent } from './story';
 import {
@@ -122,20 +130,26 @@ export function autoPlan(state: CareerState): (string | null)[] {
       const entry = projectEntry(state, def);
       // Expected value: prestige weighted by how competitive the player is against the
       // typical field of that event (main draw or qualifying).
-      const competitive = (fieldRank: number) => 1 / (1 + Math.exp(-(ovr - ratingForRank(fieldRank)) / 3));
+      const competitive = (fieldRank: number) =>
+        1 / (1 + Math.exp(-(ovr - ratingForRank(fieldRank)) / 3));
       let score = 0;
       if (entry.status === 'direct' || entry.status === 'exempt') {
         score = level.prestige * (0.25 + competitive(Math.min(level.cutoffMain, 900) * 0.6));
       } else if (entry.status === 'qualifier') {
         score = level.prestige * 0.6 * competitive(Math.min(level.cutoffQual, 900) * 0.8) ** 2;
       } else if (entry.status === 'wildcard') {
-        score = level.prestige * entry.wildcard * (0.25 + competitive(Math.min(level.cutoffMain, 900) * 0.6));
+        score =
+          level.prestige *
+          entry.wildcard *
+          (0.25 + competitive(Math.min(level.cutoffMain, 900) * 0.6));
       }
       if (score <= 0) continue;
       if (budget < 60_000) score -= travelCost(state, def) / 2500;
       if (!best || score > best.score) best = { id, score };
     }
-    const major = best ? ['gs', 'm1000', 'finals', 'olympics'].includes(tournament(best.id).level) : false;
+    const major = best
+      ? ['gs', 'm1000', 'finals', 'olympics'].includes(tournament(best.id).level)
+      : false;
     const rest = streak >= 3 && !major;
     if (!best || best.score <= 0 || rest || planned >= 24) {
       plan.push(null);
@@ -368,7 +382,8 @@ export function endSeason(state: CareerState, rng: Rng): SeasonRecord {
   };
 
   settleSponsors(state);
-  if (!isPro && !state.field.some((a) => a.nemesis) && season.stage !== 'mini') designateNemesis(state);
+  if (!isPro && !state.field.some((a) => a.nemesis) && season.stage !== 'mini')
+    designateNemesis(state);
 
   // Development and ageing
   developPlayer(state, rng);
@@ -431,7 +446,9 @@ function designateNemesis(state: CareerState): void {
   }
   const candidates = state.field.filter((a) => beatMe.has(a.id));
   const pool = candidates.length > 0 ? candidates : state.field;
-  const pick = [...pool].sort((a, b) => (beatMe.get(b.id) ?? 0) - (beatMe.get(a.id) ?? 0) || b.potential - a.potential)[0];
+  const pick = [...pool].sort(
+    (a, b) => (beatMe.get(b.id) ?? 0) - (beatMe.get(a.id) ?? 0) || b.potential - a.potential,
+  )[0];
   if (pick) pick.nemesis = true;
 }
 
@@ -449,14 +466,21 @@ function bestResult(results: TournamentResult[]): TournamentResult | null {
   return best;
 }
 
-function headlineFor(state: CareerState, results: TournamentResult[], rank: number | null): HeadlineView {
+function headlineFor(
+  state: CareerState,
+  results: TournamentResult[],
+  rank: number | null,
+): HeadlineView {
   const name = `${state.player.first} ${state.player.last}`;
   const base = { name, last: state.player.last, rank: rank ?? '—' };
   const titles = results.filter((r) => r.reached === 0);
   const slam = titles.find((r) => r.level === 'gs');
   const event = (r: TournamentResult) => tournament(r.tournamentId).name.pl;
   const injuries = results.filter((r) => r.label === 'INJ').length;
-  const pick = (templateId: keyof typeof HEADLINES, vars: Record<string, string | number> = {}): HeadlineView => ({
+  const pick = (
+    templateId: keyof typeof HEADLINES,
+    vars: Record<string, string | number> = {},
+  ): HeadlineView => ({
     templateId,
     vars: { ...base, ...vars },
   });
@@ -468,7 +492,8 @@ function headlineFor(state: CareerState, results: TournamentResult[], rank: numb
   const big = titles.find((r) => ['m1000', 't500'].includes(r.level));
   if (big) return pick('big_title', { event: event(big), eventId: big.tournamentId });
   const juniorSlam = titles.find((r) => r.level === 'j_slam');
-  if (juniorSlam) return pick('junior_slam', { event: event(juniorSlam), eventId: juniorSlam.tournamentId });
+  if (juniorSlam)
+    return pick('junior_slam', { event: event(juniorSlam), eventId: juniorSlam.tournamentId });
   if (state.season.stage === 'itf_junior' && rank === 1) return pick('junior_no1');
   const polish = titles.find((r) => r.level === 'j_mini_pl' || r.level === 'j_nat_pl');
   if (polish) return pick('polish_champ');
@@ -476,7 +501,10 @@ function headlineFor(state: CareerState, results: TournamentResult[], rank: numb
     if (rank !== null && rank <= 10) return pick('top10');
     if (titles.length >= 2) return pick('titles', { titles: titles.length });
     const firstPro = titles[0];
-    if (firstPro && state.stats.titles.filter((t) => LEVELS[t.level].pro).length === titles.length) {
+    if (
+      firstPro &&
+      state.stats.titles.filter((t) => LEVELS[t.level].pro).length === titles.length
+    ) {
       return pick('pro_title', { event: event(firstPro), eventId: firstPro.tournamentId });
     }
     if (rank !== null && rank <= 100) return pick('top100');

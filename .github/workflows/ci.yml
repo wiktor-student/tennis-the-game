@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Lint · Typecheck · Test · Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  api-e2e:
+    name: API smoke test (PostgreSQL)
+    runs-on: ubuntu-latest
+    needs: check
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: tennis
+          POSTGRES_PASSWORD: tennis
+          POSTGRES_DB: tennis
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U tennis" --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://tennis:tennis@localhost:5432/tennis?schema=public
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx -w @ttg/api prisma migrate deploy
+      - name: Start API
+        run: |
+          npm run build -w @ttg/api
+          (cd apps/api && NODE_ENV=production VERIFY_WORKERS=2 node dist/server.js &)
+          for i in $(seq 1 30); do curl -sf localhost:4000/health && break; sleep 1; done
+      - run: API_URL=http://localhost:4000 npx tsx apps/api/scripts/smoke.ts

@@ -1,4 +1,10 @@
-import { ACHIEVEMENTS, GOAL_TEMPLATES, WEEKLY_TEMPLATES, VERDICTS_BY_ID, warsawDayKey } from '@ttg/engine';
+import {
+  ACHIEVEMENTS,
+  GOAL_TEMPLATES,
+  WEEKLY_TEMPLATES,
+  VERDICTS_BY_ID,
+  warsawDayKey,
+} from '@ttg/engine';
 import type { Board, DailyResponse, LeaderboardResponse } from '@ttg/shared';
 import { useEffect, useState } from 'react';
 import { Footer } from '../App';
@@ -32,7 +38,10 @@ export function HomeScreen() {
       if (cancelled) return;
       setOnline(ok);
       if (!ok) return;
-      api.daily().then((d) => !cancelled && setDaily(d)).catch(() => undefined);
+      api
+        .daily()
+        .then((d) => !cancelled && setDaily(d))
+        .catch(() => undefined);
       for (const { board } of BOARDS) {
         api
           .leaderboard(board)
@@ -75,11 +84,15 @@ export function HomeScreen() {
           <div className="tile-row">
             <button className="tile" disabled={dailyUsed} onClick={() => go('/slots?daily=1')}>
               <span className="tile__title">{t('menu.daily')}</span>
-              <span className="tile__sub">{dailyUsed ? t('menu.dailyDone') : t('menu.dailySub')}</span>
+              <span className="tile__sub">
+                {dailyUsed ? t('menu.dailyDone') : t('menu.dailySub')}
+              </span>
             </button>
             <div className="tile tile--stat">
               <span className="eyebrow">{t('menu.streak')}</span>
-              <span className="tile__big num">{streak === 1 ? t('common.day1') : t('common.days', { n: streak })}</span>
+              <span className="tile__big num">
+                {streak === 1 ? t('common.day1') : t('common.days', { n: streak })}
+              </span>
             </div>
             <div className="tile tile--stat">
               <span className="eyebrow">{t('menu.goals')}</span>
@@ -94,7 +107,9 @@ export function HomeScreen() {
           <div className="tile-grid">
             <button className="tile" onClick={() => go('/achievements')}>
               <span className="tile__title">{t('menu.achievements')}</span>
-              <span className="tile__sub">{t('menu.achievementsSub', { n: achieved, total: ACHIEVEMENTS.length })}</span>
+              <span className="tile__sub">
+                {t('menu.achievementsSub', { n: achieved, total: ACHIEVEMENTS.length })}
+              </span>
             </button>
             <button className="tile" onClick={() => go('/museum')}>
               <span className="tile__title">{t('menu.museum')}</span>
@@ -114,7 +129,9 @@ export function HomeScreen() {
         <section className="stack" aria-label="Rankingi">
           {online === false && <p className="panel muted">{t('board.offline')}</p>}
           {online !== false &&
-            BOARDS.map(({ board, key }) => <BoardTable key={board} title={t(key)} data={boards[board] ?? null} />)}
+            BOARDS.map(({ board, key }) => (
+              <BoardTable key={board} title={t(key)} data={boards[board] ?? null} />
+            ))}
         </section>
       </div>
       <Footer />
@@ -152,7 +169,13 @@ function Goals({
               <div className="spread">
                 <strong className="goal__name">{c(tpl.name)}</strong>
                 <span className="num muted">
-                  {tpl.unit === 'rank' ? (g.done ? '✓' : g.value >= 9999 ? '—' : `#${g.value}`) : `${Math.min(g.value, g.target)}/${g.target}`}
+                  {tpl.unit === 'rank'
+                    ? g.done
+                      ? '✓'
+                      : g.value >= 9999
+                        ? '—'
+                        : `#${g.value}`
+                    : `${Math.min(g.value, g.target)}/${g.target}`}
                 </span>
               </div>
               <span className="goal__desc">{c(tpl.description, 'M', { x: g.target })}</span>
@@ -188,9 +211,13 @@ function BoardTable({ title, data }: { title: string; data: LeaderboardResponse 
     <div className="panel board">
       <h2 className="eyebrow">{title}</h2>
       {data?.reigning && (
-        <p className="board__reigning">{t('board.reigning', { name: data.reigning.name, legacy: data.reigning.legacy })}</p>
+        <p className="board__reigning">
+          {t('board.reigning', { name: data.reigning.name, legacy: data.reigning.legacy })}
+        </p>
       )}
-      {data && data.entries.length === 0 && <p className="muted board__empty">{t('board.empty')}</p>}
+      {data && data.entries.length === 0 && (
+        <p className="muted board__empty">{t('board.empty')}</p>
+      )}
       {data && data.entries.length > 0 && (
         <table className="table">
           <thead>

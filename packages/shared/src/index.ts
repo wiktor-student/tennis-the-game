@@ -7,7 +7,15 @@ import { z } from 'zod';
 
 // ─── Primitives ──────────────────────────────────────────────────────────────
 
-export const SkillIdSchema = z.enum(['serve', 'return', 'forehand', 'backhand', 'net', 'fitness', 'mental']);
+export const SkillIdSchema = z.enum([
+  'serve',
+  'return',
+  'forehand',
+  'backhand',
+  'net',
+  'fitness',
+  'mental',
+]);
 export const CoachIdSchema = z.enum(['dad', 'club', 'licensed', 'academy', 'tour', 'super']);
 export const GenderSchema = z.enum(['M', 'F']);
 export const BackgroundSchema = z.enum(['wall', 'sponsor_kid', 'academy', 'chosen']);
@@ -20,7 +28,7 @@ export const DisplayNameSchema = z
   .trim()
   .min(2)
   .max(24)
-  .regex(/^[\p{L}\p{N} ._'-]+$/u, 'Dozwolone są litery, cyfry, spacje i znaki . _ \' -');
+  .regex(/^[\p{L}\p{N} ._'-]+$/u, "Dozwolone są litery, cyfry, spacje i znaki . _ ' -");
 
 export const CareerConfigSchema = z.object({
   name: z.object({
@@ -39,7 +47,12 @@ export const ActionSchema = z.discriminatedUnion('t', [
   z.object({ t: z.literal('continue') }),
   z.object({ t: z.literal('choose'), option: z.number().int().min(0).max(5) }),
   z.object({ t: z.literal('train'), skill: SkillIdSchema }),
-  z.object({ t: z.literal('team'), coach: CoachIdSchema, physio: z.boolean(), fitnessCoach: z.boolean() }),
+  z.object({
+    t: z.literal('team'),
+    coach: CoachIdSchema,
+    physio: z.boolean(),
+    fitnessCoach: z.boolean(),
+  }),
   z.object({ t: z.literal('sponsors'), accept: z.array(z.string().max(16)).max(8) }),
   z.object({ t: z.literal('schedule'), plan: z.array(z.string().max(48).nullable()).max(60) }),
   z.object({ t: z.literal('play') }),

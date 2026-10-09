@@ -15,8 +15,34 @@ import { money, pct } from '../lib/format';
 import { useGame } from '../store/game';
 import { useSettings } from '../store/settings';
 
-const MONTHS_PL = ['sty', 'lut', 'mar', 'kwi', 'maj', 'cze', 'lip', 'sie', 'wrz', 'paź', 'lis', 'gru'];
-const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MONTHS_PL = [
+  'sty',
+  'lut',
+  'mar',
+  'kwi',
+  'maj',
+  'cze',
+  'lip',
+  'sie',
+  'wrz',
+  'paź',
+  'lis',
+  'gru',
+];
+const MONTHS_EN = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
 export function SchedulePhase({ state }: { state: CareerState }) {
   const t = useT();
@@ -41,9 +67,15 @@ export function SchedulePhase({ state }: { state: CareerState }) {
 
   const planned = plan.filter((id, i) => id && !blocked.has(i)) as string[];
   const travel = planned.reduce((n, id) => n + travelCost(state, tournament(id)), 0);
-  const after = state.finance.budget - staffCost(state) - equipmentCost(state) + state.sponsors.reduce((n, s) => n + s.amount, 0) - travel;
+  const after =
+    state.finance.budget -
+    staffCost(state) -
+    equipmentCost(state) +
+    state.sponsors.reduce((n, s) => n + s.amount, 0) -
+    travel;
 
-  const setPick = (i: number, id: string | null) => setPlan((p) => p.map((x, j) => (j === i ? id : x)));
+  const setPick = (i: number, id: string | null) =>
+    setPlan((p) => p.map((x, j) => (j === i ? id : x)));
 
   return (
     <div className="panel panel--court stack">
@@ -78,7 +110,11 @@ export function SchedulePhase({ state }: { state: CareerState }) {
               <li key={slot.week} className="schedule__row">
                 <span className="schedule__week num">{month}</span>
                 <label className="toggle schedule__event">
-                  <input type="checkbox" checked={on} onChange={(e) => setPick(i, e.target.checked ? def.id : null)} />
+                  <input
+                    type="checkbox"
+                    checked={on}
+                    onChange={(e) => setPick(i, e.target.checked ? def.id : null)}
+                  />
                   <SurfaceDot surface={def.surface} />
                   <span>{c(def.name)}</span>
                   <LevelBadge level={def.level} gender={gender} />
@@ -125,7 +161,9 @@ export function SchedulePhase({ state }: { state: CareerState }) {
               <span className="schedule__entry">
                 {entry && (
                   <span className={`entry entry--${entry.status}`}>
-                    {entry.status === 'wildcard' ? t('entry.wildcard', { p: pct(entry.wildcard) }) : t(`entry.${entry.status}`)}
+                    {entry.status === 'wildcard'
+                      ? t('entry.wildcard', { p: pct(entry.wildcard) })
+                      : t(`entry.${entry.status}`)}
                   </span>
                 )}
               </span>
@@ -144,7 +182,13 @@ export function SchedulePhase({ state }: { state: CareerState }) {
         {state.sponsors.length > 0 && (
           <>
             <dt>{t('budget.sponsors')}</dt>
-            <dd className="num is-positive">+{money(state.sponsors.reduce((n, s) => n + s.amount, 0), locale)}</dd>
+            <dd className="num is-positive">
+              +
+              {money(
+                state.sponsors.reduce((n, s) => n + s.amount, 0),
+                locale,
+              )}
+            </dd>
           </>
         )}
         <dt>{t('budget.travel')}</dt>
@@ -152,8 +196,13 @@ export function SchedulePhase({ state }: { state: CareerState }) {
         <dt>{t('budget.after')}</dt>
         <dd className={`num ${after < 0 ? 'is-negative' : ''}`}>{money(after, locale)}</dd>
       </dl>
-      <p className="muted">{t('phase.planned', { n: planned.length, amount: money(travel, locale) })}</p>
-      <button className="btn btn--primary btn--block" onClick={() => dispatch({ t: 'schedule', plan })}>
+      <p className="muted">
+        {t('phase.planned', { n: planned.length, amount: money(travel, locale) })}
+      </p>
+      <button
+        className="btn btn--primary btn--block"
+        onClick={() => dispatch({ t: 'schedule', plan })}
+      >
         {t('phase.startSeason')}
       </button>
     </div>

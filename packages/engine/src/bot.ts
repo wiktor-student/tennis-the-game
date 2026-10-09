@@ -30,7 +30,9 @@ export function botAction(state: CareerState): Action | null {
     }
     case 'training': {
       const p = state.player;
-      const skill = [...SKILL_IDS].sort((a, b) => p.potential[b] - p.skills[b] - (p.potential[a] - p.skills[a]))[0];
+      const skill = [...SKILL_IDS].sort(
+        (a, b) => p.potential[b] - p.skills[b] - (p.potential[a] - p.skills[a]),
+      )[0];
       return { t: 'train', skill: skill ?? 'serve' };
     }
     case 'team': {
@@ -38,7 +40,8 @@ export function botAction(state: CareerState): Action | null {
       let coach = state.team.coach;
       for (const id of COACH_ORDER) {
         const c = COACHES[id];
-        if (state.player.reputation >= c.minReputation && c.salary <= Math.max(0, budget) * 0.35) coach = id;
+        if (state.player.reputation >= c.minReputation && c.salary <= Math.max(0, budget) * 0.35)
+          coach = id;
       }
       const physio = budget - staffCost(state, coach, false, false) > PHYSIO.salary * 4;
       return { t: 'team', coach, physio, fitnessCoach: false };

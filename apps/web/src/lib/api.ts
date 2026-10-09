@@ -54,8 +54,18 @@ async function request<S extends ZodType>(
   } catch {
     throw new ApiFailure(0, 'network', 'Network error');
   }
-  const json = (await res.json().catch(() => ({}))) as { error?: string; message?: string; details?: unknown };
-  if (!res.ok) throw new ApiFailure(res.status, json.error ?? 'error', json.message ?? res.statusText, json.details);
+  const json = (await res.json().catch(() => ({}))) as {
+    error?: string;
+    message?: string;
+    details?: unknown;
+  };
+  if (!res.ok)
+    throw new ApiFailure(
+      res.status,
+      json.error ?? 'error',
+      json.message ?? res.statusText,
+      json.details,
+    );
   return schema.parse(json);
 }
 
@@ -64,7 +74,10 @@ export async function ensureSession(): Promise<boolean> {
   if (!apiEnabled) return false;
   if (token) return true;
   try {
-    const auth = await request(AuthResponseSchema, '/v1/auth/anonymous', { method: 'POST', body: {} });
+    const auth = await request(AuthResponseSchema, '/v1/auth/anonymous', {
+      method: 'POST',
+      body: {},
+    });
     token = auth.token;
     save('token', token);
     return true;
@@ -82,9 +95,14 @@ export const api = {
   me: () => request(PlayerSchema, '/v1/me'),
   updateMe: (body: UpdateMeBody) => request(PlayerSchema, '/v1/me', { method: 'PATCH', body }),
   daily: () => request(DailyResponseSchema, '/v1/daily'),
-  leaderboard: (board: Board, limit = 10) => request(LeaderboardResponseSchema, `/v1/leaderboards?board=${board}&limit=${limit}`),
-  startCareer: (body: StartCareerBody) => request(StartCareerResponseSchema, '/v1/careers', { method: 'POST', body }),
+  leaderboard: (board: Board, limit = 10) =>
+    request(LeaderboardResponseSchema, `/v1/leaderboards?board=${board}&limit=${limit}`),
+  startCareer: (body: StartCareerBody) =>
+    request(StartCareerResponseSchema, '/v1/careers', { method: 'POST', body }),
   finishCareer: (id: string, actions: ActionDto[]) =>
-    request(FinishCareerResponseSchema, `/v1/careers/${encodeURIComponent(id)}/finish`, { method: 'POST', body: { actions } }),
+    request(FinishCareerResponseSchema, `/v1/careers/${encodeURIComponent(id)}/finish`, {
+      method: 'POST',
+      body: { actions },
+    }),
   progress: () => request(ProgressResponseSchema, '/v1/me/progress'),
 };

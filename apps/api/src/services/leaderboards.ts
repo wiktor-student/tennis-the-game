@@ -69,7 +69,11 @@ export function toEntries(rows: Row[], meId: string | null): LeaderboardEntry[] 
   }));
 }
 
-const DB_BOARD: Record<Exclude<Board, 'all'>, DbBoard> = { daily: 'DAILY', today: 'TODAY', week: 'WEEK' };
+const DB_BOARD: Record<Exclude<Board, 'all'>, DbBoard> = {
+  daily: 'DAILY',
+  today: 'TODAY',
+  week: 'WEEK',
+};
 
 export function previousPeriod(board: Exclude<Board, 'all'>, now = new Date()): string {
   return board === 'week' ? previousWeek(now) : shiftDay(today(now), -1);
@@ -88,7 +92,13 @@ export async function settleClosedPeriods(db: Db, now = new Date()): Promise<num
     if (!winner) continue;
     await db.periodChampion
       .create({
-        data: { board: DB_BOARD[board], periodKey: key, careerId: winner.id, playerId: winner.playerId, legacy: winner.legacy },
+        data: {
+          board: DB_BOARD[board],
+          periodKey: key,
+          careerId: winner.id,
+          playerId: winner.playerId,
+          legacy: winner.legacy,
+        },
       })
       .then(() => settled++)
       .catch(() => undefined); // another instance settled it first
@@ -96,7 +106,11 @@ export async function settleClosedPeriods(db: Db, now = new Date()): Promise<num
   return settled;
 }
 
-export async function reigningChampion(db: Db, board: Board, now = new Date()): Promise<Champion | null> {
+export async function reigningChampion(
+  db: Db,
+  board: Board,
+  now = new Date(),
+): Promise<Champion | null> {
   if (board === 'all') return null;
   const key = previousPeriod(board, now);
   const champ = await db.periodChampion.findUnique({
@@ -104,7 +118,13 @@ export async function reigningChampion(db: Db, board: Board, now = new Date()): 
     include: { career: true, player: true },
   });
   if (!champ) return null;
-  return { board, periodKey: key, name: champ.career.name, owner: champ.player.displayName, legacy: champ.legacy };
+  return {
+    board,
+    periodKey: key,
+    name: champ.career.name,
+    owner: champ.player.displayName,
+    legacy: champ.legacy,
+  };
 }
 
 export function boardFromDb(board: DbBoard): Board {

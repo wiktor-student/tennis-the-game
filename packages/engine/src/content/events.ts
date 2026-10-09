@@ -69,7 +69,10 @@ export const EVENTS: StoryEvent[] = [
     ),
     options: [
       {
-        label: l('Wracasz autobusem i trenujesz ze złości', 'Take the bus home and train out of spite'),
+        label: l(
+          'Wracasz autobusem i trenujesz ze złości',
+          'Take the bus home and train out of spite',
+        ),
         hint: l('twarda szkoła', 'school of hard knocks'),
         effects: [skill('mental', 2)],
         result: l(
@@ -183,13 +186,16 @@ export const EVENTS: StoryEvent[] = [
     once: true,
     text: l(
       'Babcia wciska ci kopertę „na tenis, tylko nie mów dziadkowi”. W środku pięć tysięcy złotych.',
-      'Grandma slips you an envelope “for tennis, just don\'t tell grandpa”. Inside: five thousand zloty.',
+      "Grandma slips you an envelope “for tennis, just don't tell grandpa”. Inside: five thousand zloty.",
     ),
     options: [
       {
         label: l('Odkładasz na wyjazdy', 'Save it for travel'),
         effects: [budget(5000)],
-        result: l('Koperta ląduje w szufladzie z napisem „TURNIEJE”.', 'The envelope goes into a drawer labelled “TOURNAMENTS”.'),
+        result: l(
+          'Koperta ląduje w szufladzie z napisem „TURNIEJE”.',
+          'The envelope goes into a drawer labelled “TOURNAMENTS”.',
+        ),
       },
       {
         label: l('Kupujesz porządną rakietę', 'Buy a proper racket'),
@@ -277,14 +283,23 @@ export const EVENTS: StoryEvent[] = [
         effects: [skill('fitness', 2), skill('mental', 1)],
         roll: { skills: { fitness: 1 }, base: 0.7 },
         failEffects: [{ kind: 'injury', weeks: 3, injury: 'back' }],
-        result: l('Zimno hartuje. Na hali grasz jak w cieplarni.', 'The cold hardens you. Indoors feels like a greenhouse.'),
-        failResult: l('Przeziębienie i naciągnięte plecy. Trzy tygodnie przerwy.', 'A cold and a strained back. Three weeks off.'),
+        result: l(
+          'Zimno hartuje. Na hali grasz jak w cieplarni.',
+          'The cold hardens you. Indoors feels like a greenhouse.',
+        ),
+        failResult: l(
+          'Przeziębienie i naciągnięte plecy. Trzy tygodnie przerwy.',
+          'A cold and a strained back. Three weeks off.',
+        ),
       },
       {
         label: l('Wynajmujesz kort w Warszawie', 'Rent a court in Warsaw'),
         cost: 6000,
         effects: [budget(-6000), skill('serve', 1), skill('forehand', 1)],
-        result: l('Dojazdy po 90 minut, ale treningi na porządnej nawierzchni.', '90-minute commutes, but proper courts.'),
+        result: l(
+          'Dojazdy po 90 minut, ale treningi na porządnej nawierzchni.',
+          '90-minute commutes, but proper courts.',
+        ),
       },
     ],
   },
@@ -314,7 +329,10 @@ export const EVENTS: StoryEvent[] = [
         roll: { skills: { serve: 0.5, mental: 0.5 }, base: 0.55 },
         effects: [skill('serve', 3)],
         failEffects: [skill('serve', -2), morale(-4)],
-        result: l('Nowy ruch, nowe ciało, nowy serwis. Działa.', 'New motion, new body, new serve. It works.'),
+        result: l(
+          'Nowy ruch, nowe ciało, nowy serwis. Działa.',
+          'New motion, new body, new serve. It works.',
+        ),
         failResult: l(
           'Nowy ruch się nie przyjmuje. Sezon zaczynasz od podwójnych błędów.',
           "The new motion doesn't take. You start the season with double faults.",
@@ -338,14 +356,23 @@ export const EVENTS: StoryEvent[] = [
         label: l('Składasz wniosek', 'Apply'),
         roll: { stat: 'reputation', base: 0.55 },
         effects: [budget(20000), morale(5)],
-        result: l('Przyznane! 20 tysięcy na sezon i dyplom do powieszenia w pokoju.', 'Granted! 20,000 zł for the season and a certificate for your wall.'),
+        result: l(
+          'Przyznane! 20 tysięcy na sezon i dyplom do powieszenia w pokoju.',
+          'Granted! 20,000 zł for the season and a certificate for your wall.',
+        ),
         failEffects: [morale(-3)],
-        failResult: l('Odrzucone z powodu braku jednej pieczątki. Klasyka.', 'Rejected for one missing stamp. Classic.'),
+        failResult: l(
+          'Odrzucone z powodu braku jednej pieczątki. Klasyka.',
+          'Rejected for one missing stamp. Classic.',
+        ),
       },
       {
         label: l('Szkoda czasu na papiery', 'Not worth the paperwork'),
         effects: [skill('forehand', 1)],
-        result: l('Zamiast w urzędzie spędzasz te godziny na korcie.', 'Instead of the office, you spend those hours on court.'),
+        result: l(
+          'Zamiast w urzędzie spędzasz te godziny na korcie.',
+          'Instead of the office, you spend those hours on court.',
+        ),
       },
     ],
   },
@@ -363,7 +390,10 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Zgadzasz się', 'Agree'),
         effects: [media(5), rep(1)],
-        result: l('Materiał leci w wieczornym wydaniu. Dzwoni ciocia z Kanady.', 'The piece airs on the evening news. Your aunt from Canada calls.'),
+        result: l(
+          'Materiał leci w wieczornym wydaniu. Dzwoni ciocia z Kanady.',
+          'The piece airs on the evening news. Your aunt from Canada calls.',
+        ),
       },
       {
         label: l('Odmawiasz — trening to trening', 'Decline — practice is practice'),
@@ -399,8 +429,14 @@ export const EVENTS: StoryEvent[] = [
         roll: { stat: 'reputation', base: 0.5 },
         effects: [skill('forehand', 1.5), skill('backhand', 1.5)],
         failEffects: [morale(-4)],
-        result: l('Zgoda. Sparingi z kimś, kto zna twoje słabości, bolą — i uczą.', 'Agreed. Sparring with someone who knows your weaknesses hurts — and teaches.'),
-        failResult: l('„Nie trenuję z słabszymi” — słyszysz w odpowiedzi.', '“I don\'t practise with weaker players” — comes the reply.'),
+        result: l(
+          'Zgoda. Sparingi z kimś, kto zna twoje słabości, bolą — i uczą.',
+          'Agreed. Sparring with someone who knows your weaknesses hurts — and teaches.',
+        ),
+        failResult: l(
+          '„Nie trenuję z słabszymi” — słyszysz w odpowiedzi.',
+          "“I don't practise with weaker players” — comes the reply.",
+        ),
       },
     ],
   },
@@ -419,13 +455,22 @@ export const EVENTS: StoryEvent[] = [
         roll: { skills: { mental: 1 }, base: 0.6 },
         effects: [morale(6), skill('mental', 1)],
         failEffects: [morale(-6)],
-        result: l('Szczera rozmowa. Od teraz trener tłumaczy zamiast krzyczeć.', 'An honest talk. From now on your coach explains instead of shouting.'),
-        failResult: l('„Ja tu jestem trenerem” — kończy rozmowę. Atmosfera gęstnieje.', '“I\'m the coach here” — he ends the talk. The mood sours.'),
+        result: l(
+          'Szczera rozmowa. Od teraz trener tłumaczy zamiast krzyczeć.',
+          'An honest talk. From now on your coach explains instead of shouting.',
+        ),
+        failResult: l(
+          '„Ja tu jestem trenerem” — kończy rozmowę. Atmosfera gęstnieje.',
+          "“I'm the coach here” — he ends the talk. The mood sours.",
+        ),
       },
       {
         label: l('Zaciskasz zęby', 'Grit your teeth'),
         effects: [skill('fitness', 1), morale(-3)],
-        result: l('Odpowiadasz na korcie. Dodatkowe sprinty po treningu robisz bez słowa.', 'You answer on court. Extra sprints after practice, without a word.'),
+        result: l(
+          'Odpowiadasz na korcie. Dodatkowe sprinty po treningu robisz bez słowa.',
+          'You answer on court. Extra sprints after practice, without a word.',
+        ),
       },
     ],
   },
@@ -444,12 +489,18 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Bierzesz', 'Take it'),
         effects: [budget(4000), media(2)],
-        result: l('Sześć rakiet, dwie torby i zestaw naciągów. Zdjęcie z unboxingu ma 400 polubień.', 'Six rackets, two bags and a set of strings. The unboxing photo gets 400 likes.'),
+        result: l(
+          'Sześć rakiet, dwie torby i zestaw naciągów. Zdjęcie z unboxingu ma 400 polubień.',
+          'Six rackets, two bags and a set of strings. The unboxing photo gets 400 likes.',
+        ),
       },
       {
         label: l('Zostajesz przy swojej rakiecie', 'Stay with your racket'),
         effects: [skill('forehand', 1)],
-        result: l('Zmiana sprzętu w tym wieku to ryzyko. Twoja rakieta jest przedłużeniem ręki.', 'Changing gear at this age is risky. Your racket is an extension of your arm.'),
+        result: l(
+          'Zmiana sprzętu w tym wieku to ryzyko. Twoja rakieta jest przedłużeniem ręki.',
+          'Changing gear at this age is risky. Your racket is an extension of your arm.',
+        ),
       },
     ],
   },
@@ -466,18 +517,24 @@ export const EVENTS: StoryEvent[] = [
     vars: (s) => ({ height: s.player.heightCm }),
     text: l(
       'Lekarz kadry mierzy cię na zgrupowaniu: {height} cm. „Więcej już raczej nie urośniesz” — mówi i coś zapisuje.',
-      'The squad doctor measures you at camp: {height} cm. “You probably won\'t grow much more” — he says, writing something down.',
+      "The squad doctor measures you at camp: {height} cm. “You probably won't grow much more” — he says, writing something down.",
     ),
     options: [
       {
         label: l('Budujesz grę wokół serwisu', 'Build your game around the serve'),
         effects: [{ kind: 'reveal_height' }, skill('serve', 2)],
-        result: l('Wysokość to dźwignia. Uczysz się z niej korzystać.', 'Height is leverage. You learn to use it.'),
+        result: l(
+          'Wysokość to dźwignia. Uczysz się z niej korzystać.',
+          'Height is leverage. You learn to use it.',
+        ),
       },
       {
         label: l('Stawiasz na ruch i wytrzymałość', 'Focus on movement and stamina'),
         effects: [{ kind: 'reveal_height' }, skill('fitness', 2)],
-        result: l('Praca nóg, praca nóg, praca nóg. Każdy centymetr kortu jest twój.', 'Footwork, footwork, footwork. Every inch of the court is yours.'),
+        result: l(
+          'Praca nóg, praca nóg, praca nóg. Każdy centymetr kortu jest twój.',
+          'Footwork, footwork, footwork. Every inch of the court is yours.',
+        ),
       },
     ],
   },
@@ -487,7 +544,8 @@ export const EVENTS: StoryEvent[] = [
     stages: ['europe', 'itf_junior'],
     weight: 6,
     once: true,
-    condition: (s) => s.team.coach !== 'academy' && s.team.coach !== 'tour' && s.team.coach !== 'super',
+    condition: (s) =>
+      s.team.coach !== 'academy' && s.team.coach !== 'tour' && s.team.coach !== 'super',
     text: l(
       'Akademia w Barcelonie widziała cię na Les Petits As. Proponują miejsce w programie: korty ziemne, sparingi z najlepszymi juniorami świata, 120 tys. zł rocznie.',
       'A Barcelona academy saw you at Les Petits As. They offer a place: clay courts, sparring with the best juniors in the world, 120,000 zł a year.',
@@ -496,7 +554,11 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Wyjeżdżasz do Hiszpanii', 'Move to Spain'),
         cost: 40000,
-        effects: [{ kind: 'coach', coach: 'academy' }, { kind: 'surface', surface: 'clay', delta: 10 }, morale(-4)],
+        effects: [
+          { kind: 'coach', coach: 'academy' },
+          { kind: 'surface', surface: 'clay', delta: 10 },
+          morale(-4),
+        ],
         result: l(
           'Mieszkanie z trzema Hiszpanami, hiszpański w trzy miesiące i ziemia w każdej skarpetce.',
           'A flat with three Spaniards, Spanish in three months and clay in every sock.',
@@ -505,7 +567,10 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Zostajesz w Polsce', 'Stay in Poland'),
         effects: [morale(6), budget(5000)],
-        result: l('Rodzina, szkoła i własny klub. Spokój też jest wartością.', 'Family, school and your own club. Stability has value too.'),
+        result: l(
+          'Rodzina, szkoła i własny klub. Spokój też jest wartością.',
+          'Family, school and your own club. Stability has value too.',
+        ),
       },
     ],
   },
@@ -522,10 +587,13 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Śpisz, ile się da', 'Sleep as much as possible'),
         effects: [fatigue(-8)],
-        result: l('Słuchawki, kaptur, szyba. Budzisz się na granicy z Austrią.', 'Headphones, hood, window. You wake up at the Austrian border.'),
+        result: l(
+          'Słuchawki, kaptur, szyba. Budzisz się na granicy z Austrią.',
+          'Headphones, hood, window. You wake up at the Austrian border.',
+        ),
       },
       {
-        label: l('Oglądasz mecze przyszłych rywali', 'Watch your future rivals\' matches'),
+        label: l('Oglądasz mecze przyszłych rywali', "Watch your future rivals' matches"),
         effects: [skill('return', 1), fatigue(6)],
         result: l(
           'Na telefonie analizujesz serwisy całej drabinki. Znasz ich lepiej niż oni siebie.',
@@ -547,12 +615,18 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Jedziesz na zgrupowanie', 'Go to the camp'),
         effects: [skill('fitness', 1.5), skill('backhand', 1.5), rep(3)],
-        result: l('Testy wydolnościowe, bieganie po lesie i reprezentacyjny dres.', 'Fitness tests, forest runs and a national team tracksuit.'),
+        result: l(
+          'Testy wydolnościowe, bieganie po lesie i reprezentacyjny dres.',
+          'Fitness tests, forest runs and a national team tracksuit.',
+        ),
       },
       {
         label: l('Zostajesz przy swoim planie', 'Stick with your own plan'),
         effects: [skill('forehand', 1), skill('serve', 1), rep(-2)],
-        result: l('Trener jest zadowolony. Związek trochę mniej.', 'Your coach is pleased. The federation, less so.'),
+        result: l(
+          'Trener jest zadowolony. Związek trochę mniej.',
+          'Your coach is pleased. The federation, less so.',
+        ),
       },
     ],
   },
@@ -570,12 +644,18 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Indywidualny tok nauki', 'Individual study plan'),
         effects: [skill('fitness', 1), skill('forehand', 1), morale(-4)],
-        result: l('Lekcje online o 22:00 w hotelach w Czechach. Tenis na pierwszym miejscu.', 'Online lessons at 10 pm in Czech hotels. Tennis comes first.'),
+        result: l(
+          'Lekcje online o 22:00 w hotelach w Czechach. Tenis na pierwszym miejscu.',
+          'Online lessons at 10 pm in Czech hotels. Tennis comes first.',
+        ),
       },
       {
         label: l('Normalna szkoła, mniej turniejów', 'Normal school, fewer trips'),
         effects: [morale(8), fatigue(-15), skill('mental', 1)],
-        result: l('Przyjaciele, studniówka na horyzoncie i trochę normalności.', 'Friends, a prom on the horizon and a bit of normality.'),
+        result: l(
+          'Przyjaciele, studniówka na horyzoncie i trochę normalności.',
+          'Friends, a prom on the horizon and a bit of normality.',
+        ),
       },
     ],
   },
@@ -588,18 +668,24 @@ export const EVENTS: StoryEvent[] = [
     condition: (s) => s.config.background === 'sponsor_kid',
     text: l(
       'Tata chce, żebyś na koszulce, czapce i torbie nosił logo jego firmy. „To inwestycja, a nie wstyd”.',
-      'Dad wants his company logo on your shirt, cap and bag. “It\'s an investment, not an embarrassment”.',
+      "Dad wants his company logo on your shirt, cap and bag. “It's an investment, not an embarrassment”.",
     ),
     options: [
       {
         label: l('Nosisz logo', 'Wear the logo'),
         effects: [budget(25000), media(-2)],
-        result: l('Wyglądasz jak słup ogłoszeniowy, ale rachunki się zgadzają.', 'You look like an advertising pillar, but the bills add up.'),
+        result: l(
+          'Wyglądasz jak słup ogłoszeniowy, ale rachunki się zgadzają.',
+          'You look like an advertising pillar, but the bills add up.',
+        ),
       },
       {
         label: l('Odmawiasz', 'Refuse'),
         effects: [morale(5), skill('mental', 1)],
-        result: l('Pierwsza kłótnia z tatą o pieniądze. Wygrywasz ją.', 'Your first argument with dad about money. You win it.'),
+        result: l(
+          'Pierwsza kłótnia z tatą o pieniądze. Wygrywasz ją.',
+          'Your first argument with dad about money. You win it.',
+        ),
       },
     ],
   },
@@ -616,7 +702,7 @@ export const EVENTS: StoryEvent[] = [
     priority: true,
     text: l(
       'Siedemnaście lat. Trener mówi: „Możesz zostać rok w juniorach i walczyć o Szlema juniorów. Albo od razu wejść do dorosłego tenisa — punkty ITF same się nie zdobędą”.',
-      'Seventeen. Your coach says: “You can stay one more year in juniors and chase a junior Slam. Or go straight into the pro game — ITF points won\'t earn themselves”.',
+      "Seventeen. Your coach says: “You can stay one more year in juniors and chase a junior Slam. Or go straight into the pro game — ITF points won't earn themselves”.",
     ),
     options: [
       {
@@ -630,7 +716,10 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Zostajesz rok w juniorach', 'Stay one more year in juniors'),
         effects: [morale(4)],
-        result: l('Juniorski Wimbledon brzmi jak dobry plan na lato.', 'Junior Wimbledon sounds like a good plan for the summer.'),
+        result: l(
+          'Juniorski Wimbledon brzmi jak dobry plan na lato.',
+          'Junior Wimbledon sounds like a good plan for the summer.',
+        ),
       },
     ],
   },
@@ -657,7 +746,10 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Dziękujesz za kolację', 'Thank him for dinner'),
         effects: [morale(2)],
-        result: l('Deser był świetny. Kontrakt — niekoniecznie.', 'Dessert was great. The contract — not so much.'),
+        result: l(
+          'Deser był świetny. Kontrakt — niekoniecznie.',
+          'Dessert was great. The contract — not so much.',
+        ),
       },
     ],
   },
@@ -674,12 +766,18 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Zakładasz profil i nagrywasz kulisy', 'Start posting behind-the-scenes'),
         effects: [media(8), fatigue(4)],
-        result: l('Pierwsze 50 tysięcy obserwujących. Sponsorzy zaczynają pisać.', 'Your first 50,000 followers. Sponsors start writing.'),
+        result: l(
+          'Pierwsze 50 tysięcy obserwujących. Sponsorzy zaczynają pisać.',
+          'Your first 50,000 followers. Sponsors start writing.',
+        ),
       },
       {
         label: l('Wyłączasz powiadomienia', 'Turn off notifications'),
         effects: [skill('mental', 1), media(2)],
-        result: l('Internet żyje swoim życiem. Ty żyjesz swoim.', 'The internet lives its life. You live yours.'),
+        result: l(
+          'Internet żyje swoim życiem. Ty żyjesz swoim.',
+          'The internet lives its life. You live yours.',
+        ),
       },
     ],
   },
@@ -698,7 +796,10 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Dziękujesz i obiecujesz walkę', 'Thank him and promise to fight'),
         effects: [{ kind: 'flag', flag: 'polish_wc' }, rep(2)],
-        result: l('Polskie turnieje stają się twoją furtką.', 'Polish tournaments become your gateway.'),
+        result: l(
+          'Polskie turnieje stają się twoją furtką.',
+          'Polish tournaments become your gateway.',
+        ),
       },
     ],
   },
@@ -721,15 +822,24 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Wyłączasz telefon na tydzień', 'Switch off your phone for a week'),
         effects: [skill('mental', 1), media(-1)],
-        result: l('Cisza. Książka, siłownia, kort. Wraca spokój.', 'Silence. A book, the gym, the court. Calm returns.'),
+        result: l(
+          'Cisza. Książka, siłownia, kort. Wraca spokój.',
+          'Silence. A book, the gym, the court. Calm returns.',
+        ),
       },
       {
         label: l('Odpowiadasz hejterom', 'Reply to the haters'),
         roll: { skills: { mental: 1 }, base: 0.45 },
         effects: [media(5)],
         failEffects: [media(-5), morale(-6)],
-        result: l('Riposta z klasą. Internet staje po twojej stronie.', 'A classy comeback. The internet takes your side.'),
-        failResult: l('Jedna odpowiedź za dużo. Afera na trzy dni.', 'One reply too many. A three-day scandal.'),
+        result: l(
+          'Riposta z klasą. Internet staje po twojej stronie.',
+          'A classy comeback. The internet takes your side.',
+        ),
+        failResult: l(
+          'Jedna odpowiedź za dużo. Afera na trzy dni.',
+          'One reply too many. A three-day scandal.',
+        ),
       },
     ],
   },
@@ -747,12 +857,18 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Idziesz', 'Go'),
         effects: [media(6), fatigue(5)],
-        result: l('Gotujesz jajecznicę na żywo i opowiadasz o babci. Hit poranka.', 'You cook scrambled eggs live and talk about grandma. Hit of the morning.'),
+        result: l(
+          'Gotujesz jajecznicę na żywo i opowiadasz o babci. Hit poranka.',
+          'You cook scrambled eggs live and talk about grandma. Hit of the morning.',
+        ),
       },
       {
         label: l('Wysyłasz trenera', 'Send your coach'),
         effects: [media(1)],
-        result: l('Trener przez dziesięć minut tłumaczy, czym jest periodyzacja. Oglądalność spada.', 'Your coach spends ten minutes explaining periodisation. Ratings drop.'),
+        result: l(
+          'Trener przez dziesięć minut tłumaczy, czym jest periodyzacja. Oglądalność spada.',
+          'Your coach spends ten minutes explaining periodisation. Ratings drop.',
+        ),
       },
     ],
   },
@@ -771,7 +887,13 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Grasz dla Polski', 'Play for Poland'),
         roll: { skills: { mental: 0.5, forehand: 0.5 }, base: 0.18 },
-        effects: [{ kind: 'davis_cup' }, { kind: 'flag', flag: 'dc_played' }, media(10), rep(6), fatigue(10)],
+        effects: [
+          { kind: 'davis_cup' },
+          { kind: 'flag', flag: 'dc_played' },
+          media(10),
+          rep(6),
+          fatigue(10),
+        ],
         failEffects: [{ kind: 'flag', flag: 'dc_played' }, media(3), fatigue(10)],
         result: l(
           'POLSKA WYGRYWA! Zdobywasz decydujący punkt, kapitan płacze, kibice śpiewają „Mazurka”. Historyczny tytuł.',
@@ -785,7 +907,10 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Odmawiasz — kalendarz jest za ciasny', 'Decline — the schedule is too tight'),
         effects: [fatigue(-10), media(-4), { kind: 'flag', flag: 'dc_declined' }],
-        result: l('Regeneracja zamiast reprezentacji. Media mają temat na tydzień.', 'Recovery instead of the national team. The media have a story for a week.'),
+        result: l(
+          'Regeneracja zamiast reprezentacji. Media mają temat na tydzień.',
+          'Recovery instead of the national team. The media have a story for a week.',
+        ),
       },
     ],
   },
@@ -795,7 +920,9 @@ export const EVENTS: StoryEvent[] = [
     stages: ['pro'],
     weight: 6,
     condition: (s) =>
-      s.player.reputation >= 45 && !['tour', 'super'].includes(s.team.coach) && (s.pro.rank ?? 999) <= 200,
+      s.player.reputation >= 45 &&
+      !['tour', 'super'].includes(s.team.coach) &&
+      (s.pro.rank ?? 999) <= 200,
     text: l(
       'Były zawodnik z pierwszej pięćdziesiątki świata pisze do ciebie: „Widzę w tobie coś. Chcę cię trenować”. Jego stawka to 280 tys. zł rocznie.',
       'A former top-50 player writes: “I see something in you. I want to coach you”. His fee: 280,000 zł a year.',
@@ -804,7 +931,10 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Zatrudniasz go', 'Hire him'),
         effects: [{ kind: 'coach', coach: 'tour' }, rep(2)],
-        result: l('Pierwszy trening: dwie godziny o samym ustawieniu stóp przy returnie.', 'First session: two hours on foot position at the return.'),
+        result: l(
+          'Pierwszy trening: dwie godziny o samym ustawieniu stóp przy returnie.',
+          'First session: two hours on foot position at the return.',
+        ),
       },
       {
         label: l('Zostajesz z obecnym trenerem', 'Stay with your current coach'),
@@ -819,7 +949,8 @@ export const EVENTS: StoryEvent[] = [
     stages: ['pro'],
     weight: 8,
     once: true,
-    condition: (s) => s.player.reputation >= 70 && s.team.coach !== 'super' && (s.pro.rank ?? 999) <= 25,
+    condition: (s) =>
+      s.player.reputation >= 70 && s.team.coach !== 'super' && (s.pro.rank ?? 999) <= 25,
     text: l(
       'Legenda tenisa, zwycięzca kilku Szlemów, chce wrócić do touru — jako twój trener. Kamery już czekają przed hotelem.',
       'A tennis legend with several Slams wants to return to the tour — as your coach. Cameras are already waiting outside the hotel.',
@@ -828,12 +959,18 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Bierzesz legendę', 'Hire the legend'),
         effects: [{ kind: 'coach', coach: 'super' }, media(8)],
-        result: l('Pierwsze zdanie legendy: „Masz wszystko oprócz głowy. Nad tym popracujemy”.', 'The legend\'s first words: “You have everything except the head. We\'ll work on that”.'),
+        result: l(
+          'Pierwsze zdanie legendy: „Masz wszystko oprócz głowy. Nad tym popracujemy”.',
+          "The legend's first words: “You have everything except the head. We'll work on that”.",
+        ),
       },
       {
         label: l('Odmawiasz — to twoja droga', 'Decline — this is your path'),
         effects: [skill('mental', 2), rep(2)],
-        result: l('Odmowa legendzie robi wrażenie bardziej niż zgoda.', 'Turning down a legend impresses more than accepting.'),
+        result: l(
+          'Odmowa legendzie robi wrażenie bardziej niż zgoda.',
+          'Turning down a legend impresses more than accepting.',
+        ),
       },
     ],
   },
@@ -853,13 +990,22 @@ export const EVENTS: StoryEvent[] = [
         roll: { skills: { fitness: 1 }, base: 0.55 },
         effects: [fatigue(5)],
         failEffects: [{ kind: 'injury', weeks: 8, injury: 'wrist', serious: true }],
-        result: l('Ból mija sam. Tym razem się udało.', 'The pain fades on its own. This time you got away with it.'),
-        failResult: l('Rezonans: naderwanie więzadła. Osiem tygodni przerwy.', 'MRI: a torn ligament. Eight weeks out.'),
+        result: l(
+          'Ból mija sam. Tym razem się udało.',
+          'The pain fades on its own. This time you got away with it.',
+        ),
+        failResult: l(
+          'Rezonans: naderwanie więzadła. Osiem tygodni przerwy.',
+          'MRI: a torn ligament. Eight weeks out.',
+        ),
       },
       {
         label: l('Robisz przerwę', 'Take a break'),
         effects: [{ kind: 'injury', weeks: 2, injury: 'wrist' }, fatigue(-20)],
-        result: l('Dwa tygodnie bez rakiety. Nadgarstek dziękuje.', 'Two weeks without a racket. Your wrist says thanks.'),
+        result: l(
+          'Dwa tygodnie bez rakiety. Nadgarstek dziękuje.',
+          'Two weeks without a racket. Your wrist says thanks.',
+        ),
       },
     ],
   },
@@ -886,7 +1032,10 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Dorabiasz jako trener w klubie', 'Work as a club coach on the side'),
         effects: [budget(18000), fatigue(12), skill('fitness', -1)],
-        result: l('Poranki z sześciolatkami, popołudnia na własnym treningu. Ciężko, ale uczciwie.', 'Mornings with six-year-olds, afternoons at your own practice. Hard, but honest.'),
+        result: l(
+          'Poranki z sześciolatkami, popołudnia na własnym treningu. Ciężko, ale uczciwie.',
+          'Mornings with six-year-olds, afternoons at your own practice. Hard, but honest.',
+        ),
       },
     ],
   },
@@ -906,13 +1055,22 @@ export const EVENTS: StoryEvent[] = [
         roll: { skills: { forehand: 0.5, serve: 0.5 }, base: 0.55 },
         effects: [skill('serve', 2), budget(30000)],
         failEffects: [skill('forehand', -2), budget(30000)],
-        result: l('Rewolucja jednak działa. Serwis szybszy o 8 km/h.', 'The revolution actually works. Serve up 8 km/h.'),
-        failResult: l('Nowa rama, stare nawyki. Forhend traci pewność.', 'New frame, old habits. Your forehand loses confidence.'),
+        result: l(
+          'Rewolucja jednak działa. Serwis szybszy o 8 km/h.',
+          'The revolution actually works. Serve up 8 km/h.',
+        ),
+        failResult: l(
+          'Nowa rama, stare nawyki. Forhend traci pewność.',
+          'New frame, old habits. Your forehand loses confidence.',
+        ),
       },
       {
         label: l('Zostajesz przy starym modelu', 'Keep the old model'),
         effects: [budget(-20000)],
-        result: l('Sponsor obcina premię. Twoja ręka jest spokojna.', 'The sponsor cuts your bonus. Your arm stays calm.'),
+        result: l(
+          'Sponsor obcina premię. Twoja ręka jest spokojna.',
+          'The sponsor cuts your bonus. Your arm stays calm.',
+        ),
       },
     ],
   },
@@ -930,12 +1088,18 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Grasz', 'Play'),
         effects: [budget(40000), fatigue(8), media(4)],
-        result: l('Hala śpiewa, legenda wygrywa jednego seta „dla publiczności”. Wszyscy zadowoleni.', 'The arena sings, the legend wins a set “for the crowd”. Everyone is happy.'),
+        result: l(
+          'Hala śpiewa, legenda wygrywa jednego seta „dla publiczności”. Wszyscy zadowoleni.',
+          'The arena sings, the legend wins a set “for the crowd”. Everyone is happy.',
+        ),
       },
       {
         label: l('Odpuszczasz', 'Pass'),
         effects: [fatigue(-6)],
-        result: l('Zamiast hali — wanna z lodem i wczesny sen.', 'Instead of the arena — an ice bath and an early night.'),
+        result: l(
+          'Zamiast hali — wanna z lodem i wczesny sen.',
+          'Instead of the arena — an ice bath and an early night.',
+        ),
       },
     ],
   },
@@ -954,13 +1118,19 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Miesiąc bez rakiety', 'A month without a racket'),
         effects: [morale(25), fatigue(-40), skill('fitness', -1)],
-        result: l('Góry, rodzina, żadnych kortów. Wracasz [[stęskniony|stęskniona]].', 'Mountains, family, no courts. You come back missing it.'),
+        result: l(
+          'Góry, rodzina, żadnych kortów. Wracasz [[stęskniony|stęskniona]].',
+          'Mountains, family, no courts. You come back missing it.',
+        ),
       },
       {
         label: l('Rozmowa z psychologiem sportu', 'See a sports psychologist'),
         cost: 15000,
         effects: [budget(-15000), morale(15), skill('mental', 2)],
-        result: l('Okazuje się, że nie musisz wygrywać dla wszystkich. Wystarczy dla siebie.', 'It turns out you don\'t have to win for everyone. Just for yourself.'),
+        result: l(
+          'Okazuje się, że nie musisz wygrywać dla wszystkich. Wystarczy dla siebie.',
+          "It turns out you don't have to win for everyone. Just for yourself.",
+        ),
       },
     ],
   },
@@ -980,12 +1150,18 @@ export const EVENTS: StoryEvent[] = [
         label: l('Wesele z rozmachem', 'A big wedding'),
         cost: 30000,
         effects: [budget(-30000), morale(20), fatigue(6)],
-        result: l('Dwieście osób, poprawiny i tort w kształcie kortu. Szczęście ma swoją cenę.', 'Two hundred guests, a second-day party and a court-shaped cake. Happiness has a price.'),
+        result: l(
+          'Dwieście osób, poprawiny i tort w kształcie kortu. Szczęście ma swoją cenę.',
+          'Two hundred guests, a second-day party and a court-shaped cake. Happiness has a price.',
+        ),
       },
       {
         label: l('Skromnie, po sezonie', 'Small, after the season'),
         effects: [morale(10)],
-        result: l('Urząd stanu cywilnego w listopadzie i obiad u teściów. Idealnie.', 'Registry office in November and lunch with the in-laws. Perfect.'),
+        result: l(
+          'Urząd stanu cywilnego w listopadzie i obiad u teściów. Idealnie.',
+          'Registry office in November and lunch with the in-laws. Perfect.',
+        ),
       },
     ],
   },
@@ -1004,12 +1180,18 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Bierzesz pod skrzydła', 'Take them under your wing'),
         effects: [rep(5), morale(8)],
-        result: l('Uczysz serwisu, a sam odzyskujesz radość z gry.', 'You teach the serve and rediscover the joy of the game.'),
+        result: l(
+          'Uczysz serwisu, a sam odzyskujesz radość z gry.',
+          'You teach the serve and rediscover the joy of the game.',
+        ),
       },
       {
         label: l('Brak czasu', 'No time'),
         effects: [skill('fitness', 1)],
-        result: l('W twoim wieku każda godzina na siłowni jest na wagę złota.', 'At your age every gym hour is worth its weight in gold.'),
+        result: l(
+          'W twoim wieku każda godzina na siłowni jest na wagę złota.',
+          'At your age every gym hour is worth its weight in gold.',
+        ),
       },
     ],
   },
@@ -1026,14 +1208,20 @@ export const EVENTS: StoryEvent[] = [
     ),
     options: [
       {
-        label: l('„Jeszcze nie skończył[[em|am]]”', '“I\'m not done yet”'),
+        label: l('„Jeszcze nie skończył[[em|am]]”', "“I'm not done yet”"),
         effects: [morale(8), skill('mental', 1)],
-        result: l('Nagłówki następnego dnia: „Ostatni taniec jeszcze przed nami”.', 'Next day\'s headlines: “The last dance is yet to come”.'),
+        result: l(
+          'Nagłówki następnego dnia: „Ostatni taniec jeszcze przed nami”.',
+          "Next day's headlines: “The last dance is yet to come”.",
+        ),
       },
       {
-        label: l('„Myślę o tym”', '“I\'m thinking about it”'),
+        label: l('„Myślę o tym”', "“I'm thinking about it”"),
         effects: [media(4), fatigue(-10)],
-        result: l('Szczerość doceniona. Każdy mecz teraz smakuje inaczej.', 'Honesty appreciated. Every match tastes different now.'),
+        result: l(
+          'Szczerość doceniona. Każdy mecz teraz smakuje inaczej.',
+          'Honesty appreciated. Every match tastes different now.',
+        ),
       },
     ],
   },
@@ -1080,12 +1268,18 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Kroplówka i na kort', 'IV drip and onto court'),
         effects: [fatigue(14), skill('mental', 1)],
-        result: l('Grasz [[blady|blada]] jak ściana, ale grasz.', 'You play pale as a wall, but you play.'),
+        result: l(
+          'Grasz [[blady|blada]] jak ściana, ale grasz.',
+          'You play pale as a wall, but you play.',
+        ),
       },
       {
         label: l('Oddajesz turniej walkowerem', 'Withdraw from the event'),
         effects: [fatigue(-5), rep(-1)],
-        result: l('Zdrowie ważniejsze. Organizatorzy wzruszają ramionami.', 'Health comes first. The organisers shrug.'),
+        result: l(
+          'Zdrowie ważniejsze. Organizatorzy wzruszają ramionami.',
+          'Health comes first. The organisers shrug.',
+        ),
       },
     ],
   },
@@ -1110,8 +1304,14 @@ export const EVENTS: StoryEvent[] = [
         roll: { skills: { mental: 1 }, base: 0.6 },
         effects: [rep(2)],
         failEffects: [morale(-4), skill('forehand', -1)],
-        result: l('Fair play w czystej postaci. Rakieta pasuje jak ulał.', 'Fair play at its purest. The racket fits perfectly.'),
-        failResult: l('Cudza rakieta, cudze uderzenia. Tydzień do zapomnienia.', 'Someone else\'s racket, someone else\'s shots. A week to forget.'),
+        result: l(
+          'Fair play w czystej postaci. Rakieta pasuje jak ulał.',
+          'Fair play at its purest. The racket fits perfectly.',
+        ),
+        failResult: l(
+          'Cudza rakieta, cudze uderzenia. Tydzień do zapomnienia.',
+          "Someone else's racket, someone else's shots. A week to forget.",
+        ),
       },
     ],
   },
@@ -1128,7 +1328,10 @@ export const EVENTS: StoryEvent[] = [
       {
         label: l('Gracie razem', 'Team up'),
         effects: [skill('net', 2), skill('return', 1), fatigue(6), budget(8000)],
-        result: l('Siatka staje się drugim domem, a nagrody deblowe opłacają hotele.', 'The net becomes a second home and doubles prize money pays for hotels.'),
+        result: l(
+          'Siatka staje się drugim domem, a nagrody deblowe opłacają hotele.',
+          'The net becomes a second home and doubles prize money pays for hotels.',
+        ),
       },
       {
         label: l('Skupiasz się na singlu', 'Focus on singles'),

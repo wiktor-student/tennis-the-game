@@ -54,13 +54,19 @@ describe('reducer', () => {
   it('refuses a coach the player has no reputation for', () => {
     let state: CareerState = createCareer(config(), 'coach');
     state = step(state, { t: 'train', skill: 'serve' });
-    expect(() => step(state, { t: 'team', coach: 'super', physio: false, fitnessCoach: false })).toThrow(EngineError);
+    expect(() =>
+      step(state, { t: 'team', coach: 'super', physio: false, fitnessCoach: false }),
+    ).toThrow(EngineError);
   });
 });
 
 describe('full careers', () => {
   const careers = ['alpha', 'bravo', 'charlie'].map((seed, i) =>
-    playCareer(`career-${seed}`, (['wall', 'sponsor_kid', 'academy'] as const)[i], i % 2 ? 'F' : 'M'),
+    playCareer(
+      `career-${seed}`,
+      (['wall', 'sponsor_kid', 'academy'] as const)[i],
+      i % 2 ? 'F' : 'M',
+    ),
   );
 
   it('always reach retirement within the age limit', () => {
