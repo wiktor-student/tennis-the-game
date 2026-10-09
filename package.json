@@ -1,0 +1,42 @@
+{
+  "name": "tennis-the-game",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Symulator Polskiego Tenisisty — tekstowy symulator kariery tenisowej: od ściany za blokiem po Centre Court.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @ttg/web",
+    "dev:api": "npm run dev -w @ttg/api",
+    "build": "npm run build -w @ttg/web && npm run build -w @ttg/api",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:up": "docker compose up -d db",
+    "db:migrate": "npm run prisma:migrate -w @ttg/api",
+    "balance": "tsx packages/engine/scripts/balance-report.ts",
+    "ci": "npm run lint && npm run typecheck && npm run test && npm run build"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/node": "^22.10.2",
+    "eslint": "^9.17.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.2",
+    "vitest": "^2.1.8"
+  }
+}
