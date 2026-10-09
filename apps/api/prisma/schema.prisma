@@ -1,0 +1,172 @@
+// Symulator Polskiego Tenisisty — database schema.
+// Full documentation with an ER diagram: docs/DATABASE.md
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Anonymous account bound to a device token. No e-mail, no password.
+model Player {
+  id             String    @id @default(cuid())
+  displayName    String    @db.VarChar(24)
+  /// SHA-256 of the bearer token — the raw token is only ever known to the client.
+  tokenHash      String    @unique @db.Char(64)
+  locale         Locale    @default(pl)
+  selectedRacket String?   @db.VarChar(32)
+  streakDays     Int       @default(0)
+  /// Last Warsaw day (YYYY-MM-DD) with a finished career — drives the streak.
+  lastPlayedDay  String?   @db.Char(10)
+  createdAt      DateTime  @default(now())
+  lastSeenAt     DateTime  @default(now())
+
+  careers        Career[]
+  achievements   PlayerAchievement[]
+  dailyAttempts  DailyAttempt[]
+  goalProgress   GoalProgress[]
+  championships  PeriodChampion[]
+
+  @@index([lastSeenAt])
+}
+
+enum Locale {
+  pl
+  en
+}
+
+enum CareerMode {
+  NORMAL
+  DAILY
+}
+
+enum CareerStatus {
+  /// Seed issued, career in progress on the client.
+  ACTIVE
+  /// Action log replayed and verified on the server.
+  FINISHED
+  /// Replay failed (tampered log, unknown engine version, wrong config).
+  REJECTED
+}
+
+/// One career. The seed is issued by the server; the result is accepted only after the
+/// server replays the submitted action log with the same engine version.
+model Career {
+  id            String       @id @default(cuid())
+  playerId      String
+  player        Player       @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  mode          CareerMode
+  status        CareerStatus @default(ACTIVE)
+  seed          String       @db.VarChar(64)
+  engineVersion String       @db.VarChar(16)
+  /// CareerConfig (name, gender, background, difficulty, mode) as JSON.
+  config        Json
+  /// Warsaw day for daily careers.
+  dayKey        String?      @db.Char(10)
+  /// Warsaw day of the finish — used by the "today" board and daily goals.
+  finishDay     String?      @db.Char(10)
+  /// ISO week (e.g. 2026-W41) of the finish — used by the weekly board.
+  weekKey       String?      @db.VarChar(8)
+
+  // ── Denormalised result columns (indexed for leaderboards) ──
+  name          String       @db.VarChar(64)
+  gender        Gender
+  background    String       @db.VarChar(16)
+  difficulty    String       @db.VarChar(8)
+  legacy        Int?
+  rankable      Boolean      @default(true)
+  verdict       String?      @db.VarChar(32)
+  seasons       Int?
+  peakRank      Int?
+  slamTitles    Int?
+  titles        Int?
+  prizeMoney    BigInt?
+  /// Full CareerSummary JSON produced by the engine.
+  summary       Json?
+  /// Verified action log (kept for audits and re-verification after engine updates).
+  actions       Json?
+  actionCount   Int          @default(0)
+  rejectReason  String?      @db.VarChar(200)
+
+  startedAt     DateTime     @default(now())
+  finishedAt    DateTime?
+
+  dailyAttempt  DailyAttempt?
+  champions     PeriodChampion[]
+
+  @@index([playerId, status])
+  @@index([mode, status, finishedAt(sort: Desc)])
+  @@index([mode, dayKey, legacy(sort: Desc)])
+  @@index([mode, finishDay, legacy(sort: Desc)])
+  @@index([playerId, finishDay])
+  @@index([weekKey, legacy(sort: Desc)])
+  @@index([status, legacy(sort: Desc)])
+}
+
+enum Gender {
+  M
+  F
+}
+
+/// "Only the first attempt counts" — one row per player and day, created when the daily
+/// career is started.
+model DailyAttempt {
+  playerId  String
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  dayKey    String   @db.Char(10)
+  careerId  String   @unique
+  career    Career   @relation(fields: [careerId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([playerId, dayKey])
+}
+
+model PlayerAchievement {
+  playerId      String
+  player        Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  /// Achievement id from the engine content (packages/engine/src/content/achievements.ts).
+  achievementId String   @db.VarChar(32)
+  careerId      String?
+  unlockedAt    DateTime @default(now())
+
+  @@id([playerId, achievementId])
+}
+
+/// Progress of daily goals and weekly challenges, keyed like "daily:2026-10-09:0".
+model GoalProgress {
+  playerId    String
+  player      Player    @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  goalKey     String    @db.VarChar(32)
+  value       Int       @default(0)
+  target      Int
+  completedAt DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  @@id([playerId, goalKey])
+}
+
+enum Board {
+  DAILY
+  TODAY
+  WEEK
+}
+
+/// Settled winners of closed periods ("Panujący mistrz", trophies in the museum).
+model PeriodChampion {
+  id        String   @id @default(cuid())
+  board     Board
+  /// Day key or ISO week key of the closed period.
+  periodKey String   @db.VarChar(10)
+  careerId  String
+  career    Career   @relation(fields: [careerId], references: [id], onDelete: Cascade)
+  playerId  String
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  legacy    Int
+  settledAt DateTime @default(now())
+
+  @@unique([board, periodKey])
+  @@index([playerId])
+}
