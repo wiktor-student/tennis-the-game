@@ -1,15 +1,14 @@
 <div align="center">
 
-# Symulator Polskiego Tenisisty
+# Zeszyt Tenisisty
 
-**Od ściany za blokiem po Centre Court. Tata już naciągnął rakietę, reszta należy do ciebie.**
+**Kariera od ściany za blokiem po Wimbledon — zapisana w jednym zeszycie.**
 
-Tekstowy symulator kariery tenisowej: zaczynasz jako 8-latek w turniejach Tenisa 10, przechodzisz przez Mistrzostwa Polski, Tennis Europe i juniorskie Szlemy, grzebiesz się w ITF-ach w Monastirze — i walczysz o Wimbledon.
-Każdy sezon to decyzje. Każda decyzja ma szansę. Historia ocenia cię jedną liczbą: **LEGACY**.
+Gra o karierze polskiego tenisisty lub tenisistki. Masz 8 lat, rakietę z piwnicy i pusty zeszyt. Każdej zimy rozpisujesz treningi, wybierasz trenera, podpisujesz umowy i odbijasz pieczątki w terminarzu. Przed ważnymi meczami czytasz raport skauta i zagrywasz kartę taktyki. Na końcu z zeszytu powstaje hasło w encyklopedii — i **Dorobek**, który trafia na tablicę wyników.
 
 `TypeScript` · `React 18` · `Vite` · `Fastify 5` · `PostgreSQL` · `Prisma` · `Vitest` · `Docker`
 
-<img src="docs/images/01-home.jpg" width="49%" alt="Menu główne" /> <img src="docs/images/05-decision.jpg" width="49%" alt="Decyzja meczowa" />
+<img src="docs/images/01-desk.png" alt="Biurko: okładka zeszytu, karteczki z celami, tablica wyników" />
 
 </div>
 
@@ -17,61 +16,63 @@ Każdy sezon to decyzje. Każda decyzja ma szansę. Historia ocenia cię jedną 
 
 ## Spis treści
 
-1. [O grze](#o-grze)
-2. [Zrzuty ekranu](#zrzuty-ekranu)
-3. [Szybki start](#szybki-start)
-4. [Architektura w skrócie](#architektura-w-skrócie)
-5. [Struktura projektu](#struktura-projektu)
-6. [Skrypty](#skrypty)
-7. [Testy i jakość](#testy-i-jakość)
-8. [Wdrożenie](#wdrożenie)
-9. [Dokumentacja](#dokumentacja)
-10. [Licencja i zastrzeżenia](#licencja-i-zastrzeżenia)
+1. [Koncepcja](#koncepcja)
+2. [Jak się gra](#jak-się-gra)
+3. [Zrzuty ekranu](#zrzuty-ekranu)
+4. [Szybki start](#szybki-start)
+5. [Architektura w skrócie](#architektura-w-skrócie)
+6. [Struktura projektu](#struktura-projektu)
+7. [Skrypty](#skrypty)
+8. [Testy i jakość](#testy-i-jakość)
+9. [Wdrożenie](#wdrożenie)
+10. [Dokumentacja](#dokumentacja)
+11. [Licencja i zastrzeżenia](#licencja-i-zastrzeżenia)
 
 ---
 
-## O grze
+## Koncepcja
 
-Gra jest inspirowana *Symulatorem Polskiego Kierowcy* — ta sama filozofia krótkich, gęstych decyzji z jawnymi szansami — ale w całości zbudowana wokół tenisa.
+Cały interfejs to **jeden przedmiot**: zeszyt zawodnika leżący na biurku obitym zielonym suknem w kolorze kortu. Nie ma tu ciemnego panelu z paskami — każdy element gry ma swój odpowiednik na papierze:
 
-### Ścieżka kariery
+| W grze | W zeszycie |
+|---|---|
+| menu | okładka z naklejką „Własność:”, karteczki z celami na dziś, tablica wyników przypięta pinezką |
+| statystyki | **legitymacja zawodnika**: polaroid, radar 7 umiejętności, prognoza formy jako pogoda, bateria zmęczenia, czucie nawierzchni jako mini-korty |
+| kalendarz | turnieje jako **pieczątki pocztowe** w kolorze nawierzchni |
+| mecze | **protokół turnieju** jak arkusz sędziowski + oś sezonu pisana długopisem |
+| ważny mecz | **teczka skauta** i ręka **kart taktyk** |
+| wydarzenia | listy poza sezonem, SMS-y w trakcie |
+| koniec sezonu | wycinek z gazety |
+| emerytura | **hasło w encyklopedii** generowane z kariery + pieczęć Dorobku |
 
-| Etap | Wiek | Co grasz |
-|---|---|---|
-| **Tenis 10** | 8–10 | turnieje regionalne, Mistrzostwa Polski Tenisa 10 |
-| **Ranking krajowy** | 11–13 | turnieje kat. A/B, Halowe i Letnie Mistrzostwa Polski |
-| **Tennis Europe** | 14–15 | Les Petits As w Tarbes, Trofeo Avvenire, Mistrzostwa Europy |
-| **ITF Juniors** | 16–17 | J60–J500, Orange Bowl, juniorskie AO / Roland Garros / Wimbledon / US Open |
-| **Zawodowstwo** | 18–38 | ITF M15/M25, Challengery (Wrocław, Poznań, Szczecin), ATP/WTA 250/500/1000, **Wielki Szlem**, Finały, Igrzyska |
+Szczegóły: [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md) · [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md).
 
-### Co składa się na sezon
+## Jak się gra
 
-- **Wydarzenia fabularne** — tata kłóci się z sędzią na Orlikach, hala pneumatyczna przecieka przed Mistrzostwami Polski, akademia w Barcelonie, menedżer z Monako, powołanie do Pucharu Davisa / BJK Cup, hejt po pierwszej rundzie Szlema. Wybory z jawnymi skutkami i rzutami.
-- **Trening zimowy** — wybierasz, który skill podkręcasz (7 umiejętności: serwis, return, forhend, bekhend, siatka, kondycja, psychika).
-- **Sztab** — od „Taty z YouTube” po superkocha, ex-mistrza Szlema; fizjoterapeuta, trener przygotowania.
-- **Sponsorzy** — od Piekarni u Zenka po globalne marki (fikcyjne), z warunkami typu „TOP 100 na koniec roku”.
-- **Plan sezonu** — w zawodowstwie wybierasz turniej na każdy tydzień; gra pokazuje, czy wejdziesz do drabinki (MD), przez kwalifikacje (Q), czy z szansą na dziką kartę.
-- **Mecze** — symulowane punkt po punkcie: nawierzchnie, tie-breaki, best-of-5 w Szlemach mężczyzn, punkty pod presją. W kluczowych meczach symulacja staje i pyta, co robisz przy break poincie — a **ruletka szans** pokazuje SUPER / SUKCES / PORAŻKĘ.
-- **Ranking** — rolling 52 tygodnie, 19 najlepszych wyników, 420 zawodników AI, którzy się starzeją, rozwijają i odchodzą. Twój juniorski **Nemesis** idzie z tobą przez całą karierę.
+**Ścieżka:** Tenis 10 (8–10 lat) → ranking krajowy → Tennis Europe (Les Petits As, Mistrzostwa Europy) → ITF Juniors (juniorskie Szlemy, Orange Bowl) → zawodowstwo: ITF M15/M25, Challengery we Wrocławiu, Poznaniu i Szczecinie, turnieje 250/500/1000, **Wielkie Szlemy**, Finały, Igrzyska.
 
-### Metagra
+**Zima — trening blokowy.** Masz 5–7 bloków. Każdy kolejny blok na tę samą umiejętność daje mniej, więc wybierasz między specjalizacją a wszechstronnością. Bloki możesz też wydać na odpoczynek (mniej kontuzji) albo na naukę **nowej karty taktyki** — ale tylko takiej, której uczy twój obecny trener.
 
-**Kariera Dnia** (wspólny zawodnik i seed, liczy się pierwsze podejście) · **rankingi** dzienne, tygodniowe i wszech czasów z panującym mistrzem · **cele dnia** i **wyzwanie tygodnia** · **seria** dni · **48 osiągnięć** · **Muzeum kariery** · **kolekcja 15 malowań rakiet** · PL / EN.
+**Talia taktyk.** 12 kart planu gry: *Solidnie z głębi*, *Atak na bekhend*, *Serwis i pierwszy forhend*, *Wojna na wyniszczenie*, *Wysokie topspiny*, *Return w nogi*, *Skróty i loby*, *Forhend z odwrotnego krosa*, *Serwis i wolej*, *Chip and charge*, *Gra w głowie rywala*, *Wszystko albo nic*. Każda działa inaczej na **cztery style rywali** (bombardier serwisowy, ściana z głębi kortu, wszechstronny, siatkarz) i na różnych nawierzchniach, ma swoje **ryzyko** (huśtawkę w każdym secie) i **mistrzostwo** rosnące z wygranymi. Przed ważnym meczem czytasz raport skauta i zagrywasz kartę; w zwykłych meczach gra twój „plan na co dzień”.
 
-Pełny zamysł gry, liczby i formuły: **[docs/GAME_DESIGN.md](docs/GAME_DESIGN.md)**.
+**Sezon.** Terminarz układasz tydzień po tygodniu (gra podpowiada, czy wejdziesz do drabinki, przez kwalifikacje czy z dziką kartą). Mecze są liczone punkt po punkcie — tie-breaki, best-of-5 w Szlemach mężczyzn, nawierzchnie, forma, zmęczenie. Ranking to rolling 52 tygodnie wśród 420 zawodników, którzy się starzeją i odchodzą. Twój juniorski **Nemesis** idzie z tobą przez całą karierę.
+
+**Metagra.** Zawodnik dnia (wspólny talent, liczy się pierwsze podejście), tablica wyników (dziś / tydzień / wszech czasów), cele dnia i wyzwanie tygodnia, seria, **gablota z 50 trofeami**, kronika, kolekcja 15 malowań rakiet. Interfejs po polsku i angielsku.
 
 ## Zrzuty ekranu
 
 | | |
 |---|---|
-| ![Nowa kariera](docs/images/03-new-career.jpg) | ![Trening zimowy](docs/images/04-training.jpg) |
-| **Nowa kariera** — punkt startowy i poziom trudności z mnożnikiem wyniku | **Trening zimowy** — HUD jak tablica wyników, panel skilli i sztabu |
-| ![Sezon juniorski](docs/images/07-season.jpg) | ![Plan sezonu zawodowego](docs/images/08-pro-schedule.jpg) |
-| **Raport sezonu** — ostatni turniej, mecze, roadmapa, Nemesis (N) | **Plan sezonu** — wejście MD / Q / dzika karta liczone z rankingu |
-| ![Ruletka](docs/images/06-roulette.jpg) | ![Koniec sezonu](docs/images/09-season-end.jpg) |
-| **Ruletka szans** — wynik losuje silnik, UI tylko go odsłania | **Koniec sezonu** — nagłówek gazety, bilans, rozwój |
-| ![Werdykt](docs/images/10-verdict.jpg) | ![Rankingi](docs/images/02-leaderboards.jpg) |
-| **Werdykt historii** — LEGACY zweryfikowane przez serwer | **Rankingi online** — Kariera Dnia, dziś, 7 dni |
+| ![Raport skauta](docs/images/04-scouting.png) | ![Trening blokowy](docs/images/03-training.png) |
+| **Raport skauta** — teczka o rywalce i ręka kart taktyk z przewagą, rozrzutem i mistrzostwem | **Zima** — planer bloków treningowych, nauka nowej karty, legitymacja z radarem |
+| ![Sezon](docs/images/05-season.png) | ![Terminarz](docs/images/06-schedule.png) |
+| **Sezon** — oś z wynikami i protokół turnieju z kartami użytymi w meczach | **Terminarz zawodowy** — tydzień po tygodniu, z prognozą wejścia do drabinki |
+| ![Terminarz juniora](docs/images/10-junior-calendar.png) | ![Umowy](docs/images/07-contracts.png) |
+| **Terminarz juniora** — turnieje jako pieczątki do odbicia | **Umowy** — kontrakty sponsorskie z linią podpisu |
+| ![Koniec sezonu](docs/images/08-season-end.png) | ![Encyklopedia](docs/images/09-encyclopedia.png) |
+| **Koniec sezonu** — wycinek z gazety i notatki z bilansem | **Emerytura** — hasło w encyklopedii, pieczęć Dorobku, gablota |
+| ![Karta zgłoszenia](docs/images/02-registration.png) | |
+| **Nowa kariera** — karta zgłoszenia zawodnika | |
 
 ## Szybki start
 
@@ -155,7 +156,7 @@ tennis-the-game/
 
 ## Testy i jakość
 
-- **38 testów jednostkowych** (silnik + API): determinizm RNG, legalność wyników setów, kalibracja modelu meczu, rozstawienie drabinek, ranking 52-tygodniowy, pełne kariery botem, **replay identyczny bit w bit**, odrzucanie zmanipulowanych logów, integralność treści PL/EN.
+- **46 testów jednostkowych** (silnik + API): determinizm RNG, legalność wyników setów, kalibracja modelu meczu, rozstawienie drabinek, ranking 52-tygodniowy, karty taktyk (przewaga, limity, nauczyciele), trening blokowy (malejące zyski, odpoczynek), pełne kariery botem, **replay identyczny bit w bit**, odrzucanie zmanipulowanych logów, integralność treści PL/EN.
 - **Smoke test end-to-end** na prawdziwym PostgreSQL (także w CI): konto → kariera → weryfikacja → rankingi → zasada jednego podejścia Kariery Dnia.
 - **Raport balansu** — rozkłady najwyższego rankingu, LEGACY, Szlemów i werdyktów dla każdego punktu startowego ([docs/ENGINE.md §9](docs/ENGINE.md#9-balans--jak-sprawdzać)).
 - TypeScript `strict` + `noUncheckedIndexedAccess`, ESLint (typescript-eslint, react-hooks), Prettier.
@@ -181,8 +182,8 @@ Zmienne środowiskowe API: [`apps/api/.env.example`](apps/api/.env.example). Kon
 | [ENGINE.md](docs/ENGINE.md) | silnik: maszyna faz, model meczu (wzory), turnieje, ranking, rozwój, ekonomia, balans |
 | [DATABASE.md](docs/DATABASE.md) | schemat bazy z diagramem ER, indeksy, cykl życia kariery |
 | [API.md](docs/API.md) | endpointy, kontrakty, błędy, limity, przykłady |
-| [CONTENT_GUIDE.md](docs/CONTENT_GUIDE.md) | jak pisać wydarzenia, sytuacje meczowe, turnieje, osiągnięcia |
-| [DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md) | kierunek wizualny, tokeny, typografia, ruch, dostępność |
+| [CONTENT_GUIDE.md](docs/CONTENT_GUIDE.md) | jak pisać wydarzenia, karty taktyk, turnieje, osiągnięcia |
+| [DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md) | metafora zeszytu, mapa przedmiotów, tokeny, typografia, ruch, dostępność |
 | [ROADMAP.md](docs/ROADMAP.md) | plan rozwoju |
 | [adr/](docs/adr) | decyzje architektoniczne |
 | [CONTRIBUTING.md](CONTRIBUTING.md) · [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md) | praca z repozytorium |

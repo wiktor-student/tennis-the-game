@@ -1,5 +1,6 @@
 import { SPONSOR_CATEGORY_NAME, type CareerState } from '@ttg/engine';
 import { useState } from 'react';
+import { Signature } from '../components/Signature';
 import { useContent, useT } from '../i18n';
 import { money } from '../lib/format';
 import { useGame } from '../store/game';
@@ -12,81 +13,78 @@ export function SponsorsPhase({ state }: { state: CareerState }) {
   const dispatch = useGame((s) => s.dispatch);
   const offers = state.phase.kind === 'sponsors' ? state.phase.offers : [];
   const [accepted, setAccepted] = useState<string[]>([]);
+  const signature = `${state.player.first.charAt(0)}. ${state.player.last}`;
 
-  const toggle = (id: string, category: string) => {
+  const toggle = (id: string, category: string) =>
     setAccepted((prev) => {
       if (prev.includes(id)) return prev.filter((x) => x !== id);
-      // One contract per category.
-      const sameCategory = offers.filter((o) => o.category === category).map((o) => o.id);
-      return [...prev.filter((x) => !sameCategory.includes(x)), id];
+      const same = offers.filter((o) => o.category === category).map((o) => o.id);
+      return [...prev.filter((x) => !same.includes(x)), id];
     });
-  };
 
   return (
-    <div className="panel panel--court stack">
-      <h2 className="phase-title">{t('phase.sponsors')}</h2>
+    <div className="stack">
+      <h2 className="title">{t('sponsors.title')}</h2>
+      <p>{t('sponsors.lead')}</p>
 
       {state.sponsors.length > 0 && (
-        <ul className="sponsor-list">
-          {state.sponsors.map((s) => (
-            <li key={s.id} className="sponsor sponsor--active">
-              <span className="sponsor__logo">{s.name.slice(0, 2)}</span>
-              <div>
-                <strong>{s.name}</strong>
-                <span className="muted"> · {SPONSOR_CATEGORY_NAME[s.category][locale]}</span>
-                <p className="muted sponsor__perk">{c(s.perk)}</p>
-              </div>
-              <span className="num">
-                {money(s.amount, locale)}
-                <small className="muted"> · {t('phase.seasons', { n: s.seasonsLeft })}</small>
-              </span>
-            </li>
-          ))}
-        </ul>
+        <p className="pencil">
+          {t('sponsors.active')}:{' '}
+          {state.sponsors
+            .map((s) => `${s.name} (${t('sponsors.seasons', { n: s.seasonsLeft })})`)
+            .join(' · ')}
+        </p>
       )}
 
       {offers.length === 0 ? (
-        <p className="muted serif">{t('phase.sponsorsNone')}</p>
+        <p className="hand">{t('sponsors.none')}</p>
       ) : (
-        <ul className="sponsor-list">
-          {offers.map((o) => {
-            const on = accepted.includes(o.id);
+        <div className="contracts">
+          {offers.map((o, i) => {
+            const signed = accepted.includes(o.id);
             return (
-              <li key={o.id}>
-                <button
-                  className="sponsor"
-                  aria-pressed={on}
-                  onClick={() => toggle(o.id, o.category)}
-                >
-                  <span className="sponsor__logo">{o.name.slice(0, 2)}</span>
-                  <div>
-                    <strong>{o.name}</strong>
-                    <span className="muted"> · {SPONSOR_CATEGORY_NAME[o.category][locale]}</span>
-                    <p className="muted sponsor__perk">{c(o.perk)}</p>
-                    {o.condition && (
-                      <p className="sponsor__cond">
-                        {t('phase.condition', { n: o.condition.value })}
-                      </p>
-                    )}
-                  </div>
-                  <span className="num sponsor__amount">
-                    {money(o.amount, locale)}
-                    <small className="muted"> /{t('phase.seasons', { n: o.seasons })}</small>
-                    <span className={`chip ${on ? 'chip--ball' : ''}`}>
-                      {on ? t('phase.signed') : t('phase.accept')}
-                    </span>
-                  </span>
-                </button>
-              </li>
+              <article
+                key={o.id}
+                className="card card--clean contract"
+                style={{ rotate: `${(i % 2 ? 1 : -1) * 0.6}deg` }}
+              >
+                <span className={`tape ${i % 2 ? 'tape--tr' : 'tape--tl'}`} />
+                <p className="label">
+                  {SPONSOR_CATEGORY_NAME[o.category][locale]} ·{' '}
+                  {t('sponsors.seasons', { n: o.seasons })}
+                </p>
+                <h3 className="contract__name">{o.name}</h3>
+                <p className="contract__amount mono">
+                  {money(o.amount, locale)}{' '}
+                  <span className="pencil">/ {locale === 'pl' ? 'sezon' : 'season'}</span>
+                </p>
+                <p className="contract__duty">
+                  <span className="label">{t('sponsors.duty')}</span> {c(o.perk)}
+                </p>
+                {o.condition && (
+                  <p className="contract__cond hand">
+                    {t('sponsors.condition', { n: o.condition.value })}
+                  </p>
+                )}
+                <div className="contract__sign">
+                  <Signature name={signature} signed={signed} />
+                  <button
+                    className={`btn btn--sm ${signed ? '' : 'btn--hl'}`}
+                    onClick={() => toggle(o.id, o.category)}
+                  >
+                    {signed ? t('sponsors.unsign') : t('sponsors.sign')}
+                  </button>
+                </div>
+              </article>
             );
           })}
-        </ul>
+        </div>
       )}
       <button
-        className="btn btn--primary btn--block"
+        className="btn btn--ink btn--block"
         onClick={() => dispatch({ t: 'sponsors', accept: accepted })}
       >
-        {t('phase.next')}
+        {t('sponsors.next')}
       </button>
     </div>
   );

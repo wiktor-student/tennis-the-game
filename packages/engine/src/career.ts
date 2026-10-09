@@ -20,11 +20,9 @@ import type {
   Skills,
 } from './model/types';
 import { Rng, hashSeed } from './rng';
-import { resolveDecision } from './sim/decisions';
 import { acceptSponsors, generateSponsorOffers } from './sim/economy';
 import { buildJuniorField } from './sim/field';
 import { computeLegacy } from './sim/legacy';
-import { applyTraining } from './sim/development';
 import {
   buildPendingEvent,
   isOptionAvailable,
@@ -40,7 +38,9 @@ import {
   turnPro,
   validatePlan,
 } from './sim/season';
-import { applyDecisionToRun } from './sim/tournament';
+import { applyTacticToRun } from './sim/tournament';
+import { applyTrainingPlan, validateTraining } from './sim/tactics';
+import { STARTER_TACTICS } from './content/tactics';
 import { ENGINE_VERSION } from './version';
 
 export class EngineError extends Error {
@@ -119,7 +119,7 @@ export function createCareer(config: CareerConfig, seed: string): CareerState {
     team: { coach: bg.coach, physio: false, fitnessCoach: false, coachSeasons: 0 },
     finance: { budget: bg.budget, familyTier, familySupport: 0, familyRevealed: false, ledger: [] },
     sponsors: [],
-    phase: { kind: 'training', chosen: null },
+    phase: { kind: 'training' },
     eventQueue: [],
     season: undefined as unknown as CareerState['season'],
     field: [],
@@ -152,13 +152,18 @@ export function createCareer(config: CareerConfig, seed: string): CareerState {
       seriousInjuries: 0,
       nemesisWon: 0,
       nemesisLost: 0,
-      decisionsSuper: 0,
+      keyMatchesWon: 0,
       bigUpsets: 0,
       maxDebt: 0,
       fiveSetWins: 0,
       doubleBagels: 0,
       qualifierTitles: 0,
       wildcardTitles: 0,
+    },
+    tactics: {
+      owned: [...STARTER_TACTICS],
+      preferred: STARTER_TACTICS[0] as string,
+      record: {},
     },
     history: [],
     flags: [],
@@ -226,8 +231,10 @@ function dispatch(state: CareerState, rng: Rng, action: Action): void {
       break;
     }
     case 'training': {
-      if (action.t === 'train' && SKILL_IDS.includes(action.skill)) {
-        applyTraining(state, action.skill);
+      if (action.t === 'train') {
+        const error = validateTraining(state, action.plan);
+        if (error) throw new EngineError(error);
+        applyTrainingPlan(state, action.plan);
         state.phase = { kind: 'team' };
         return;
       }
@@ -280,24 +287,10 @@ function dispatch(state: CareerState, rng: Rng, action: Action): void {
       }
       break;
     }
-    case 'decision': {
-      const decision = phase.decision;
-      if (action.t === 'choose' && !decision.resolved) {
-        if (!decision.options[action.option]) throw new EngineError('Invalid option');
-        resolveDecision(state, rng, decision, action.option);
-        return;
-      }
-      if (action.t === 'continue' && decision.resolved) {
-        const run = state.season.run;
-        if (run) {
-          applyDecisionToRun(
-            run,
-            decision.situationId,
-            decision.resolved.option,
-            decision.resolved.outcome,
-            decision.resolved.momentum,
-          );
-        }
+    case 'tactics': {
+      if (action.t === 'choose') {
+        if (!phase.scout.options[action.option]) throw new EngineError('Invalid tactic');
+        applyTacticToRun(state, action.option);
         state.phase = { kind: 'season' };
         const status = playNext(state, rng);
         if (status === 'season_over') {
@@ -363,7 +356,7 @@ function nextOffseasonStep(state: CareerState, _rng: Rng): void {
     state.phase = { kind: 'event', event: buildPendingEvent(state, next, 'offseason') };
     return;
   }
-  state.phase = { kind: 'training', chosen: null };
+  state.phase = { kind: 'training' };
 }
 
 // ─── Helpers for clients ─────────────────────────────────────────────────────

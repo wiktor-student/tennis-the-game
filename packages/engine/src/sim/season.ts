@@ -78,6 +78,7 @@ export function newSeasonState(state: CareerState, stage: StageId, year: number)
     budgetStart: state.finance.budget,
     started: false,
     busy: [],
+    restBlocks: 0,
   };
 }
 

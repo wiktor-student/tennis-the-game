@@ -3,7 +3,7 @@ import {
   ACHIEVEMENTS,
   EngineError,
   EVENTS,
-  SITUATIONS,
+  TACTICS,
   TOURNAMENTS,
   buildSummary,
   createCareer,
@@ -15,7 +15,7 @@ import {
   step,
   type CareerState,
 } from '../src';
-import { config, playCareer } from './helpers';
+import { config, playCareer, trainPlan } from './helpers';
 
 describe('career creation', () => {
   it('starts an 8-year-old in Tennis 10 at the training screen', () => {
@@ -47,13 +47,19 @@ describe('reducer', () => {
   it('never mutates the input state', () => {
     const state = createCareer(config(), 'immutable');
     const snapshot = JSON.stringify(state);
-    step(state, { t: 'train', skill: 'serve' });
+    step(state, {
+      t: 'train',
+      plan: trainPlan(['serve', 'serve', 'return', 'forehand', 'mental']),
+    });
     expect(JSON.stringify(state)).toBe(snapshot);
   });
 
   it('refuses a coach the player has no reputation for', () => {
     let state: CareerState = createCareer(config(), 'coach');
-    state = step(state, { t: 'train', skill: 'serve' });
+    state = step(state, {
+      t: 'train',
+      plan: trainPlan(['serve', 'serve', 'return', 'forehand', 'mental']),
+    });
     expect(() =>
       step(state, { t: 'team', coach: 'super', physio: false, fitnessCoach: false }),
     ).toThrow(EngineError);
@@ -110,7 +116,7 @@ describe('content integrity', () => {
   it('has unique ids', () => {
     const unique = (ids: string[]) => new Set(ids).size === ids.length;
     expect(unique(EVENTS.map((e) => e.id))).toBe(true);
-    expect(unique(SITUATIONS.map((s) => s.id))).toBe(true);
+    expect(unique(TACTICS.map((t) => t.id))).toBe(true);
     expect(unique(ACHIEVEMENTS.map((a) => a.id))).toBe(true);
     expect(Object.keys(TOURNAMENTS).length).toBeGreaterThan(150);
   });
@@ -121,10 +127,7 @@ describe('content integrity', () => {
       texts.push(e.text.pl, e.text.en);
       for (const o of e.options) texts.push(o.label.pl, o.label.en, o.result.pl, o.result.en);
     }
-    for (const s of SITUATIONS) {
-      texts.push(s.text.pl, s.text.en);
-      for (const o of s.options) texts.push(o.result.super.pl, o.result.fail.en);
-    }
+    for (const t of TACTICS) texts.push(t.name.pl, t.name.en, t.motto.pl, t.description.en);
     for (const t of texts) {
       expect(t.length).toBeGreaterThan(0);
       expect((t.match(/\[\[/g) ?? []).length).toBe((t.match(/\]\]/g) ?? []).length);

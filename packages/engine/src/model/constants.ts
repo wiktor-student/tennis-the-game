@@ -54,14 +54,6 @@ export const FORM_WEIGHTS = {
   life: 4,
 } as const;
 
-/** Momentum applied after a match decision, by outcome. */
-export const MOMENTUM = {
-  safe: { super: 0.055, success: 0.025, fail: -0.04 },
-  risky: { super: 0.085, success: 0.045, fail: -0.06 },
-} as const;
-
-export const SUPER_SHARE = { safe: 0.07, risky: 0.18 } as const;
-
 /** Growth rate multiplier by age (applied to the gap between skill and potential). */
 export function ageGrowthFactor(age: number): number {
   if (age <= 12) return 1.0;

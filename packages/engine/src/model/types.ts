@@ -203,8 +203,6 @@ export interface MatchScore {
   walkover?: boolean;
 }
 
-export type DecisionOutcome = 'super' | 'success' | 'fail';
-
 export interface PlayedMatch {
   round: string; // e.g. 'R32', 'QF', 'Q1', 'RR1', 'BRONZE'
   oppId: string;
@@ -216,11 +214,15 @@ export interface PlayedMatch {
   score: MatchScore;
   /** Score rendered from the player's perspective, e.g. "6-4 3-6 7-6(5)". */
   scoreText: string;
-  decisions: { situationId: string; option: number; outcome: DecisionOutcome }[];
+  /** Tactic card played (key matches: chosen by the player; others: preferred card). */
+  tactic: string | null;
+  /** Planned edge of the tactic, in serve-point probability. */
+  edge: number;
+  keyMatch: boolean;
   nemesis: boolean;
 }
 
-/** A match paused at a set boundary, waiting for the player's decision. */
+/** A match about to start (or in progress), possibly waiting for the player's tactic. */
 export interface MatchProgress {
   oppId: string;
   round: string;
@@ -228,13 +230,10 @@ export interface MatchProgress {
   sets: SetScore[];
   /** 'A' = player serves first in the next set. */
   nextServer: 'A' | 'B';
-  momentum: number;
-  decisions: PlayedMatch['decisions'];
-  decisionsTaken: number;
-  /** Set counts at which a decision was already offered. */
-  asked: number[];
-  maxDecisions: number;
   key: boolean;
+  tactic: string | null;
+  edge: number;
+  spread: number;
   /** Day-form noise rolled once per match (player, opponent). */
   dayA: number;
   dayB: number;
@@ -291,21 +290,48 @@ export interface TournamentResult {
   medal?: 'gold' | 'silver' | 'bronze' | null;
 }
 
-// ─── Decisions & events ──────────────────────────────────────────────────────
+// ─── Tactics & events ────────────────────────────────────────────────────────
 
-export interface DecisionOptionView {
-  chance: number;
-  superChance: number;
-  risky: boolean;
+export interface TacticOptionView {
+  tacticId: string;
+  /** Expected edge in serve-point probability (e.g. 0.018 = +1.8 pp). */
+  edge: number;
+  /** Per-set swing (standard deviation) of the edge. */
+  spread: number;
+  mastery: number;
 }
 
-export interface PendingDecision {
-  situationId: string;
-  options: DecisionOptionView[];
-  scoreText: string;
-  oppName: string;
+/** Scouting report shown before a key match. */
+export interface PendingTactics {
+  tournamentId: string;
   round: string;
-  resolved: { option: number; outcome: DecisionOutcome; momentum: number; roll: number } | null;
+  oppId: string;
+  oppName: string;
+  oppNat: string;
+  oppRank: number | null;
+  oppSeed: number | null;
+  oppStyle: PlayStyle;
+  oppHand: Hand;
+  /** Opponent rating minus the player's OVR. */
+  oppDelta: number;
+  nemesis: boolean;
+  surface: Surface;
+  options: TacticOptionView[];
+}
+
+export interface TacticDeck {
+  owned: string[];
+  /** Card used automatically in ordinary matches. */
+  preferred: string;
+  record: Record<string, { played: number; won: number }>;
+}
+
+export interface TrainingPlan {
+  skills: Partial<Record<SkillId, number>>;
+  rest: number;
+  /** Tactic card to learn (costs TACTIC_BLOCK_COST blocks). */
+  learn: string | null;
+  preferred: string;
 }
 
 export type EffectTarget =
@@ -325,6 +351,7 @@ export type EffectTarget =
   | { kind: 'turn_pro' }
   | { kind: 'exempt'; count: number }
   | { kind: 'reveal_height' }
+  | { kind: 'tactic'; tactic: string }
   | { kind: 'retire_forced' };
 
 export interface PendingEvent {
@@ -360,6 +387,8 @@ export interface SeasonState {
   started: boolean;
   /** AI players still busy in a two-week event. */
   busy: string[];
+  /** Training blocks spent on rest this offseason (lowers injury risk). */
+  restBlocks: number;
 }
 
 export interface SeasonRecord {
@@ -425,7 +454,7 @@ export interface CareerStats {
   seriousInjuries: number;
   nemesisWon: number;
   nemesisLost: number;
-  decisionsSuper: number;
+  keyMatchesWon: number;
   bigUpsets: number;
   maxDebt: number;
   fiveSetWins: number;
@@ -446,12 +475,12 @@ export interface CareerConfig {
 
 export type Phase =
   | { kind: 'event'; event: PendingEvent }
-  | { kind: 'training'; chosen: SkillId | null }
+  | { kind: 'training' }
   | { kind: 'team' }
   | { kind: 'sponsors'; offers: SponsorOffer[] }
   | { kind: 'schedule' }
   | { kind: 'season' }
-  | { kind: 'decision'; decision: PendingDecision }
+  | { kind: 'tactics'; scout: PendingTactics }
   | { kind: 'season_end'; record: SeasonRecord }
   | { kind: 'retired'; reason: RetireReason };
 
@@ -478,6 +507,7 @@ export interface CareerState {
     turnedProAge: number | null;
   };
   stats: CareerStats;
+  tactics: TacticDeck;
   history: SeasonRecord[];
   flags: string[];
   /** Events already seen (for `once` events). */
@@ -492,7 +522,7 @@ export interface CareerState {
 export type Action =
   | { t: 'continue' }
   | { t: 'choose'; option: number }
-  | { t: 'train'; skill: SkillId }
+  | { t: 'train'; plan: TrainingPlan }
   | { t: 'team'; coach: CoachId; physio: boolean; fitnessCoach: boolean }
   | { t: 'sponsors'; accept: string[] }
   | { t: 'schedule'; plan: (string | null)[] }

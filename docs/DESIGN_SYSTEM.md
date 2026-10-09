@@ -1,54 +1,65 @@
-# System wizualny
+# System wizualny — „Zeszyt Tenisisty”
 
-> „Sesja nocna na korcie centralnym.” Gra ma wyglądać jak tablica wyników i program turniejowy, nie jak panel SaaS.
+> Cała gra to jeden zeszyt zawodnika, leżący na biurku obitym zielonym suknem w kolorze kortu. Żadnych ciemnych dashboardów, żadnych pasków postępu z aplikacji SaaS — wszystko ma swój odpowiednik w prawdziwym przedmiocie.
 
-## Kierunek
+## Mapa metafor
 
-| Element | Decyzja | Dlaczego |
+| Element gry | Przedmiot w zeszycie |
+|---|---|
+| Menu główne | okładka zeszytu z naklejką „Własność:” i gumką, obok karteczki i karty katalogowe |
+| Zapisy | trzy zeszyty na biurku |
+| Nowa kariera | karta zgłoszenia zawodnika (pola do wpisania odręcznie, kratki do zaznaczenia) |
+| Statystyki zawodnika | **legitymacja** na lewej stronie: polaroid, radar umiejętności, pogoda = forma, bateria = zmęczenie, mini-korty = czucie nawierzchni |
+| Nawigacja w grze | kolorowe zakładki wystające z góry zeszytu |
+| Trening | planer bloków: kolorowe kafelki wypełniają rząd pustych pól |
+| Sztab | karty z cytatem trenera pisanym odręcznie |
+| Sponsorzy | umowy przyklejone taśmą, z linią podpisu (podpis „pisze się” animacją) |
+| Terminarz | turnieje jako **pieczątki pocztowe** — kolor tuszu = nawierzchnia, odbite = zaplanowane/rozegrane |
+| Sezon | oś kółek z wynikami pisanymi długopisem + **protokół turnieju** jak arkusz sędziowski |
+| Ważny mecz | **teczka skauta** + ręka **kart taktyk** (karty do gry z diagramem kortu) |
+| Wydarzenia | listy (poza sezonem) i SMS-y na telefonie (w sezonie) |
+| Koniec sezonu | wycinek z gazety o postrzępionych brzegach |
+| Emerytura | **hasło w encyklopedii** generowane z kariery + pieczęć „Dorobek” |
+| Osiągnięcia | gablota z drewnianymi półkami i mosiężnymi tabliczkami |
+| Rakiety | stojak na rakiety z przywieszkami |
+
+## Paleta (tokens.css)
+
+| Token | Wartość | Rola |
 |---|---|---|
-| Tło | głęboka zieleń trawy (`#0a1510` → `#11241b`) | kort trawiasty nocą, tradycja All England Club |
-| Linie | kremowa „kreda” (`#efe9d8`, ramki paneli jak linie kortu) | linie kortu, papier programu turniejowego |
-| Akcent | optyczna żółć piłki (`#d8ef4a`) — **tylko** CTA, OVR, LEGACY, tytuły | jedna głośna rzecz na ekranie, jak piłka |
-| Nawierzchnie | mączka `#c8643b`, trawa `#4f9a4a`, twarda `#3f78bf`, hala `#8676c4` | kolor zawsze niesie znaczenie |
-| Wielki Szlem | fiolet `#6c4a93` | prestiż, kolorystyka Wimbledonu |
-| Wynik decyzji | super `#a98bdb`, sukces `#5fae69`, porażka `#c98b3a` | czytelne i rozróżnialne także w słabym kontraście |
+| `--desk` | `#1e3a2c` | biurko / sukno w kolorze kortu |
+| `--paper`, `--paper-2`, `--card` | `#f5f0e4`, `#ece5d3`, `#fbf8f0` | papier zeszytu, lewa strona, karty |
+| `--grid`, `--rule` | granat 7,5% / 16% | kratka i linie |
+| `--margin` | `#d65a4a` | czerwony margines, akcenty, ✓ |
+| `--ink`, `--ink-2`, `--pencil` | `#1d2a47`, `#3c4864`, `#737b8c` | atrament i ołówek |
+| `--highlight` | `#f6e35a` | zakreślacz — jedyny jaskrawy akcent (CTA, aktywna zakładka, tytuły) |
+| `--clay`, `--grass`, `--hard`, `--indoor` | `#c4552d`, `#2f6b3a`, `#2f5f9e`, `#6b5aa6` | tusz pieczątek i kropki nawierzchni |
 
 ## Typografia
 
-| Rola | Krój | Użycie |
+| Rola | Krój | Gdzie |
 |---|---|---|
-| Display / liczby | **Barlow Condensed** 500–700, wersaliki, tracking | tablica wyników: OVR, statystyki, etykiety, przyciski |
-| Narracja | **Source Serif 4** 400/600, kursywa | wydarzenia, sytuacje meczowe, nagłówki gazet, werdykt |
-| Interfejs | **Barlow** 400–600 | opisy, tabele, formularze |
+| Nagłówki, encyklopedia | **Instrument Serif** | tytuły stron, nazwy turniejów, hasło w encyklopedii |
+| Interfejs | **IBM Plex Sans** | opisy, przyciski, tabele |
+| Dane | **IBM Plex Mono** | etykiety, wyniki setów, punkty, protokoły |
+| Odręczne | **Caveat** | podpisy, oceny, wyniki na osi sezonu, notatki skauta i trenera |
 
-Fonty są hostowane lokalnie (`@fontsource`, tylko podzbiory latin + latin-ext — polskie znaki). Cyfry tabelaryczne (`font-feature-settings: 'tnum'`) wszędzie, gdzie są liczby.
+Fonty hostowane lokalnie (`@fontsource`, tylko latin + latin-ext).
 
-## Tokeny
+## Komponenty
 
-Wszystkie wartości w [`apps/web/src/styles/tokens.css`](../apps/web/src/styles/tokens.css): kolory (`--bg`, `--panel*`, `--line*`, `--chalk*`, `--ball`, nawierzchnie, wyniki), fonty, rozmiary, promienie, odstępy, krzywa `--ease-out`. Komponenty nie używają surowych wartości kolorów poza tokenami.
+- **Przycisk** — obrys „rysowany piórem” (nierówny `border-radius`), po najechaniu cień offsetowy jak przesunięta kartka; warianty: atrament, zakreślacz, ostrzeżenie.
+- **Wybór** (`.pick`) — karta, po zaznaczeniu czerwony odręczny ✓ i cień zakreślacza.
+- **Kratka** (`.tick`) — natywny checkbox/radio z odręcznym ✓.
+- **Stamp** — SVG z tekstem po okręgu, filtr `feTurbulence` daje nierówny tusz; nieodbita pieczątka = przerywany ołówek.
+- **TacticCard** — karta do gry: przewaga w rogu, diagram kortu, motto odręczne, skala −4…+4 z rozrzutem, kreski ryzyka, trzy piłki mistrzostwa.
+- **Radar** — 7 osi, kreskowanie atramentem, czerwone punkty pomiarowe.
+- **Weather** — sześć ikon formy: burza, deszcz, chmura, przejaśnienia, słońce, upał.
 
-## Motywy graficzne
+## Ruch i dostępność
 
-- **Kort w perspektywie** (`CourtArt.tsx`) — linie boczne, serwisowe, siatka, pasy koszenia, odbijająca się piłka.
-- **Rakieta** (`Racket.tsx`) — SVG z naciągami, malowanie z kolekcji (rama, akcent, owijka).
-- **Tablica wyników** — HUD z OVR w „okienku” jak na tablicy, statystyki w ciemnych komórkach.
-- **Gazeta** — nagłówek sezonu na kremowym papierze, podwójna linia pod tytułem gazety, lekki obrót.
-- **Ruletka szans** — 40 komórek super/sukces/porażka, znacznik przesuwa się do wyniku wylosowanego przez silnik.
-- **Bez emoji.** Ikonografia to kształty CSS/SVG (medale osiągnięć, puchary, kropki nawierzchni, flaga PL).
-
-## Ruch
-
-- Przejścia ekranów: View Transitions API (progresywnie), fokus przenoszony na nagłówek ekranu.
-- `prefers-reduced-motion` respektowane per animacja; dodatkowo ustawienie gry: **pełne / ograniczone / wyłączone** (`data-motion` na `<html>`).
-- Animujemy tylko `opacity`, `translate`, `width` pasków — nic, co wymusza przeliczenie layoutu całej strony.
-
-## Responsywność
-
-- ≥ 900 px: sidebar 300 px + panel główny.
-- < 900 px: panel główny nad sidebarem, HUD łamie statystyki do osobnego wiersza.
-- < 560 px: roadmapa ukrywa odznaki rangi, siatki kafli przechodzą na 2 kolumny, formularze na 1.
-- Cel dotyku ≥ 44 px dla przycisków.
-
-## Dostępność
-
-Natywny `<dialog>` + `showModal()` (fokus, Esc, warstwa top-layer), `aria-pressed` na wyborach, `aria-live="polite"` w panelu rozgrywki, kontrast tekstu na tłach ≥ 4,5:1 dla treści, widoczny `:focus-visible` w kolorze piłki.
+- Przejścia ekranów: View Transitions (kartka przesuwa się w bok), fokus na nagłówek ekranu po nawigacji.
+- Protokół turnieju „spada” na stronę, podpis na umowie pisze się, kropka na zakładce pulsuje, gdy coś czeka na decyzję.
+- `prefers-reduced-motion` + ustawienie gry (pełne / ograniczone / wyłączone).
+- Natywny `<dialog>`, `aria-pressed` na wyborach, `aria-live` na prawej stronie zeszytu, wyraźny fokus (czerwona przerywana ramka).
+- Układ: ≥ 1000 px — rozkładówka; poniżej strona bieżąca nad legitymacją; < 560 px — margines zwęża się, kafle w jednej kolumnie.

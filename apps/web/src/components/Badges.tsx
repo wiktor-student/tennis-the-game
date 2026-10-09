@@ -1,37 +1,39 @@
 import { LEVELS, SURFACE_INFO, type Gender, type LevelId, type Surface } from '@ttg/engine';
+import type { EffectChip } from '../lib/effects';
 import { useSettings } from '../store/settings';
 
-export function LevelBadge({ level, gender }: { level: LevelId; gender: Gender }) {
-  return <span className={`badge badge--${level}`}>{LEVELS[level].badge[gender]}</span>;
+const BIG: LevelId[] = ['m1000', 'finals', 'olympics', 'j_slam'];
+
+export function LevelTag({ level, gender }: { level: LevelId; gender: Gender }) {
+  const cls = level === 'gs' ? 'tag--gs' : BIG.includes(level) ? 'tag--big' : '';
+  return <span className={`tag ${cls}`}>{LEVELS[level].badge[gender]}</span>;
 }
 
-export function SurfaceDot({ surface }: { surface: Surface }) {
+export function SurfaceTag({ surface }: { surface: Surface }) {
   const locale = useSettings((s) => s.locale);
   return (
-    <span
-      className={`surface-dot surface-dot--${surface}`}
-      title={SURFACE_INFO[surface].name[locale]}
-    />
+    <span className={`surface surface--${surface}`}>
+      <span className="surface__dot" />
+      {SURFACE_INFO[surface].short[locale]}
+    </span>
   );
 }
 
 export function Flag({ nat }: { nat: string }) {
   if (nat === 'PL') return <span className="flag flag--pl" title="Polska" />;
-  return <span className="flag">{nat}</span>;
+  return <span className="flag mono">{nat}</span>;
 }
 
-export function Chips({ chips }: { chips: { text: string; tone: 'up' | 'down' | 'neutral' }[] }) {
+/** Effects written in pencil: "Psychika +2  ·  −4 tys. zł". */
+export function Marks({ chips }: { chips: EffectChip[] }) {
   if (chips.length === 0) return null;
   return (
-    <div className="row" style={{ flexWrap: 'wrap', gap: 6 }}>
+    <p className="marks">
       {chips.map((c, i) => (
-        <span
-          key={i}
-          className={`chip ${c.tone === 'up' ? 'chip--up' : c.tone === 'down' ? 'chip--down' : ''}`}
-        >
+        <span key={i} className={c.tone}>
           {c.text}
         </span>
       ))}
-    </div>
+    </p>
   );
 }

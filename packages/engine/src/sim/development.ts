@@ -1,23 +1,8 @@
 import { COACHES, FITNESS_COACH } from '../content/coaches';
 import { BASE_GROWTH, ageDecline, ageGrowthFactor } from '../model/constants';
 import { SKILL_IDS, clampSkill } from '../model/skills';
-import type { CareerState, SkillId, Skills, SurfaceGroup } from '../model/types';
+import type { CareerState, Skills, SurfaceGroup } from '../model/types';
 import type { Rng } from '../rng';
-
-/** Expected skill gain for the chosen winter training focus. */
-export function trainingGain(state: CareerState): number {
-  const coach = COACHES[state.team.coach];
-  const factor = Math.max(0.45, ageGrowthFactor(state.player.age));
-  return Math.round(coach.trainingBonus * factor * 10) / 10;
-}
-
-export function applyTraining(state: CareerState, skill: SkillId): number {
-  // Diminishing returns once a skill approaches its potential.
-  const headroom = (state.player.potential[skill] + 2 - state.player.skills[skill]) / 8;
-  const gain = Math.round(trainingGain(state) * Math.max(0.15, Math.min(1, headroom)) * 10) / 10;
-  state.player.skills[skill] = clampSkill(state.player.skills[skill] + gain);
-  return gain;
-}
 
 /**
  * End-of-season development: growth towards potential (coach multiplier, chemistry,

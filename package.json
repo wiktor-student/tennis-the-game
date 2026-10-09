@@ -2,7 +2,7 @@
   "name": "tennis-the-game",
   "version": "1.0.0",
   "private": true,
-  "description": "Symulator Polskiego Tenisisty — tekstowy symulator kariery tenisowej: od ściany za blokiem po Centre Court.",
+  "description": "Zeszyt Tenisisty — tekstowa gra o karierze tenisowej: od ściany za blokiem po Wimbledon, zapisana w jednym zeszycie.",
   "license": "UNLICENSED",
   "type": "module",
   "engines": {

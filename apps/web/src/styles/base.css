@@ -12,30 +12,41 @@ html {
 body {
   margin: 0;
   min-height: 100dvh;
-  background:
-    radial-gradient(1200px 600px at 50% -10%, rgba(79, 154, 74, 0.12), transparent 60%),
-    linear-gradient(180deg, var(--bg) 0%, #08110d 100%) fixed;
-  color: var(--chalk);
+  color: var(--ink);
   font-family: var(--font-body);
-  font-size: var(--text-md);
-  line-height: 1.45;
-  font-feature-settings:
-    'tnum' 1,
-    'lnum' 1;
+  font-size: 15px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  /* Court-green felt with faint court lines */
+  background:
+    linear-gradient(
+      90deg,
+      transparent calc(50% - 1px),
+      var(--desk-line) calc(50% - 1px),
+      var(--desk-line) calc(50% + 1px),
+      transparent calc(50% + 1px)
+    ),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.04) 0 2px, transparent 2px 5px),
+    radial-gradient(1400px 800px at 50% 0%, var(--desk-2), var(--desk) 70%) fixed;
 }
 
 h1,
 h2,
 h3,
-h4 {
+h4,
+p,
+figure,
+blockquote {
   margin: 0;
-  font-weight: 600;
-  line-height: 1.1;
 }
 
-p {
-  margin: 0;
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.005em;
 }
 
 button,
@@ -50,12 +61,12 @@ button {
 }
 
 a {
-  color: var(--ball);
+  color: var(--hard);
 }
 
 :focus-visible {
-  outline: 2px solid var(--ball);
-  outline-offset: 2px;
+  outline: 2px dashed var(--margin);
+  outline-offset: 3px;
 }
 
 [tabindex='-1']:focus {
@@ -63,8 +74,8 @@ a {
 }
 
 ::selection {
-  background: var(--ball);
-  color: var(--ball-ink);
+  background: var(--highlight);
+  color: var(--ink);
 }
 
 .visually-hidden {
@@ -76,7 +87,6 @@ a {
   white-space: nowrap;
 }
 
-/* Motion preferences: the in-game setting overrides via [data-motion]. */
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*),
   ::view-transition-old(*),
@@ -92,7 +102,24 @@ a {
   transition: none !important;
 }
 
-::view-transition-old(root),
+::view-transition-old(root) {
+  animation: page-out 220ms var(--ease) both;
+}
+
 ::view-transition-new(root) {
-  animation-duration: 180ms;
+  animation: page-in 260ms var(--ease) both;
+}
+
+@keyframes page-out {
+  to {
+    opacity: 0;
+    translate: -14px 0;
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    translate: 14px 0;
+  }
 }

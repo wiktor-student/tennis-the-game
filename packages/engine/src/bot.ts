@@ -1,7 +1,8 @@
 import { COACHES, COACH_ORDER, PHYSIO } from './content/coaches';
 import { EVENTS_BY_ID } from './content/events';
 import { SKILL_IDS } from './model/skills';
-import type { Action, CareerState } from './model/types';
+import type { Action, CareerState, SkillId } from './model/types';
+import { TACTIC_BLOCK_COST, learnableTactics, trainingBlocks } from './sim/tactics';
 import { staffCost } from './sim/economy';
 
 /**
@@ -30,10 +31,21 @@ export function botAction(state: CareerState): Action | null {
     }
     case 'training': {
       const p = state.player;
-      const skill = [...SKILL_IDS].sort(
+      let blocks = trainingBlocks(state);
+      const learn = learnableTactics(state)[0] ?? null;
+      if (learn) blocks -= TACTIC_BLOCK_COST;
+      const rest = p.fatigue > 30 || p.age >= 30 ? 1 : 0;
+      blocks -= rest;
+      // Spread blocks over the skills with the biggest gap to potential.
+      const order = [...SKILL_IDS].sort(
         (a, b) => p.potential[b] - p.skills[b] - (p.potential[a] - p.skills[a]),
-      )[0];
-      return { t: 'train', skill: skill ?? 'serve' };
+      );
+      const skills: Partial<Record<SkillId, number>> = {};
+      for (let i = 0; i < blocks; i++) {
+        const id = order[i % 3] as SkillId;
+        skills[id] = (skills[id] ?? 0) + 1;
+      }
+      return { t: 'train', plan: { skills, rest, learn, preferred: state.tactics.preferred } };
     }
     case 'team': {
       const budget = state.finance.budget;
@@ -52,11 +64,10 @@ export function botAction(state: CareerState): Action | null {
       return { t: 'schedule', plan: state.season.plan };
     case 'season':
       return { t: 'play' };
-    case 'decision': {
-      if (phase.decision.resolved) return { t: 'continue' };
+    case 'tactics': {
       let best = 0;
-      phase.decision.options.forEach((o, i) => {
-        if (o.chance > (phase.decision.options[best]?.chance ?? 0)) best = i;
+      phase.scout.options.forEach((o, i) => {
+        if (o.edge > (phase.scout.options[best]?.edge ?? -1)) best = i;
       });
       return { t: 'choose', option: best };
     }

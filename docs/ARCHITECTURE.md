@@ -1,6 +1,6 @@
 # Architektura
 
-> Jak zbudowany jest Symulator Polskiego Tenisisty i dlaczego właśnie tak.
+> Jak zbudowany jest Zeszyt Tenisisty i dlaczego właśnie tak.
 > Decyzje projektowe z uzasadnieniem: [docs/adr](./adr).
 
 ## 1. Widok z lotu ptaka
@@ -46,9 +46,9 @@ tennis-the-game/
 │   │   │   ├── bot.ts           automatyczny gracz (testy, balans)
 │   │   │   ├── model/           typy domeny, stałe balansu, skille, CareerSummary
 │   │   │   ├── sim/             systemy: mecz, turniej, sezon, pole AI, ranking,
-│   │   │   │                    rozwój, ekonomia, wydarzenia, decyzje, LEGACY
+│   │   │   │                    rozwój, ekonomia, wydarzenia, taktyki, LEGACY
 │   │   │   ├── content/         dane gry: turnieje, poziomy, trenerzy, sponsorzy,
-│   │   │   │                    wydarzenia, sytuacje meczowe, osiągnięcia, werdykty…
+│   │   │   │                    wydarzenia, karty taktyk, osiągnięcia, werdykty…
 │   │   │   └── meta/            Kariera Dnia, cele dnia, wyzwanie tygodnia
 │   │   ├── test/                Vitest: RNG, mecz, drabinki, ranking, kariery, replay
 │   │   └── scripts/             raport balansu, diagnostyka trajektorii i fairness
@@ -66,14 +66,15 @@ tennis-the-game/
 │   │   └── test/
 │   └── web/                 @ttg/web — React 18 + Vite
 │       └── src/
-│           ├── screens/         Home, Slots, NewCareer, Game, Achievements, Museum…
+│           ├── screens/         Home (biurko), Slots (zeszyty), NewCareer, Game (rozkładówka), Demo (dev)…
 │           ├── phases/          ekrany faz kariery (Training, Team, Sponsors, Schedule,
-│           │                    Season + decyzje, Event, SeasonEnd, Retired)
-│           ├── components/      Racket (SVG), CourtArt, Roulette, Dialog, Badges
+│           │                    Season, Tactics (raport skauta), Event, SeasonEnd, Retired)
+│           ├── panels/          zakładki: Terminarz, Ranking, Talia, Kasa, Kronika
+│           ├── components/      Stamp, Radar, TacticCard, Weather, Polaroid, Signature, Racket, Dialog
 │           ├── store/           game (zapisy, dispatch, submit), meta, settings
 │           ├── i18n/            słownik UI PL/EN
 │           ├── lib/             api client, format, efekty, storage, nawigacja
-│           └── styles/          tokens.css, base.css, ui.css, game.css
+│           └── styles/          tokens.css, base.css, paper.css, screens.css
 ├── docs/                    dokumentacja (ten katalog)
 ├── docker-compose.yml       db + api + web
 └── .github/workflows/ci.yml lint · typecheck · test · build

@@ -3,6 +3,7 @@ import {
   COACHES,
   FITNESS_COACH,
   PHYSIO,
+  TACTICS,
   equipmentCost,
   staffCost,
   type CareerState,
@@ -22,86 +23,78 @@ export function TeamPhase({ state }: { state: CareerState }) {
   const [coach, setCoach] = useState<CoachId>(state.team.coach);
   const [physio, setPhysio] = useState(state.team.physio);
   const [fitnessCoach, setFitnessCoach] = useState(state.team.fitnessCoach);
-
-  const staff = staffCost(state, coach, physio, fitnessCoach);
-  const after = state.finance.budget - staff - equipmentCost(state);
+  const after =
+    state.finance.budget - staffCost(state, coach, physio, fitnessCoach) - equipmentCost(state);
 
   return (
-    <div className="panel panel--court stack">
-      <div>
-        <h2 className="phase-title">{t('phase.team')}</h2>
-        <p className="muted">{t('phase.teamHint')}</p>
-      </div>
-      <div className="choices">
+    <div className="stack">
+      <h2 className="title">{t('team.title')}</h2>
+      <p>{t('team.lead')}</p>
+      <div className="coach-grid">
         {COACH_ORDER.map((id) => {
           const def = COACHES[id];
           const locked = id !== state.team.coach && state.player.reputation < def.minReputation;
+          const teaches = TACTICS.filter((x) => x.teacher === id).map((x) => c(x.name));
           return (
             <button
               key={id}
-              className="choice"
+              className="pick coach"
               aria-pressed={coach === id}
               disabled={locked}
               onClick={() => setCoach(id)}
             >
-              <span className="choice__title">
-                {c(def.name)}{' '}
-                {id === state.team.coach && <span className="chip">{t('phase.current')}</span>}
+              <span className="spread">
+                <span className="pick__title">{c(def.name)}</span>
+                {id === state.team.coach && <span className="tag">{t('team.current')}</span>}
               </span>
-              <span className="choice__aside num">
+              <span className="hand coach__quote">„{c(def.description)}”</span>
+              <span className="mono coach__meta">
                 {def.salary === 0
-                  ? '0 zł'
-                  : t('phase.salary', { amount: money(def.salary, locale) })}
+                  ? t('team.free')
+                  : t('team.salary', { amount: money(def.salary, locale) })}{' '}
+                · {t('team.growth', { x: def.growth.toFixed(2) })}
               </span>
-              <span className="choice__meta">
-                {c(def.description)} · {t('phase.growth', { x: def.growth.toFixed(2) })}
-                {locked && ` · ${t('phase.requires', { rep: def.minReputation })}`}
+              <span className="pick__meta">
+                {teaches.length
+                  ? t('team.teaches', { cards: teaches.join(', ') })
+                  : t('team.teachesNone')}
               </span>
+              {locked && (
+                <span className="tag tag--down">
+                  {t('team.requires', { rep: def.minReputation })}
+                </span>
+              )}
             </button>
           );
         })}
       </div>
-      <div className="grid-2">
-        <label className="toggle panel">
+      <div className="row wrap" style={{ gap: 24 }}>
+        <label className="tick">
           <input type="checkbox" checked={physio} onChange={(e) => setPhysio(e.target.checked)} />
           <span>
-            <strong>{t('side.physio')}</strong>
-            <br />
-            <small className="muted">
-              {t('phase.salary', { amount: money(PHYSIO.salary, locale) })}
-            </small>
+            {t('team.physio')} <span className="mono pencil">({money(PHYSIO.salary, locale)})</span>
           </span>
         </label>
-        <label className="toggle panel">
+        <label className="tick">
           <input
             type="checkbox"
             checked={fitnessCoach}
             onChange={(e) => setFitnessCoach(e.target.checked)}
           />
           <span>
-            <strong>{t('side.fitnessCoach')}</strong>
-            <br />
-            <small className="muted">
-              {t('phase.salary', { amount: money(FITNESS_COACH.salary, locale) })}
-            </small>
+            {t('team.fitness')}{' '}
+            <span className="mono pencil">({money(FITNESS_COACH.salary, locale)})</span>
           </span>
         </label>
       </div>
-      <dl className="budget-sheet">
-        <dt>{t('budget.onAccount')}</dt>
-        <dd className="num">{money(state.finance.budget, locale)}</dd>
-        <dt>{t('budget.staff')}</dt>
-        <dd className="num is-negative">{money(-staff, locale)}</dd>
-        <dt>{t('budget.equipment')}</dt>
-        <dd className="num is-negative">{money(-equipmentCost(state), locale)}</dd>
-        <dt>{t('budget.after')}</dt>
-        <dd className={`num ${after < 0 ? 'is-negative' : ''}`}>{money(after, locale)}</dd>
-      </dl>
+      <p className="hand budget-line">
+        {t('team.after')} <span className={after < 0 ? 'is-bad' : ''}>{money(after, locale)}</span>
+      </p>
       <button
-        className="btn btn--primary btn--block"
+        className="btn btn--ink btn--block"
         onClick={() => dispatch({ t: 'team', coach, physio, fitnessCoach })}
       >
-        {t('phase.next')}
+        {t('team.next')}
       </button>
     </div>
   );

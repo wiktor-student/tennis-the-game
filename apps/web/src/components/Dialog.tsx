@@ -9,7 +9,7 @@ interface Props {
 
 /**
  * Native modal <dialog> opened with showModal(): focus trapping, Esc / platform close
- * requests and the top layer come from the browser.
+ * requests and the top layer come from the browser. Styled as an index card.
  */
 export function Dialog({ open, title, onClose, children }: Props) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -24,8 +24,9 @@ export function Dialog({ open, title, onClose, children }: Props) {
 
   return (
     <dialog ref={ref} className="dialog" aria-labelledby={titleId} onClose={onClose}>
-      <div className="dialog__body stack">
-        <h2 id={titleId} className="display" style={{ fontSize: '1.6rem' }}>
+      <div className="card dialog__body">
+        <span className="tape tape--top" />
+        <h2 id={titleId} className="title" style={{ fontSize: '1.9rem' }}>
           {title}
         </h2>
         {children}
@@ -48,13 +49,13 @@ interface ConfirmProps {
 export function ConfirmDialog(p: ConfirmProps) {
   return (
     <Dialog open={p.open} title={p.title} onClose={p.onCancel}>
-      <p className="muted">{p.text}</p>
+      <p>{p.text}</p>
       <div className="row" style={{ justifyContent: 'flex-end' }}>
-        <button className="btn btn--ghost" onClick={p.onCancel}>
+        <button className="btn btn--sm" onClick={p.onCancel}>
           {p.cancelLabel}
         </button>
         <button
-          className={`btn ${p.danger ? 'btn--danger' : 'btn--primary'}`}
+          className={`btn btn--sm ${p.danger ? 'btn--danger' : 'btn--ink'}`}
           onClick={p.onConfirm}
         >
           {p.confirmLabel}

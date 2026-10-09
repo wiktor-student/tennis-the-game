@@ -42,11 +42,26 @@ export const CareerConfigSchema = z.object({
 });
 export type CareerConfigDto = z.infer<typeof CareerConfigSchema>;
 
+const Blocks = z.number().int().min(0).max(10);
+
 /** Mirrors the engine's Action union. */
 export const ActionSchema = z.discriminatedUnion('t', [
   z.object({ t: z.literal('continue') }),
-  z.object({ t: z.literal('choose'), option: z.number().int().min(0).max(5) }),
-  z.object({ t: z.literal('train'), skill: SkillIdSchema }),
+  z.object({ t: z.literal('choose'), option: z.number().int().min(0).max(15) }),
+  z.object({
+    t: z.literal('train'),
+    plan: z.object({
+      skills: z.object(
+        Object.fromEntries(SkillIdSchema.options.map((id) => [id, Blocks.optional()])) as Record<
+          z.infer<typeof SkillIdSchema>,
+          z.ZodOptional<typeof Blocks>
+        >,
+      ),
+      rest: Blocks,
+      learn: z.string().max(32).nullable(),
+      preferred: z.string().max(32),
+    }),
+  }),
   z.object({
     t: z.literal('team'),
     coach: CoachIdSchema,

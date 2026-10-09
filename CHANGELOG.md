@@ -2,6 +2,18 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/) · wersjonowanie: [SemVer](https://semver.org/lang/pl/). Zmiany wpływające na wynik istniejących seedów oznaczamy **[engine]**.
 
+## [2.0.0] — 2026-10-09 — „Zeszyt Tenisisty”
+
+### Zmienione
+- **Nowa tożsamość i interfejs:** gra nazywa się *Zeszyt Tenisisty*. Cały UI to zeszyt zawodnika na zielonym biurku — okładka jako menu, legitymacja z radarem umiejętności, zakładki, pieczątki turniejów, protokoły, listy i SMS-y, wycinki z gazet, gablota, hasło w encyklopedii. Nowe kroje: Instrument Serif, IBM Plex Sans/Mono, Caveat.
+- **[engine] Talia taktyk zamiast decyzji w trakcie meczu:** przed ważnym meczem raport skauta (styl rywala, siła, ręka, nawierzchnia) i wybór jednej z 12 kart planu gry. Karty mają skuteczność wobec stylów, ryzyko (rozrzut w secie) i mistrzostwo zdobywane wygranymi. Uczą ich trenerzy.
+- **[engine] Trening blokowy:** zamiast jednego skilla — 5–7 bloków do rozdzielenia między umiejętności (malejące zyski), odpoczynek i naukę nowych kart; plan na co dzień gra w zwykłych meczach.
+- „LEGACY” w interfejsie to teraz **Dorobek**; „Kariera Dnia” to **Zawodnik dnia**.
+- Osiągnięcia: usunięte „Instynkt”, dodane „Taktyk”, „Pełna talia”, „Gracz na wielkie mecze” (razem 50).
+
+### Usunięte
+- Sytuacje meczowe i ruletka szans (zastąpione taktykami).
+
 ## [1.0.0] — 2026-10-09
 
 ### Dodane

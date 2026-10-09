@@ -1,4 +1,10 @@
-import { applyAction, createCareer, type Action, type CareerConfig } from '@ttg/engine';
+import {
+  ENGINE_VERSION,
+  applyAction,
+  createCareer,
+  type Action,
+  type CareerConfig,
+} from '@ttg/engine';
 import { describe, expect, it } from 'vitest';
 import { botAction } from '../../../packages/engine/src/bot';
 import { shiftDay } from '../src/lib/time';
@@ -29,17 +35,27 @@ describe('career verification', () => {
   const { actions, legacy } = playLog('verify-seed');
 
   it('accepts an honest action log and reproduces LEGACY', () => {
-    const result = verifyCareer({ config, seed: 'verify-seed', engineVersion: '1.0.0', actions });
+    const result = verifyCareer({
+      config,
+      seed: 'verify-seed',
+      engineVersion: ENGINE_VERSION,
+      actions,
+    });
     expect(result.ok).toBe(true);
     if (result.ok) expect(result.summary.legacy).toBe(legacy);
   });
 
   it('rejects the log against a different seed or config', () => {
-    const wrongSeed = verifyCareer({ config, seed: 'other-seed', engineVersion: '1.0.0', actions });
+    const wrongSeed = verifyCareer({
+      config,
+      seed: 'other-seed',
+      engineVersion: ENGINE_VERSION,
+      actions,
+    });
     const wrongConfig = verifyCareer({
       config: { ...config, background: 'chosen' },
       seed: 'verify-seed',
-      engineVersion: '1.0.0',
+      engineVersion: ENGINE_VERSION,
       actions,
     });
     // A foreign log either breaks on an illegal action or ends at a different result.
@@ -54,7 +70,7 @@ describe('career verification', () => {
       verifyCareer({
         config,
         seed: 'verify-seed',
-        engineVersion: '1.0.0',
+        engineVersion: ENGINE_VERSION,
         actions: actions.slice(0, 50),
       }),
     ).toMatchObject({
@@ -64,7 +80,12 @@ describe('career verification', () => {
     const tampered = [...actions];
     tampered.splice(3, 0, { t: 'retire' });
     expect(
-      verifyCareer({ config, seed: 'verify-seed', engineVersion: '1.0.0', actions: tampered }).ok,
+      verifyCareer({
+        config,
+        seed: 'verify-seed',
+        engineVersion: ENGINE_VERSION,
+        actions: tampered,
+      }).ok,
     ).toBe(false);
   });
 

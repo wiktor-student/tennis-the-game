@@ -1,4 +1,4 @@
-import { COACHES, SKILL_INFO, type EffectTarget, type L } from '@ttg/engine';
+import { COACHES, SKILL_INFO, TACTICS_BY_ID, type EffectTarget, type L } from '@ttg/engine';
 import type { Locale } from '../store/settings';
 import { money, signed } from './format';
 
@@ -80,6 +80,14 @@ export function effectChips(effects: EffectTarget[], locale: Locale): EffectChip
         break;
       case 'exempt':
         chips.push({ text: `Junior exempt ×${e.count}`, tone: 'up' });
+        break;
+      case 'tactic':
+        chips.push({
+          text:
+            (pl ? 'Nowa karta: ' : 'New card: ') +
+            (TACTICS_BY_ID[e.tactic]?.name[locale] ?? e.tactic),
+          tone: 'up',
+        });
         break;
       case 'reveal_height':
       case 'flag':

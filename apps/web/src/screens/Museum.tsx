@@ -29,20 +29,17 @@ export function MuseumScreen() {
   }, []);
 
   const summaries = museum.map((m) => m.summary);
-  const rankable = summaries.filter((s) => s.rankable);
+  const peaks = summaries.map((s) => s.peakRank).filter((x): x is number => x !== null);
   const records = [
-    { label: t('museum.bestLegacy'), value: String(Math.max(0, ...rankable.map((s) => s.legacy))) },
+    {
+      label: t('museum.bestLegacy'),
+      value: String(Math.max(0, ...summaries.filter((s) => s.rankable).map((s) => s.legacy))),
+    },
     {
       label: t('museum.mostSlams'),
       value: String(Math.max(0, ...summaries.map((s) => s.slamTitles))),
     },
-    {
-      label: t('museum.bestRank'),
-      value: (() => {
-        const best = summaries.map((s) => s.peakRank).filter((x): x is number => x !== null);
-        return best.length ? `#${Math.min(...best)}` : '—';
-      })(),
-    },
+    { label: t('museum.bestRank'), value: peaks.length ? `#${Math.min(...peaks)}` : '—' },
     {
       label: t('museum.richest'),
       value: money(Math.max(0, ...summaries.map((s) => s.prizeMoney)), locale),
@@ -51,87 +48,72 @@ export function MuseumScreen() {
   ];
 
   return (
-    <main className="shell">
-      <h1 id="screen-title" tabIndex={-1} className="display screen-title screen-head">
-        {t('museum.title')}
-      </h1>
-      {museum.length === 0 ? (
-        <p className="panel muted serif">{t('museum.empty')}</p>
-      ) : (
-        <div className="stack">
-          <section className="panel">
-            <h2 className="eyebrow panel__title">{t('museum.records')}</h2>
-            <dl className="stat-grid">
+    <main className="desk">
+      <header className="desk__head">
+        <button className="link-btn" onClick={() => go('/')}>
+          {t('common.back')}
+        </button>
+        <h1 id="screen-title" tabIndex={-1} className="desk__title">
+          {t('museum.title')}
+        </h1>
+      </header>
+      <div className="page page--lined chronicle">
+        {museum.length === 0 ? (
+          <p className="hand">{t('museum.empty')}</p>
+        ) : (
+          <div className="stack">
+            <h2 className="label">{t('museum.records')}</h2>
+            <dl className="notes-grid">
               {records.map((r) => (
                 <div key={r.label}>
-                  <dt>{r.label}</dt>
-                  <dd className="num">{r.value}</dd>
+                  <dt className="label">{r.label}</dt>
+                  <dd className="hand">{r.value}</dd>
                 </div>
               ))}
             </dl>
-          </section>
-
-          {server && server.trophies.length > 0 && (
-            <section className="panel">
-              <h2 className="eyebrow panel__title">{t('museum.trophies')}</h2>
-              <ul className="trophies">
-                {server.trophies.map((tr) => (
-                  <li key={`${tr.board}-${tr.periodKey}`} className="trophy">
-                    <span className="trophy__cup" aria-hidden="true" />
-                    <strong>{tr.name}</strong>
-                    <span className="muted">
-                      {tr.board} · {tr.periodKey} · LEGACY {tr.legacy}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          <section className="panel">
-            <h2 className="eyebrow panel__title">{t('museum.history')}</h2>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>{t('board.player')}</th>
-                  <th>{t('retired.verdict')}</th>
-                  <th className="r">{t('retired.stats.peak')}</th>
-                  <th className="r">GS</th>
-                  <th className="r">LEGACY</th>
-                </tr>
-              </thead>
-              <tbody>
-                {museum.map((m) => (
-                  <tr key={m.id}>
-                    <td>
-                      <span className="board__name">{m.summary.name}</span>
-                      <span className="board__meta">
-                        {BACKGROUNDS[m.summary.background].name[locale]} · {m.day}
-                        {m.summary.mode === 'daily' && ` · ${t('menu.daily')}`}
+            {server && server.trophies.length > 0 && (
+              <>
+                <h2 className="label">{t('museum.trophies')}</h2>
+                <ul className="locked-cards">
+                  {server.trophies.map((tr) => (
+                    <li key={`${tr.board}-${tr.periodKey}`}>
+                      <strong>{tr.name}</strong>{' '}
+                      <span className="mono pencil">
+                        {tr.periodKey} · {tr.legacy}
                       </span>
-                    </td>
-                    <td>
-                      {VERDICTS_BY_ID[m.summary.verdict]
-                        ? c(VERDICTS_BY_ID[m.summary.verdict]!.title, m.summary.gender)
-                        : ''}
-                    </td>
-                    <td className="r num">{m.summary.peakRank ? `#${m.summary.peakRank}` : '—'}</td>
-                    <td className="r num">{m.summary.slamTitles}</td>
-                    <td className="r num board__legacy">{m.summary.legacy}</td>
-                  </tr>
-                ))}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+            <h2 className="label">{t('museum.history')}</h2>
+            <table className="sheet">
+              <tbody>
+                {museum.map((m) => {
+                  const v = VERDICTS_BY_ID[m.summary.verdict];
+                  return (
+                    <tr key={m.id}>
+                      <td>
+                        <strong className="hand" style={{ fontSize: '1.4rem' }}>
+                          {m.summary.name}
+                        </strong>
+                        <span className="board-meta">
+                          {BACKGROUNDS[m.summary.background].name[locale]} · {m.day}
+                          {v ? ` · ${c(v.title, m.summary.gender)}` : ''}
+                        </span>
+                      </td>
+                      <td className="mono r">
+                        {m.summary.peakRank ? `#${m.summary.peakRank}` : '—'}
+                      </td>
+                      <td className="hand r board-legacy">{m.summary.legacy}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
-          </section>
-        </div>
-      )}
-      <button
-        className="btn btn--ghost btn--block"
-        style={{ marginTop: 16 }}
-        onClick={() => go('/')}
-      >
-        {t('menu.back')}
-      </button>
+          </div>
+        )}
+      </div>
       <Footer />
     </main>
   );

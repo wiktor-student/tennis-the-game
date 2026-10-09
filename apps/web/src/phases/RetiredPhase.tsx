@@ -6,15 +6,17 @@ import {
   tournament,
   type CareerState,
 } from '@ttg/engine';
-import { LevelBadge, SurfaceDot } from '../components/Badges';
-import { useContent, useT, type MessageKey } from '../i18n';
-import { money } from '../lib/format';
+import { Stamp } from '../components/Stamp';
+import { useContent, useT, useTg, type MessageKey } from '../i18n';
+import { biography } from '../lib/biography';
 import { useGo } from '../lib/nav';
 import { useGame } from '../store/game';
 import { useSettings } from '../store/settings';
 
+/** The career closes as an encyclopaedia entry with a seal of legacy. */
 export function RetiredPhase({ state }: { state: CareerState }) {
   const t = useT();
+  const tg = useTg();
   const c = useContent();
   const go = useGo();
   const locale = useSettings((s) => s.locale);
@@ -24,113 +26,97 @@ export function RetiredPhase({ state }: { state: CareerState }) {
   const verdict = VERDICTS_BY_ID[s.verdict];
   const gender = state.config.gender;
   const mult = legacyMultiplier(state);
-  const proTitles = state.stats.titles.filter((x) => LEVELS[x.level].pro).reverse();
-  const juniorTitles = state.stats.titles.filter((x) => !LEVELS[x.level].pro);
+  const titles = [...state.stats.titles]
+    .sort(
+      (a, b) =>
+        Number(LEVELS[b.level].pro) - Number(LEVELS[a.level].pro) ||
+        LEVELS[b.level].prestige - LEVELS[a.level].prestige ||
+        a.year - b.year,
+    )
+    .slice(0, 24);
   const sub = data.submission;
 
   return (
     <div className="stack retired">
-      <section className="panel panel--court verdict">
-        <p className="eyebrow">{t('retired.title')}</p>
-        <p className="muted serif">{t(`retired.reason.${state.phase.reason}` as MessageKey)}</p>
-        <p className="eyebrow verdict__label">{t('retired.verdict')}</p>
-        <h2 className="verdict__title">{verdict ? c(verdict.title, gender) : s.verdict}</h2>
-        {verdict && <p className="narrative verdict__text">{c(verdict.text, gender)}</p>}
-        <div className="legacy-score">
-          <span className="eyebrow">LEGACY</span>
-          <span className="legacy-score__value num">{s.legacy}</span>
+      <article className="encyclopedia">
+        <p className="label">{t('retired.entry')}</p>
+        <h2 className="encyclopedia__name">{s.name}</h2>
+        {biography(state, s, locale).map((line, i) => (
+          <p key={i} className={i === 0 ? 'encyclopedia__lede' : ''}>
+            {line}
+          </p>
+        ))}
+        <p className="pencil">{tg(`retired.reason.${state.phase.reason}` as MessageKey, gender)}</p>
+      </article>
+
+      <div className="seal-row">
+        <div className="seal" aria-label={`${t('retired.legacy')} ${s.legacy}`}>
+          <span className="label">{t('retired.legacy')}</span>
+          <span className="seal__value hand">{s.legacy}</span>
           {mult !== null && mult !== 1 && (
-            <span className="muted">{t('retired.multiplier', { x: mult.toFixed(2) })}</span>
+            <span className="mono seal__mult">
+              {t('retired.multiplier', { x: mult.toFixed(2) })}
+            </span>
           )}
         </div>
+        <div>
+          <p className="label">{t('retired.verdict')}</p>
+          <p className="verdict-title">{verdict ? c(verdict.title, gender) : s.verdict}</p>
+          {verdict && <p className="hand">{c(verdict.text, gender)}</p>}
+        </div>
+      </div>
 
-        <dl className="stat-grid">
-          <div>
-            <dt>{t('retired.stats.seasons')}</dt>
-            <dd className="num">{s.seasons}</dd>
-          </div>
-          <div>
-            <dt>{t('retired.stats.peak')}</dt>
-            <dd className="num">{s.peakRank ? `#${s.peakRank}` : '—'}</dd>
-          </div>
-          <div>
-            <dt>{t('retired.stats.slams')}</dt>
-            <dd className="num">{s.slamTitles}</dd>
-          </div>
-          <div>
-            <dt>{t('retired.stats.titles')}</dt>
-            <dd className="num">{s.proTitles}</dd>
-          </div>
-          <div>
-            <dt>{t('retired.stats.prize')}</dt>
-            <dd className="num">{money(s.prizeMoney, locale)}</dd>
-          </div>
-          <div>
-            <dt>{t('retired.stats.wl')}</dt>
-            <dd className="num">
-              {s.proWins}–{s.proLosses}
-            </dd>
-          </div>
-          {s.weeksAtNo1 > 0 && (
-            <div>
-              <dt>{t('retired.stats.weeks')}</dt>
-              <dd className="num">{s.weeksAtNo1}</dd>
-            </div>
-          )}
-        </dl>
-
-        <div className="submission">
-          {!s.rankable && <p className="muted">{t('retired.unranked')}</p>}
-          {s.rankable && sub?.status === 'offline' && (
-            <p className="muted">{t('retired.offline')}</p>
-          )}
-          {sub?.status === 'pending' && <p className="muted">{t('retired.submitting')}</p>}
-          {sub?.status === 'done' && (
-            <div className="row" style={{ flexWrap: 'wrap', gap: 6 }}>
-              <span className="chip chip--up">✓ {t('retired.submitted')}</span>
-              {sub.result.positions.daily && (
-                <span className="chip">
-                  {t('retired.position', { board: t('menu.daily'), n: sub.result.positions.daily })}
-                </span>
-              )}
-              {sub.result.positions.today && (
-                <span className="chip">
-                  {t('retired.position', {
-                    board: t('board.today'),
-                    n: sub.result.positions.today,
-                  })}
-                </span>
-              )}
-              {sub.result.positions.week && (
-                <span className="chip">
-                  {t('retired.position', { board: t('board.week'), n: sub.result.positions.week })}
-                </span>
-              )}
-            </div>
-          )}
-          {sub?.status === 'error' && (
-            <div className="row">
-              <span className="chip chip--down">
-                {t('retired.submitError', { reason: sub.reason })}
+      <div className="submission">
+        {!s.rankable && <p className="pencil">{t('retired.unranked')}</p>}
+        {s.rankable && sub?.status === 'offline' && (
+          <p className="pencil">{t('retired.offline')}</p>
+        )}
+        {sub?.status === 'pending' && <p className="hand">{t('retired.submitting')}</p>}
+        {sub?.status === 'done' && (
+          <p className="row wrap">
+            <span className="tag tag--up">✓ {t('retired.submitted')}</span>
+            {sub.result.positions.daily && (
+              <span className="tag">
+                {t('retired.position', { board: t('home.daily'), n: sub.result.positions.daily })}
               </span>
-              <button className="btn btn--sm" onClick={() => void submit()}>
-                {t('retired.retry')}
-              </button>
-            </div>
-          )}
-        </div>
-      </section>
+            )}
+            {sub.result.positions.today && (
+              <span className="tag">
+                {t('retired.position', { board: t('board.today'), n: sub.result.positions.today })}
+              </span>
+            )}
+            {sub.result.positions.week && (
+              <span className="tag">
+                {t('retired.position', { board: t('board.week'), n: sub.result.positions.week })}
+              </span>
+            )}
+          </p>
+        )}
+        {sub?.status === 'error' && (
+          <p className="row wrap">
+            <span className="tag tag--down">
+              {t('retired.submitError', { reason: sub.reason })}
+            </span>
+            <button className="btn btn--sm" onClick={() => void submit()}>
+              {t('retired.retry')}
+            </button>
+          </p>
+        )}
+      </div>
 
       {data.newAchievements.length > 0 && (
-        <section className="panel">
-          <h3 className="eyebrow panel__title">{t('retired.newAchievements')}</h3>
-          <ul className="ach-strip">
+        <section className="stack">
+          <h3 className="label">{t('retired.newAchievements')}</h3>
+          <ul className="medal-list">
             {data.newAchievements.map((id) => {
               const a = ACHIEVEMENTS.find((x) => x.id === id);
               return a ? (
-                <li key={id} className={`ach-mini ach-mini--${a.tier}`}>
-                  <strong>{c(a.name, gender)}</strong>
-                  <span className="muted">{c(a.description, gender)}</span>
+                <li key={id} className={`medal medal--${a.tier}`}>
+                  <span className="medal__disc" aria-hidden="true" />
+                  <span>
+                    <strong>{c(a.name, gender)}</strong>
+                    <span className="pencil"> — {c(a.description, gender)}</span>
+                  </span>
                 </li>
               ) : null;
             })}
@@ -138,43 +124,45 @@ export function RetiredPhase({ state }: { state: CareerState }) {
         </section>
       )}
 
-      <section className="panel">
-        <h3 className="eyebrow panel__title">{t('retired.cabinet')}</h3>
-        {proTitles.length + juniorTitles.length === 0 && (
-          <p className="muted serif">{t('retired.noTitles')}</p>
+      <section className="stack">
+        <h3 className="label">{t('retired.cabinet')}</h3>
+        {titles.length === 0 ? (
+          <p className="hand pencil">{t('retired.noTitles')}</p>
+        ) : (
+          <div className="stamp-grid stamp-grid--dense">
+            {titles.map((ti, i) => {
+              const def = tournament(ti.tournamentId);
+              return (
+                <div key={i} className="stamp-cell">
+                  <Stamp
+                    city={c(def.city)}
+                    level={def.level}
+                    gender={gender}
+                    surface={def.surface}
+                    caption={String(ti.year)}
+                    seed={`${def.id}${ti.year}`}
+                    size={76}
+                    result="W"
+                  />
+                </div>
+              );
+            })}
+          </div>
         )}
-        <ul className="cabinet">
-          {[...proTitles, ...juniorTitles].slice(0, 60).map((ti, i) => {
-            const def = tournament(ti.tournamentId);
-            return (
-              <li
-                key={i}
-                className={`cabinet__item ${ti.level === 'gs' ? 'cabinet__item--slam' : ''}`}
-              >
-                <SurfaceDot surface={def.surface} />
-                <span>{c(def.name)}</span>
-                <LevelBadge level={def.level} gender={gender} />
-                <span className="num muted">{ti.year}</span>
-              </li>
-            );
-          })}
-        </ul>
       </section>
 
-      <div className="row">
+      <div className="row wrap">
         <button
-          className="btn btn--ghost"
-          style={{ flex: 1 }}
+          className="btn grow"
           onClick={() => {
             close();
             go('/');
           }}
         >
-          {t('menu.back')}
+          {t('common.back')}
         </button>
         <button
-          className="btn btn--primary"
-          style={{ flex: 1 }}
+          className="btn btn--ink grow"
           onClick={() => {
             close();
             go('/slots');

@@ -1,3 +1,4 @@
+import type { SkillId, TrainingPlan } from '../src';
 import {
   applyAction,
   createCareer,
@@ -38,4 +39,11 @@ export function playCareer(
     applyAction(state, action);
   }
   return { state, actions };
+}
+
+/** Training plan from a list of block assignments (5 blocks for a starting career). */
+export function trainPlan(blocks: SkillId[], preferred = 'baseline'): TrainingPlan {
+  const skills: Partial<Record<SkillId, number>> = {};
+  for (const id of blocks) skills[id] = (skills[id] ?? 0) + 1;
+  return { skills, rest: 0, learn: null, preferred };
 }

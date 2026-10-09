@@ -1,72 +1,59 @@
 /*
- * Design tokens — "night session on centre court".
- * Lawn greens for surfaces, chalk cream for text and court lines, optic yellow used sparingly
- * as the only loud accent (like the ball). Surface colours carry meaning everywhere.
+ * "Zeszyt Tenisisty" — a player's notebook lying on a court-green desk.
+ * Cream paper with a faint grid, navy fountain-pen ink, a red margin line, washi tape,
+ * postmark stamps for tournaments and a yellow highlighter used only for what matters.
  */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* Surfaces of the UI */
-  --bg: #0a1510;
-  --bg-raised: #0e1d16;
-  --panel: #11241b;
-  --panel-2: #152c21;
-  --panel-3: #1a3528;
-  --line: #24453a;
-  --line-soft: #1b3529;
-  --line-chalk: rgba(239, 233, 216, 0.16);
+  /* The desk (court-green felt) */
+  --desk: #1e3a2c;
+  --desk-2: #24452f;
+  --desk-line: rgba(255, 255, 255, 0.07);
 
-  /* Text */
-  --chalk: #efe9d8;
-  --chalk-2: #c9cfbf;
-  --muted: #8ea395;
-  --faint: #5f7769;
+  /* Paper */
+  --paper: #f5f0e4;
+  --paper-2: #ece5d3;
+  --paper-3: #e2d9c3;
+  --card: #fbf8f0;
+  --grid: rgba(37, 56, 97, 0.075);
+  --rule: rgba(37, 56, 97, 0.16);
+  --margin: #d65a4a;
+
+  /* Ink */
+  --ink: #1d2a47;
+  --ink-2: #3c4864;
+  --pencil: #737b8c;
+  --pencil-2: #a2a8b3;
 
   /* Accents */
-  --ball: #d8ef4a;
-  --ball-ink: #1a2207;
-  --gold: #d9b45a;
-  --silver: #b9c3c8;
-  --bronze: #c08a5a;
-  --purple: #6c4a93;
-  --purple-ink: #b9a1d8;
-  --danger: #d4574c;
-  --ok: #7cc47f;
-  --warn: #e3a74a;
+  --highlight: #f6e35a;
+  --tape: rgba(226, 210, 152, 0.82);
+  --tape-blue: rgba(160, 194, 222, 0.8);
+  --tape-pink: rgba(235, 176, 168, 0.8);
+  --sticky: #f9ea8a;
+  --sticky-2: #f6d98a;
+  --ok: #2f7a3e;
+  --bad: #b8402f;
+  --gold: #b8892a;
 
-  /* Tennis surfaces */
-  --clay: #c8643b;
-  --clay-soft: rgba(200, 100, 59, 0.16);
-  --grass: #4f9a4a;
-  --grass-soft: rgba(79, 154, 74, 0.16);
-  --hard: #3f78bf;
-  --hard-soft: rgba(63, 120, 191, 0.16);
-  --indoor: #8676c4;
-  --indoor-soft: rgba(134, 118, 196, 0.16);
-
-  /* Decision outcomes */
-  --outcome-super: #a98bdb;
-  --outcome-success: #5fae69;
-  --outcome-fail: #c98b3a;
+  /* Tennis surfaces (stamp ink) */
+  --clay: #c4552d;
+  --grass: #2f6b3a;
+  --hard: #2f5f9e;
+  --indoor: #6b5aa6;
 
   /* Type */
-  --font-display: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;
-  --font-body: 'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-display: 'Instrument Serif', 'Times New Roman', serif;
+  --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', monospace;
+  --font-hand: 'Caveat', 'Segoe Print', cursive;
 
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-md: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.375rem;
-
-  /* Shape & rhythm */
-  --radius-sm: 4px;
-  --radius: 8px;
-  --radius-lg: 14px;
-  --gap: 12px;
-  --gap-lg: 20px;
-  --shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 12px 30px -18px rgba(0, 0, 0, 0.8);
-
-  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --radius: 6px;
+  --radius-lg: 10px;
+  --shadow-page:
+    0 1px 0 rgba(0, 0, 0, 0.04), 0 18px 40px -22px rgba(0, 0, 0, 0.55),
+    0 4px 10px -6px rgba(0, 0, 0, 0.25);
+  --shadow-card: 0 1px 0 rgba(0, 0, 0, 0.05), 0 6px 14px -8px rgba(29, 42, 71, 0.4);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }

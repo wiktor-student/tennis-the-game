@@ -31,6 +31,7 @@ export {
   step,
   suggestName,
 } from './career';
+export { botAction } from './bot';
 
 export {
   buildSummary,
@@ -42,7 +43,17 @@ export {
 export { autoPlan, juniorRank, juniorStandings, validatePlan } from './sim/season';
 export { projectEntry, wildcardChance, PLAYER_ID } from './sim/tournament';
 export { equipmentCost, marketability, staffCost, travelCost } from './sim/economy';
-export { trainingGain } from './sim/development';
+export {
+  TACTIC_BLOCK_COST,
+  blockGain,
+  blocksGain,
+  deckOptions,
+  learnableTactics,
+  masteryLevel,
+  tacticEdge,
+  trainingBlocks,
+  validateTraining,
+} from './sim/tactics';
 export { displayName } from './sim/field';
 
 export {
@@ -65,7 +76,14 @@ export { GOAL_TEMPLATES, WEEKLY_TEMPLATES } from './content/goals';
 export { HEADLINES, OUTLETS } from './content/headlines';
 export { LEVELS, pointsFor, prizeFor, roundLabel, type LevelDef } from './content/levels';
 export { RACKETS, type RacketDef } from './content/rackets';
-export { SITUATIONS, SITUATIONS_BY_ID, type Situation } from './content/situations';
+export {
+  MASTERY_WINS,
+  STARTER_TACTICS,
+  STYLE_INFO,
+  TACTICS,
+  TACTICS_BY_ID,
+  type TacticDef,
+} from './content/tactics';
 export { SPONSORS, SPONSOR_CATEGORY_NAME } from './content/sponsors';
 export { STAGES, stageForAge } from './content/stages';
 export { TOURNAMENTS, tournament } from './content/tournaments';

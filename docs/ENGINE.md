@@ -9,7 +9,7 @@
 import { createCareer, step, replay, buildSummary } from '@ttg/engine';
 
 let state = createCareer(config, seed);           // stan początkowy (wiek 8, Tenis 10, faza: trening)
-state = step(state, { t: 'train', skill: 'serve' }); // czysta funkcja — nie mutuje wejścia
+state = step(state, { t: 'train', plan: { skills: { serve: 2, forehand: 2 }, rest: 1, learn: null, preferred: 'baseline' } }); // czysta funkcja
 // …
 const same = replay(config, seed, actions);        // deterministyczne odtworzenie
 const summary = buildSummary(same);                 // LEGACY, werdykt, statystyki
@@ -38,8 +38,8 @@ stateDiagram-v2
   sponsors --> schedule: sponsors
   schedule --> season: schedule (start sezonu: forma, finanse)
   season --> season: play (turniej rozegrany)
-  season --> decision: play (pauza w meczu)
-  decision --> season: choose → continue (mecz wznowiony)
+  season --> tactics: play (raport skauta przed ważnym meczem)
+  tactics --> season: choose (karta zagrana, turniej trwa dalej)
   season --> event: play (wydarzenie w trakcie sezonu)
   event --> season: continue (midseason)
   season --> season_end: play (koniec kalendarza)
@@ -55,7 +55,7 @@ stateDiagram-v2
 
 - zapis/odczyt w dowolnym momencie nie zmienia przyszłości,
 - replay serwera daje identyczny wynik (test `replays to the identical final state`),
-- UI nigdy nie losuje — ruletka decyzji tylko **animuje** wynik już wylosowany przez silnik (`decision.resolved.roll`).
+- UI nigdy nie losuje — pokazuje tylko to, co policzył silnik (np. przewagę kart w raporcie skauta).
 
 ## 4. Model meczu
 
@@ -98,14 +98,21 @@ Punkty pod presją: break point, każdy punkt tie-breaka, decydujący set od 4:4
 
 Kalibracja (skrypt `fairness.ts`): równi zawodnicy ≈ 50%, +2 ratingu ≈ 57%, +5 ≈ 66%, +10 ≈ 80%.
 
-### 4.4 Decyzje meczowe
-Kluczowy mecz (półfinał+, duże turnieje od 1/8, mecz z Nemesis, losowo 18% pozostałych) pauzuje po 1. secie i/lub przed decydującym setem. Szansa opcji:
+### 4.4 Taktyki (`sim/tactics.ts`, `content/tactics.ts`)
+Kluczowy mecz (półfinał+, duże turnieje od 1/8, mecz z Nemesis, losowo 15% pozostałych) pauzuje **przed pierwszą piłką** w fazie `tactics` z raportem skauta (`PendingTactics`: styl, ręka, różnica siły, nawierzchnia, opcje z przewagą każdej karty). Akcja `choose` gra kartę i od razu wznawia turniej.
 
 ```
-szansa = baza_opcji + 1,1 · (Σ wᵢ·skillᵢ − rating_rywala) / 100 + bonus_trenera + (morale − 50) · 0,0008
-SUPER = szansa · 7% (bezpieczna) / 18% (ryzykowna)
+pp     = (vsStyle[styl_rywala] + surface[nawierzchnia]) · 0,35
+       + (Σ wᵢ·skillᵢ / Σ wᵢ − OVR) · 0,05
+       + mistrzostwo · 0,15                      // poziomy za 6 / 18 / 40 wygranych
+edge   = clamp(pp, −4, 4) / 100                   // do szansy punktu przy serwisie i returnie
+spread = ryzyko_karty · 1,5 / 100
+w każdym secie: bonus += edge + N(0, spread)
 ```
-Wynik zmienia **momentum** (dodawane do `bonus` gracza do końca meczu): bezpieczna +5,5 / +2,5 / −4 pkt %, ryzykowna +8,5 / +4,5 / −6 pkt %. Niektóre opcje mają skutki uboczne (media, kara finansowa, zmęczenie).
+Zwykłe mecze grają kartą `tactics.preferred` z mnożnikiem `AUTOPILOT_FACTOR = 0,5`. Każdy mecz trafia do `tactics.record[karta]` (rozegrane/wygrane), co buduje mistrzostwo.
+
+### 4.5 Trening blokowy
+Akcja `train` niesie `TrainingPlan { skills, rest, learn, preferred }`. Liczba bloków: 5, +1 (trener z akademii lub lepszy), +1 (trener przygotowania). Zysk n bloków na jednym skillu: `g · Σ 0,75ᵏ`, gdzie `g = bonus_trenera · max(0,45; f(wiek)) · 0,3 · zapas_do_potencjału`. Blok odpoczynku: −6 zmęczenia, +3 humoru, −7% ryzyka kontuzji w sezonie. Nauka karty kosztuje `TACTIC_BLOCK_COST = 2` bloki i jest możliwa tylko dla kart obecnego trenera. `validateTraining` odrzuca plany niewykorzystujące dokładnie wszystkich bloków.
 
 ## 5. Turnieje
 

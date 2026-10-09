@@ -4,7 +4,7 @@ import { LEVELS, pointsFor, prizeFor, roundLabel, type LevelDef } from '../conte
 import { tournament } from '../content/tournaments';
 import { l } from '../i18n';
 import { FORM_BONUS } from '../model/constants';
-import { surfaceGroup } from '../model/skills';
+import { overall, surfaceGroup } from '../model/skills';
 import type {
   AIPlayer,
   CareerState,
@@ -18,7 +18,7 @@ import type {
   TournamentRun,
 } from '../model/types';
 import type { Rng } from '../rng';
-import { buildDecision } from './decisions';
+import { AUTOPILOT_FACTOR, deckOptions, recordTacticUse, tacticEdge } from './tactics';
 import { addLedger, prizeShare, travelCost } from './economy';
 import { surfaceExperience } from './development';
 import { aiById, displayName, globalWeek } from './field';
@@ -30,7 +30,6 @@ import {
   playerCompetitor,
   quickMatch,
   scoreText,
-  setsWon,
   type Competitor,
   type MatchSetup,
 } from './match';
@@ -534,11 +533,7 @@ function setupMainDraw(
   run.seeds = built.seeds;
 }
 
-function isKeyMatch(
-  ctx: Ctx,
-  roundsLeft: number,
-  opp: AIPlayer | undefined,
-): { key: boolean; max: number } {
+function isKeyMatch(ctx: Ctx, roundsLeft: number, opp: AIPlayer | undefined): boolean {
   const big = [
     'gs',
     'm1000',
@@ -552,11 +547,10 @@ function isKeyMatch(
     'j_ob',
     'j500',
   ].includes(ctx.def.level);
-  if (opp?.nemesis) return { key: true, max: 2 };
-  if (roundsLeft <= 1) return { key: true, max: 2 };
-  if (roundsLeft <= 2) return { key: true, max: big ? 2 : 1 };
-  if (big && roundsLeft <= 4) return { key: true, max: 1 };
-  return { key: ctx.rng.chance(0.18), max: 1 };
+  if (opp?.nemesis) return true;
+  if (roundsLeft <= 2) return true;
+  if (big && roundsLeft <= 4) return true;
+  return ctx.rng.chance(0.15);
 }
 
 function injuryRisk(state: CareerState): number {
@@ -564,6 +558,7 @@ function injuryRisk(state: CareerState): number {
   let risk = 0.0035 + (p.fatigue / 100) ** 2 * 0.045;
   if (state.team.physio) risk *= 1 - PHYSIO.injuryReduction;
   if (p.age > 30) risk *= 1.3;
+  risk *= 1 - 0.07 * state.season.restBlocks;
   if (state.season.stage !== 'pro') risk *= 0.4;
   return risk * DIFFICULTIES[state.config.difficulty].injuryFactor;
 }
@@ -572,7 +567,10 @@ const INJURIES: InjuryKind[] = ['wrist', 'ankle', 'back', 'shoulder', 'abdominal
 
 type MatchOutcome = 'won' | 'lost' | 'paused';
 
-/** Play (or resume) the player's match against `oppId`. */
+/**
+ * Play (or resume) the player's match against `oppId`. Key matches pause before the first
+ * point with a scouting report; ordinary matches are played with the preferred tactic.
+ */
 function playPlayerMatch(
   ctx: Ctx,
   run: TournamentRun,
@@ -585,47 +583,64 @@ function playPlayerMatch(
   if (!opp) throw new Error(`Unknown opponent ${oppId}`);
 
   let progress = run.pending;
-  let injuredNow = false;
   if (!progress) {
-    const key = round.startsWith('Q')
-      ? { key: !!opp.nemesis, max: 1 }
-      : isKeyMatch(ctx, roundsLeft, opp);
+    const key = round.startsWith('Q') ? !!opp.nemesis : isKeyMatch(ctx, roundsLeft, opp);
+    const preferred = tacticEdge(state, state.tactics.preferred, opp, ctx.def.surface);
     progress = {
       oppId,
       round,
       bestOf: ctx.bestOf,
       sets: [],
       nextServer: rng.chance(0.5) ? 'A' : 'B',
-      momentum: 0,
-      decisions: [],
-      decisionsTaken: 0,
-      asked: [],
-      maxDecisions: key.max,
-      key: key.key,
+      key,
+      tactic: key ? null : preferred.tacticId,
+      edge: key ? 0 : preferred.edge * AUTOPILOT_FACTOR,
+      spread: preferred.spread,
       dayA: dayForm(rng),
       dayB: dayForm(rng),
     };
-    injuredNow = rng.chance(injuryRisk(state));
+    if (key) {
+      run.pending = progress;
+      state.phase = {
+        kind: 'tactics',
+        scout: {
+          tournamentId: ctx.def.id,
+          round,
+          oppId,
+          oppName: displayName(opp),
+          oppNat: opp.nat,
+          oppRank: ctx.level.pro ? opp.rank : null,
+          oppSeed: run.seeds[opp.id] ?? null,
+          oppStyle: opp.style,
+          oppHand: opp.hand,
+          oppDelta: Math.round(opp.rating - overall(state.player.skills)),
+          nemesis: !!opp.nemesis,
+          surface: ctx.def.surface,
+          options: deckOptions(state, opp, ctx.def.surface),
+        },
+      };
+      return 'paused';
+    }
   }
 
   const p = state.player;
   const group = surfaceGroup(ctx.def.surface);
   const fatiguePenalty = (p.fatigue / 100) * 0.03;
-  const setup: MatchSetup = {
+  const setupFor = (swing: number): MatchSetup => ({
     a: playerCompetitor(
       p.skills,
       p.surfaces[group],
       p.hand === 'L',
-      FORM_BONUS[state.season.form] + progress.dayA + progress.momentum - fatiguePenalty,
+      FORM_BONUS[state.season.form] + progress.dayA + swing - fatiguePenalty,
     ),
     b: aiComp(ctx, oppId, progress.dayB),
     surface: ctx.def.surface,
     bestOf: progress.bestOf,
     decidingTiebreak10: ctx.def.level === 'gs',
-  };
+  });
 
-  if (injuredNow) {
-    const first = continueMatch(rng, setup, [], progress.nextServer, true, 1);
+  if (rng.chance(injuryRisk(state))) {
+    const first = continueMatch(rng, setupFor(progress.edge), [], progress.nextServer, true, 1);
     const kind = rng.pick(INJURIES);
     const weeks = rng.weighted([1, 2, 3, 4, 6, 8, 12], (w) => 13 - w);
     const serious = weeks >= 6;
@@ -634,44 +649,21 @@ function playPlayerMatch(
       state.stats.seriousInjuries += 1;
       p.skills.fitness = Math.max(1, Math.round((p.skills.fitness - 1.5) * 10) / 10);
     }
-    const score: MatchScore = { sets: first.sets, retired: 'A' };
-    recordMatch(ctx, run, progress, opp, false, score);
+    recordMatch(ctx, run, progress, opp, false, { sets: first.sets, retired: 'A' });
     return 'lost';
   }
 
-  const need = progress.bestOf === 5 ? 3 : 2;
   for (;;) {
     const winner = matchWinner(progress.sets, progress.bestOf);
     if (winner) {
-      const score: MatchScore = { sets: progress.sets, retired: null };
-      recordMatch(ctx, run, progress, opp, winner === 'A', score);
+      recordMatch(ctx, run, progress, opp, winner === 'A', { sets: progress.sets, retired: null });
       return winner === 'A' ? 'won' : 'lost';
     }
-    const won = setsWon(progress.sets);
-    const afterFirst = progress.sets.length === 1;
-    const beforeDeciding = won.a === need - 1 && won.b === need - 1;
-    const canAsk =
-      progress.key &&
-      progress.decisionsTaken < progress.maxDecisions &&
-      !progress.asked.includes(progress.sets.length) &&
-      (afterFirst || beforeDeciding);
-    if (canAsk) {
-      progress.asked.push(progress.sets.length);
-      run.pending = progress;
-      const decision = buildDecision(
-        state,
-        rng,
-        progress,
-        opp,
-        ctx.def.surface,
-        scoreText({ sets: progress.sets, retired: null }),
-      );
-      state.phase = { kind: 'decision', decision };
-      return 'paused';
-    }
+    // The plan works better in some sets than others — volatile cards swing more.
+    const swing = progress.edge + rng.normal(0, progress.spread);
     const next = continueMatch(
       rng,
-      setup,
+      setupFor(swing),
       progress.sets,
       progress.nextServer,
       true,
@@ -704,13 +696,17 @@ function recordMatch(
     won,
     score,
     scoreText: scoreText(score),
-    decisions: progress.decisions,
+    tactic: progress.tactic,
+    edge: progress.edge,
+    keyMatch: progress.key,
     nemesis: !!opp.nemesis,
   };
   run.matches.push(match);
+  recordTacticUse(state, progress.tactic, won);
 
   if (won) stats.matchesWon += 1;
   else stats.matchesLost += 1;
+  if (won && progress.key) stats.keyMatchesWon += 1;
   if (isPro) {
     if (won) stats.proMatchesWon += 1;
     else stats.proMatchesLost += 1;
@@ -731,18 +727,16 @@ function recordMatch(
   surfaceExperience(state, surfaceGroup(ctx.def.surface), 1);
 }
 
-/** Apply a resolved decision's momentum to the paused match. */
-export function applyDecisionToRun(
-  run: TournamentRun,
-  situationId: string,
-  option: number,
-  outcome: PlayedMatch['decisions'][number]['outcome'],
-  momentum: number,
-): void {
-  if (!run.pending) return;
-  run.pending.momentum += momentum;
-  run.pending.decisionsTaken += 1;
-  run.pending.decisions.push({ situationId, option, outcome });
+/** Apply the tactic card chosen from the scouting report to the paused match. */
+export function applyTacticToRun(state: CareerState, option: number): void {
+  const run = state.season.run;
+  if (state.phase.kind !== 'tactics' || !run?.pending)
+    throw new Error('No match waiting for a tactic');
+  const view = state.phase.scout.options[option];
+  if (!view) throw new Error('Invalid tactic option');
+  run.pending.tactic = view.tacticId;
+  run.pending.edge = view.edge;
+  run.pending.spread = view.spread;
 }
 
 /** Advance the player's run until it pauses for a decision or finishes. */

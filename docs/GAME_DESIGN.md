@@ -1,16 +1,16 @@
-# Game Design Document — Symulator Polskiego Tenisisty
+# Game Design Document — Zeszyt Tenisisty
 
-> Wersja dokumentu: 1.0 · silnik: `ENGINE_VERSION = 1.0.0`
+> Wersja dokumentu: 2.0 · silnik: `ENGINE_VERSION = 2.0.0`
 > Dokument opisuje **zamysł gry** — pętle, systemy, liczby i ton. Szczegóły implementacyjne silnika są w [ENGINE.md](./ENGINE.md), model danych w [DATABASE.md](./DATABASE.md).
 
 ---
 
 ## 1. Wizja w jednym akapicie
 
-Masz 8 lat. Tata naciągnął w piwnicy starą rakietę, mama mówi, że to „tylko hobby”. Grasz o każdy punkt — najpierw pod blokiem, potem w regionalnych turniejach Tenis 10, w Mistrzostwach Polski, na wyjazdach Tennis Europe, w juniorskich Szlemach, aż w końcu w kwalifikacjach do ITF-ów za 15 tysięcy dolarów puli. Każdy sezon to decyzje: **co trenujesz, kogo zatrudniasz, które turnieje grasz, które kontrakty podpisujesz i co robisz przy break poincie w trzecim secie**. Gra kończy się, gdy odwieszasz rakietę — a historia ocenia cię jednym liczbą: **LEGACY**.
+Masz 8 lat. Tata naciągnął w piwnicy starą rakietę, mama mówi, że to „tylko hobby”. Grasz o każdy punkt — najpierw pod blokiem, potem w regionalnych turniejach Tenis 10, w Mistrzostwach Polski, na wyjazdach Tennis Europe, w juniorskich Szlemach, aż w końcu w kwalifikacjach do ITF-ów za 15 tysięcy dolarów puli. Każdy sezon to decyzje: **co trenujesz, kogo zatrudniasz, które turnieje grasz, które kontrakty podpisujesz i jaką kartę planu gry wyciągasz przed finałem**. Wszystko zapisuje się w jednym zeszycie — od pierwszej strony z wiekiem „8” po hasło w encyklopedii. Historia ocenia cię jedną liczbą: **Dorobkiem**.
 
 **Gatunek:** tekstowy symulator kariery (career sim / „idle-decision RPG”), sesja 10–25 minut na całą karierę.
-**Inspiracja:** *Symulator Polskiego Kierowcy* (kierowca.rybicki.ai) — ta sama filozofia: krótkie, gęste decyzje, losowość z czytelnymi szansami, satyryczny polski koloryt, wspólne rankingi.
+**Punkt wyjścia:** gatunek krótkich symulatorów kariery z czytelnymi szansami i wspólnymi rankingami. Autorskie wyróżniki: **metafora zeszytu zawodnika** (cały interfejs to jeden zeszyt na zielonym biurku), **talia kart taktyk** czytana przez raport skauta, **trening blokowy** zamiast wyboru jednego skilla.
 **Platforma:** przeglądarka (desktop + mobile), offline-first, opcjonalne rankingi online.
 
 ## 2. Filary projektu
@@ -26,12 +26,13 @@ Masz 8 lat. Tata naciągnął w piwnicy starą rakietę, mama mówi, że to „t
 ```
                 ┌────────────────────────── KARIERA ───────────────────────────┐
                 │                                                              │
- Nowa kariera → │  POZA SEZONEM                         SEZON                   │ → Emerytura
- (imię, płeć,   │  1. Raport poprzedniego sezonu        6. Turniej po turnieju  │   → Werdykt
-  start, poziom)│  2. Wydarzenie fabularne (wybór)      7. Mecz po meczu        │   → LEGACY
-                │  3. Trening zimowy (wybór skilla)     8. Decyzje meczowe      │   → Rankingi
-                │  4. Sztab (trener, fizjo)                (ruletka szans)      │   → Osiągnięcia
-                │  5. Sponsorzy + plan kalendarza       9. Wydarzenia w sezonie │
+ Karta          │  POZA SEZONEM                         SEZON                   │ → Hasło w
+ zgłoszenia →   │  1. Wycinek z gazety (podsumowanie)   6. Turniej po turnieju  │   encyklopedii
+ (imię, tour,   │  2. List od bliskich (wybór)          7. Raport skauta przed  │ → Dorobek
+  start, poziom)│  3. Trening: rozdziel bloki,             ważnym meczem →      │ → Tablica wyników
+                │     naucz się nowej karty taktyki        zagraj kartę taktyki │ → Gablota
+                │  4. Sztab (kto czego uczy)            8. Protokół turnieju    │
+                │  5. Umowy + terminarz (pieczątki)     9. Wiadomości w sezonie │
                 │                                                              │
                 └───────────────────── wiek +1, kolejny sezon ─────────────────┘
 ```
@@ -106,7 +107,19 @@ przyrost = (potencjał − skill) × 0,14 × współczynnikWieku × mnożnikTren
 |---|---|---|---|---|---|---|---|
 | współczynnik | 1,0 | 1,15 | 1,0 | 0,75 | 0,35 | spadek –0,5…–1,5 | spadek –1…–3 |
 
-Kondycja spada szybciej (od 29 lat). Wybrany w zimie **trening** daje dodatkowo +3…+6 do jednego skilla (zależnie od trenera) i +1 do psychiki za rozegrane mecze o stawkę.
+Kondycja spada szybciej (od 29 lat).
+
+### 5.5 Trening blokowy (zima)
+
+Każdej zimy gracz rozdziela **bloki treningowe** (5, +1 z akademią lub lepszym trenerem, +1 z trenerem przygotowania fizycznego):
+
+| Przeznaczenie | Efekt |
+|---|---|
+| Blok na umiejętność | `bonus_trenera × max(0,45; f(wiek)) × 0,3 × zapas_do_potencjału` — **każdy kolejny blok na ten sam skill działa słabiej** (1 · 0,75 · 0,56 · 0,42…) |
+| Odpoczynek | −6 zmęczenia, +3 humoru, −7% ryzyka kontuzji w sezonie (za blok) |
+| Nowa karta taktyki | 2 bloki — tylko karty, których uczy obecny trener |
+
+Do tego wybór **planu na co dzień** — karty, którą zawodnik gra „na autopilocie” w zwykłych meczach (z połową siły). Decyzja zimowa to więc kompromis: wąska specjalizacja kontra wszechstronność kontra zdrowie kontra rozbudowa talii.
 
 ## 6. Ścieżka kariery — od bloku do Wimbledonu
 
@@ -184,17 +197,26 @@ p = baza[nawierzchnia]
 | Hala | 0,63 | szybka, serwis ↑ |
 | Trawa | 0,65 | serwis i siatka ↑↑ |
 
-## 9. Decyzje meczowe (ruletka)
+## 9. Talia taktyk i raport skauta
 
-W kluczowych meczach (finały, półfinały dużych turniejów, mecze z Nemesis, losowo ~35% pozostałych) symulacja zatrzymuje się po pierwszym secie lub przy wyniku w decydującym secie i pokazuje **sytuację** z 2–3 opcjami:
+Zamiast losowych sytuacji w trakcie meczu gra stawia na **przygotowanie przed meczem**. Przed każdym ważnym meczem (półfinał i finał, duże turnieje od 1/8, mecz z Nemesis, losowo ~15% pozostałych) zeszyt otwiera **raport skauta**: kim jest rywal, jaki ma **styl gry**, czy jest silniejszy, którą ręką gra, na jakiej nawierzchni zagracie — i notatkę skauta o jego słabościach.
 
-> **Break point przeciwko tobie, 4:5 w trzecim secie.**
-> ▸ **Serwis i wolej** — RYZYKO — szansa 41%
-> ▸ **Kick w bekhend i cierpliwość** — szansa 72%
+Gracz zagrywa jedną **kartę taktyki** ze swojej talii. Talia startowa: *Solidnie z głębi*, *Atak na bekhend*, *Serwis i pierwszy forhend*. Kolejne karty uczą trenerzy (klubowy: *Wojna na wyniszczenie*; z licencją: *Wysokie topspiny*, *Return w nogi*; akademia: *Skróty i loby*, *Forhend z odwrotnego krosa*; trener z touru: *Serwis i wolej*, *Chip and charge*, *Gra w głowie rywala*; superkoch: *Wszystko albo nic*) — 12 kart.
 
-Każda opcja ma **szansę** wyliczoną ze skilli (np. serwis + siatka vs return rywala), a wynik losowany jest w trzech progach: **SUPER** (~10% szansy), **SUKCES**, **PORAŻKA**. Ruletka w UI tylko animuje wynik wylosowany już przez silnik (seed). Efekt to **momentum** na resztę meczu: super +6 pkt %, sukces +3, porażka –4, a opcje ryzykowne mają większy rozrzut. Niektóre decyzje mają skutki poza meczem (media, kontuzja, kara finansowa).
+Przewaga karty (w punktach procentowych szansy na punkt przy serwisie) to:
 
-Pula sytuacji: ~20 szablonów (break point, tie-break, medical timeout rywala, publiczność przeciwko tobie, przerwa na deszcz, skurcze, rywal dominuje returnem, długie wymiany na mączce, serwis na mecz, kłótnia z sędzią/Hawk-Eye…), filtrowanych po nawierzchni, wyniku i etapie kariery.
+```
+przewaga = (dopasowanie_do_stylu_rywala + nawierzchnia) × 0,35
+         + (średnia_skilli_karty − OVR) × 0,05     // czy plan pasuje do twoich mocnych stron
+         + mistrzostwo × 0,15                       // 0–3 poziomy za 6/18/40 wygranych meczów
+         ∈ [−4; +4] pkt %
+```
+
+Każda karta ma też **ryzyko** — rozrzut przewagi w każdym secie (od „Wojny na wyniszczenie” ~0,15 pkt % po „Wszystko albo nic” ~2,4 pkt %). Ryzykowna karta potrafi wygrać seta z dużo lepszym rywalem albo oddać go słabszemu.
+
+Style rywali: **bombardier serwisowy**, **ściana z głębi kortu**, **wszechstronny**, **siatkarz**. Każda karta ma tabelę skuteczności wobec stylów (np. *Return w nogi* niszczy bombardierów, a na ścianę nie działa; *Serwis i wolej* rozbija ścianę na trawie, ale na mączce jest samobójstwem). Uczy to czytania rywala zamiast klikania „najwyższego procentu”.
+
+W zwykłych meczach gra **plan na co dzień** z połową przewagi. Każdy mecz zagrany kartą liczy się do jej bilansu i mistrzostwa.
 
 ## 10. Sztab i sprzęt
 
@@ -219,7 +241,7 @@ Wydarzenia to krótkie scenki z 2–3 wyborami i jawnymi skutkami (+2 Psychiki, 
 
 Przykłady: tata kłóci się z sędzią na turnieju Orlików · hala pneumatyczna przecieka przed Mistrzostwami Polski · stypendium ministerialne · propozycja akademii w Barcelonie · reprezentacja w Pucharze Davisa / Billie Jean King Cup · obietnica dzikiej karty od dyrektora turnieju w Szczecinie · hejt po porażce w pierwszej rundzie Szlema · telewizja śniadaniowa · menedżer z Monako · kontuzja nadgarstka · Nemesis wygrywa juniorski Wimbledon.
 
-## 13. Koniec kariery i LEGACY
+## 13. Koniec kariery i Dorobek (LEGACY)
 
 Kariera kończy się, gdy:
 - gracz wybierze **emeryturę** (dostępna od 28 lat po każdym sezonie),
@@ -227,7 +249,7 @@ Kariera kończy się, gdy:
 - **długi** przekroczą limit,
 - **kontuzja kończąca karierę** (bardzo rzadka, możliwa przy wysokim zmęczeniu i wieku 30+).
 
-### LEGACY
+### Dorobek (w kodzie: LEGACY)
 
 | Składnik | Punkty |
 |---|---|
@@ -253,25 +275,26 @@ Suma × mnożnik punktu startowego × mnożnik trudności. **Werdykt** (np. „L
 
 | System | Opis |
 |---|---|
-| **Kariera Dnia** | Wspólny seed i wspólna konfiguracja zawodnika na dany dzień (strefa Europe/Warsaw). Liczy się pierwsze podejście. Osobny ranking dzienny. |
-| **Rankingi** | Kariera Dnia (dziś), tryb zwykły (dziś), tryb zwykły (ostatnie 7 dni), wszech czasów. „Panujący mistrz” poprzedniego okresu. |
-| **Cele dnia** | 3 cele losowane deterministycznie z daty (np. „Zarób łącznie 35 mln”, „Wygraj turniej na trawie”, „Zakończ rok w TOP 20”). |
-| **Wyzwanie tygodnia** | 1 cel złożony (np. „Zarób 15 mln i zakończ karierę bez poważnej kontuzji”). |
-| **Seria** | Liczba kolejnych dni z ukończoną karierą. |
-| **Osiągnięcia** | 48 osiągnięć zbieranych między karierami (np. „Złoty Szlem”, „Rafa z Radomia — 10 tytułów na mączce”, „Pierwszy Polak nr 1”). |
-| **Muzeum kariery** | Rekordy gracza: najwyższe LEGACY, najwięcej Szlemów, najdłużej nr 1, najbogatsza kariera, wszystkie werdykty i trofea rankingowe. |
-| **Kolekcja rakiet** | Malowania rakiety odblokowywane osiągnięciami; wybrane malowanie widać na karcie zawodnika. |
-| **Ustawienia** | Animacje (pełne / ograniczone / brak), szybkość symulacji, język PL/EN, zarządzanie zapisami, „co nowego”. |
+| **Zawodnik dnia** | Wspólny seed i wspólna karta zgłoszenia na dany dzień (Europe/Warsaw). Liczy się pierwsze podejście. Osobna tablica. |
+| **Tablica wyników** | Dzisiaj, ten tydzień, zawodnik dnia, wszech czasów; „wczoraj wygrał(a)” — zwycięzca poprzedniego okresu. |
+| **Na dziś (karteczka)** | 3 cele losowane deterministycznie z daty (np. „Zarób łącznie 35 mln zł”, „Wygraj 2 turnieje na trawie”). |
+| **Wyzwanie tygodnia** | 1 cel złożony (np. „Zarób 15 mln zł i zakończ karierę bez poważnej kontuzji”). |
+| **Seria** | Liczba kolejnych dni z zamkniętym zeszytem. |
+| **Gablota** | 50 trofeów na czterech półkach (brąz, srebro, złoto, legenda), m.in. „Taktyk” (3 karty na pełnym mistrzostwie), „Pełna talia”, „Złoty Szlem”. |
+| **Kronika** | Rekordy gracza i lista zamkniętych zeszytów z werdyktami; trofea z tablicy wyników. |
+| **Rakiety** | 15 malowań odblokowywanych trofeami; wybrana rakieta leży na okładce zeszytu. |
+| **Ustawienia** | Język PL/EN, animacje (pełne / ograniczone / wyłączone), tempo autopilota, dane. |
 
-## 15. Ton i estetyka
+## 15. Ton i estetyka — „Zeszyt Tenisisty”
 
-- **Ton:** ciepła, lekko ironiczna polska narracja („Tata sprzedał działkę, ale kupił maszynę do naciągu”). Bez memów, bez wulgaryzmów, z szacunkiem do sportu.
-- **Wizualnie:** klasyczny tenis — **głęboka zieleń kortu trawiastego i fiolet** jak w All England Club, **kremowa biel** linii kortu, terakota mączki, błękit kortów twardych; typografia z tablic wyników (wąski grotesk, wersaliki, cyfry tabelaryczne) zestawiona z szeryfowym krojem relacji prasowych. Ekrany wyglądają jak **tablica wyników i program turniejowy**, nie jak dashboard SaaS.
-- **Ikonografia:** linie kortu, piłka, siatka, rakieta — rysowane w SVG, bez emoji.
+- **Metafora:** cała gra to **zeszyt zawodnika leżący na biurku obitym zielonym suknem** (kolor kortu). Okładka to menu, otwarty zeszyt to rozgrywka: lewa strona — **legitymacja zawodnika** (polaroid, radar umiejętności, prognoza formy jako pogoda, bateria, czucie nawierzchni jako mini-korty), prawa — bieżący tydzień. Zakładki w kolorach (terminarz, ranking, talia, kasa, kronika) wystają z góry jak w prawdziwym zeszycie.
+- **Materiały:** papier w kratkę z czerwonym marginesem, granatowy atrament, taśma washi, żółte karteczki samoprzylepne, zakreślacz, pieczątki pocztowe (turnieje), wycinki z gazet (koniec sezonu), listy i SMS-y (wydarzenia), teczka skauta, karty do gry (taktyki), umowy z podpisem, hasło w encyklopedii (emerytura), gablota z półkami (trofea).
+- **Typografia:** Instrument Serif (nagłówki, encyklopedia), IBM Plex Sans (interfejs), IBM Plex Mono (protokoły, liczby, etykiety jak z maszyny do pisania), Caveat (odręczne notatki, wyniki, podpisy).
+- **Ton:** ciepła, lekko ironiczna polska narracja. Bez memów, bez emoji — ikonografia rysowana w SVG.
 
-## 16. Zakres wersji 1.0 i dalej
+## 16. Zakres wersji 2.0 i dalej
 
-Wersja 1.0 obejmuje wszystko z sekcji 3–14 w singlach. Plan rozwoju: [ROADMAP.md](./ROADMAP.md) (debel, sezon trawiasty jako mini-tryb, tryb „Trener”, eksport historii kariery jako grafika).
+Wersja 2.0 obejmuje wszystko z sekcji 3–14 w singlach. Plan rozwoju: [ROADMAP.md](./ROADMAP.md).
 
 ---
 

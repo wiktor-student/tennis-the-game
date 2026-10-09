@@ -80,7 +80,7 @@ Rozpoczyna karierę i wydaje seed.
 Wysyła log akcji zakończonej kariery. Serwer odtwarza ją w workerze i zapisuje wynik.
 
 ```json
-{ "actions": [ { "t": "train", "skill": "serve" }, { "t": "team", "coach": "club", "physio": false, "fitnessCoach": false }, { "t": "sponsors", "accept": [] }, { "t": "schedule", "plan": ["mini-lodz", null, …] }, { "t": "play" }, { "t": "choose", "option": 1 }, { "t": "continue" }, …, { "t": "retire" } ] }
+{ "actions": [ { "t": "train", "plan": { "skills": { "serve": 2, "forehand": 2 }, "rest": 1, "learn": null, "preferred": "baseline" } }, { "t": "team", "coach": "club", "physio": false, "fitnessCoach": false }, { "t": "sponsors", "accept": [] }, { "t": "schedule", "plan": ["mini-lodz", null, …] }, { "t": "play" }, { "t": "choose", "option": 1 }, { "t": "continue" }, …, { "t": "retire" } ] }
 ```
 ```json
 // 200
@@ -97,12 +97,12 @@ Typy akcji (`ActionSchema`):
 
 | `t` | Pola | Faza |
 |---|---|---|
-| `train` | `skill` | trening zimowy |
+| `train` | `plan: { skills, rest, learn, preferred }` | trening zimowy (bloki) |
 | `team` | `coach`, `physio`, `fitnessCoach` | sztab |
 | `sponsors` | `accept: string[]` | sponsorzy |
 | `schedule` | `plan: (tournamentId \| null)[]` | plan sezonu |
 | `play` | — | sezon (następny turniej) |
-| `choose` | `option` | wydarzenie / decyzja meczowa |
+| `choose` | `option` | wydarzenie / karta taktyki w raporcie skauta |
 | `continue` | — | po wydarzeniu, decyzji, końcu sezonu |
 | `retire` | — | koniec sezonu (od 28 lat) |
 

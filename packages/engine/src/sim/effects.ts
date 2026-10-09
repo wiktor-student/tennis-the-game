@@ -69,6 +69,9 @@ export function applyEffects(state: CareerState, effects: EffectTarget[]): void 
       case 'reveal_height':
         p.heightRevealed = true;
         break;
+      case 'tactic':
+        if (!state.tactics.owned.includes(e.tactic)) state.tactics.owned.push(e.tactic);
+        break;
       case 'retire_forced':
         if (!state.flags.includes('retire_forced')) state.flags.push('retire_forced');
         break;

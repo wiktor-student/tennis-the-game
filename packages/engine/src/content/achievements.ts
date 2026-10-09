@@ -317,14 +317,28 @@ export const ACHIEVEMENTS: AchievementDef[] = [
 
   // Matches
   {
-    id: 'super_decisions',
+    id: 'tactician',
     tier: 'silver',
-    name: l('Instynkt', 'Instinct'),
+    name: l('Taktyk', 'Tactician'),
     description: l(
-      'Zalicz 15 wyników SUPER w decyzjach meczowych.',
-      'Score 15 SUPER outcomes in match decisions.',
+      'Doprowadź trzy karty taktyk do pełnego mistrzostwa.',
+      'Bring three tactic cards to full mastery.',
     ),
-    check: (s) => s.decisionsSuper >= 15,
+    check: (s) => s.tacticsMastered >= 3,
+  },
+  {
+    id: 'full_deck',
+    tier: 'gold',
+    name: l('Pełna talia', 'Full deck'),
+    description: l('Zbierz wszystkie 12 kart taktyk.', 'Collect all 12 tactic cards.'),
+    check: (s) => s.tacticsOwned >= 12,
+  },
+  {
+    id: 'big_game',
+    tier: 'silver',
+    name: l('Gracz na wielkie mecze', 'Big-match player'),
+    description: l('Wygraj 60 kluczowych meczów.', 'Win 60 key matches.'),
+    check: (s) => s.keyMatchesWon >= 60,
   },
   {
     id: 'nemesis_slayer',

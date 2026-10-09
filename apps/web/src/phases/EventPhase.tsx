@@ -1,11 +1,12 @@
 import { EVENTS_BY_ID, type CareerState } from '@ttg/engine';
-import { Chips } from '../components/Badges';
+import { Marks } from '../components/Badges';
 import { useContent, useT } from '../i18n';
 import { effectChips } from '../lib/effects';
 import { money, pct } from '../lib/format';
 import { useGame } from '../store/game';
 import { useSettings } from '../store/settings';
 
+/** Offseason events arrive as letters, in-season ones as messages on the phone. */
 export function EventPhase({ state }: { state: CareerState }) {
   const t = useT();
   const c = useContent();
@@ -19,15 +20,22 @@ export function EventPhase({ state }: { state: CareerState }) {
   const vars = pending.vars;
   const resolved = pending.resolved;
   const chosen = resolved ? event.options[resolved.option] : null;
-  const lastInQueue = pending.context === 'offseason' && state.eventQueue.length === 0;
+  const phone = pending.context === 'midseason';
 
   return (
-    <div className="panel panel--court stack event">
-      <h2 className="phase-title">{t('phase.event')}</h2>
-      <p className="narrative event__text">{c(event.text, gender, vars)}</p>
+    <div className={`stack event ${phone ? 'event--phone' : 'event--letter'}`}>
+      <p className="label">{phone ? t('event.midseason') : t('event.offseason')}</p>
+      <div className={phone ? 'phone' : 'card card--clean letter'}>
+        {!phone && <span className="tape tape--top tape--pink" />}
+        <p className={phone ? 'bubble bubble--in' : 'lead'}>{c(event.text, gender, vars)}</p>
+        {resolved && chosen && phone && (
+          <p className="bubble bubble--out">{c(chosen.label, gender, vars)}</p>
+        )}
+      </div>
 
       {!resolved && (
-        <div className="choices">
+        <div className="replies">
+          <p className="label">{t('event.reply')}</p>
           {event.options.map((opt, i) => {
             const chance = pending.chances[i];
             const affordable = opt.cost === undefined || state.finance.budget >= opt.cost;
@@ -35,19 +43,24 @@ export function EventPhase({ state }: { state: CareerState }) {
             return (
               <button
                 key={i}
-                className="choice"
+                className="pick reply"
                 disabled={!affordable}
                 onClick={() => dispatch({ t: 'choose', option: i })}
               >
-                <span className="choice__title">{c(opt.label, gender, vars)}</span>
-                {chance !== null && chance !== undefined && (
-                  <span className="choice__aside num">{t('phase.chance', { p: pct(chance) })}</span>
-                )}
-                <span className="choice__meta">
-                  {preview.map((p) => p.text).join(' · ')}
-                  {opt.hint ? `${preview.length ? ', ' : ''}${c(opt.hint, gender)}` : ''}
-                  {opt.cost !== undefined &&
-                    ` · ${t('phase.cost', { amount: money(opt.cost, locale) })}`}
+                <span className="pick__title">{c(opt.label, gender, vars)}</span>
+                <span className="reply__meta">
+                  {chance !== null && chance !== undefined && (
+                    <span className="tag">{t('event.chance', { p: pct(chance) })}</span>
+                  )}
+                  {opt.cost !== undefined && (
+                    <span className="tag">
+                      {t('event.cost', { amount: money(opt.cost, locale) })}
+                    </span>
+                  )}
+                  <span className="pencil">
+                    {preview.map((p) => p.text).join(' · ')}
+                    {opt.hint ? `${preview.length ? ' — ' : ''}${c(opt.hint, gender)}` : ''}
+                  </span>
                 </span>
               </button>
             );
@@ -56,31 +69,19 @@ export function EventPhase({ state }: { state: CareerState }) {
       )}
 
       {resolved && chosen && (
-        <>
-          <p className="narrative event__result">
+        <div className="aftermath">
+          <p className="hand aftermath__text">
             {c(
               resolved.success === false ? (chosen.failResult ?? chosen.result) : chosen.result,
               gender,
               vars,
             )}
           </p>
-          <div>
-            <p className="eyebrow" style={{ marginBottom: 6 }}>
-              {t('phase.effects')}
-            </p>
-            <Chips chips={effectChips(resolved.effects, locale)} />
-          </div>
-          <button
-            className="btn btn--primary btn--block"
-            onClick={() => dispatch({ t: 'continue' })}
-          >
-            {pending.context === 'midseason'
-              ? t('phase.next')
-              : lastInQueue
-                ? t('phase.next')
-                : t('phase.next')}
+          <Marks chips={effectChips(resolved.effects, locale)} />
+          <button className="btn btn--ink btn--block" onClick={() => dispatch({ t: 'continue' })}>
+            {t('event.next')}
           </button>
-        </>
+        </div>
       )}
     </div>
   );

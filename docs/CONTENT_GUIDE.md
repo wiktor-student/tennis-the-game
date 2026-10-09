@@ -45,28 +45,26 @@ Dostępne efekty (`EffectTarget`): `skill`, `potential`, `budget`, `media`, `rep
 
 Szansa rzutu: `base + Σ wᵢ · (skillᵢ − OVR) · 0,012 + (stat − 40) · 0,005`, przycięta do 5–95%.
 
-## Sytuacja meczowa (`situations.ts`)
+## Karta taktyki (`tactics.ts`)
 
 ```ts
 {
-  id: 'clay_grind',
-  text: l('Mączka, upał, wymiany po 25 uderzeń. {opp} nie chybia. Wynik {score}.', '…'),
-  when: { moment: 'any', surfaces: ['clay'] },   // 'first' | 'deciding' | 'any', leading, trailing,
-                                                 // afterTiebreak, minStage, maxStage
-  weight: 8,
-  options: [
-    {
-      label: l('Topspin w bekhend', '…'), desc: l('wygrywasz cierpliwością', '…'),
-      risky: false,
-      skills: { backhand: 0.35, forehand: 0.25, fitness: 0.4 },   // wagi sumujące się do ~1
-      base: 0.6,                                                   // szansa przy skillu = rating rywala
-      result: { super: l('…'), success: l('…'), fail: l('…') },
-      side: { fail: [{ kind: 'fatigue', delta: 6 }] },             // opcjonalne skutki poza meczem
-    },
-  ],
+  id: 'return_deep',
+  name: l('Return w nogi', 'Return at the feet'),
+  motto: l('Każdy serwis wraca pod stopy serwującego.', '…'),   // jedno zdanie na karcie (odręcznie)
+  description: l('…', '…'),                                     // dłuższe wyjaśnienie
+  skills: { return: 0.7, backhand: 0.3 },        // na czym opiera się plan (dopasowanie do zawodnika)
+  vsStyle: { server: 2, grinder: -0.8, allround: 0.4, netrusher: 1.4 },  // w „czytelnej skali”
+  surface: { grass: 0.6 },                       // premia/kara za nawierzchnię
+  risk: 0.3,                                     // 0 = stabilna, 1+ = huśtawka w każdym secie
+  teacher: 'licensed',                           // który trener uczy; null = karta startowa
+  minAge: 10,
+  glyph: 'return',                               // motyw diagramu na karcie (TacticCard.tsx)
 }
 ```
-Każda sytuacja powinna mieć opcję bezpieczną (`base` ~0,55–0,66) i ryzykowną (`base` ~0,36–0,45).
+Zasady balansu: każda karta ma przynajmniej jeden styl, na który działa dobrze (≥ +1,4), i jeden, na który działa źle (≤ −0,6). Wyjątki to karty „uniwersalne” (*Gra w głowie rywala*, *Wszystko albo nic*) — płacą wysokim ryzykiem albo dostępem tylko u najlepszych trenerów. Wartości są przeskalowane w silniku (`MATCHUP_SCALE`), więc piszemy je w wygodnej skali −2,4…+2,4.
+
+Style rywali i ich opisy skautingowe: `STYLE_INFO` w tym samym pliku.
 
 ## Turnieje (`tournaments.ts`)
 

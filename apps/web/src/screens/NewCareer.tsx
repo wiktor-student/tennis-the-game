@@ -40,117 +40,128 @@ export function NewCareerScreen() {
   };
 
   const valid = name.first.trim().length > 0 && name.last.trim().length > 0;
+  const mult = (x: number) => `×${x.toFixed(2).replace('.', locale === 'pl' ? ',' : '.')}`;
 
   return (
-    <main className="shell shell--narrow">
-      <div className="panel panel--court stack">
-        <h1 id="screen-title" tabIndex={-1} className="display screen-title">
+    <main className="desk">
+      <header className="desk__head">
+        <button className="link-btn" onClick={() => go('/slots')}>
+          {t('common.back')}
+        </button>
+      </header>
+      <form
+        className="page registration"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (valid && !busy) void start();
+        }}
+      >
+        <span className="tape tape--tr" />
+        <p className="label">PZT · {new Date().getFullYear()}</p>
+        <h1 id="screen-title" tabIndex={-1} className="title">
           {t('new.title')}
         </h1>
+        <p className="pencil">{t('new.lead')}</p>
 
-        <fieldset className="fieldset">
-          <legend className="eyebrow">{t('new.name')}</legend>
-          <div className="name-row">
-            <label className="field">
-              <span className="visually-hidden">{t('new.first')}</span>
+        <div className="registration__names">
+          <label className="field">
+            <span className="label">{t('new.first')}</span>
+            <input
+              className="line-input"
+              value={name.first}
+              maxLength={24}
+              onChange={(e) => setName({ ...name, first: e.target.value })}
+            />
+          </label>
+          <label className="field">
+            <span className="label">{t('new.last')}</span>
+            <input
+              className="line-input"
+              value={name.last}
+              maxLength={32}
+              onChange={(e) => setName({ ...name, last: e.target.value })}
+            />
+          </label>
+          <button
+            type="button"
+            className="link-btn"
+            onClick={() => setName(suggestName(randomSeed(), gender))}
+          >
+            {t('new.random')}
+          </button>
+        </div>
+
+        <fieldset className="registration__group">
+          <legend className="label">{t('new.tour')}</legend>
+          <div className="row wrap">
+            <label className="tick">
               <input
-                className="input"
-                value={name.first}
-                maxLength={24}
-                onChange={(e) => setName({ ...name, first: e.target.value })}
+                type="radio"
+                name="tour"
+                checked={gender === 'M'}
+                onChange={() => pickGender('M')}
               />
+              <span>{t('new.boy')}</span>
             </label>
-            <label className="field">
-              <span className="visually-hidden">{t('new.last')}</span>
+            <label className="tick">
               <input
-                className="input"
-                value={name.last}
-                maxLength={32}
-                onChange={(e) => setName({ ...name, last: e.target.value })}
+                type="radio"
+                name="tour"
+                checked={gender === 'F'}
+                onChange={() => pickGender('F')}
               />
+              <span>{t('new.girl')}</span>
             </label>
-            <button
-              className="btn"
-              type="button"
-              onClick={() => setName(suggestName(randomSeed(), gender))}
-            >
-              {t('new.random')}
-            </button>
           </div>
         </fieldset>
 
-        <fieldset className="fieldset">
-          <legend className="eyebrow">{t('new.tour')}</legend>
-          <div className="segmented">
-            <button type="button" aria-pressed={gender === 'M'} onClick={() => pickGender('M')}>
-              {t('new.boy')}
-            </button>
-            <button type="button" aria-pressed={gender === 'F'} onClick={() => pickGender('F')}>
-              {t('new.girl')}
-            </button>
-          </div>
-        </fieldset>
-
-        <fieldset className="fieldset">
-          <legend className="eyebrow">{t('new.start')}</legend>
-          <div className="choices">
+        <fieldset className="registration__group">
+          <legend className="label">{t('new.start')}</legend>
+          <div className="registration__grid">
             {Object.values(BACKGROUNDS).map((b) => (
               <button
                 key={b.id}
                 type="button"
-                className="choice"
+                className="pick"
                 aria-pressed={background === b.id}
                 onClick={() => setBackground(b.id)}
               >
-                <span className="choice__title">{b.name[locale]}</span>
-                <span className={`score-tag ${b.multiplier === null ? 'score-tag--off' : ''}`}>
-                  <small>{t('new.score')}</small>
-                  {b.multiplier === null
-                    ? t('new.unranked')
-                    : `×${b.multiplier.toFixed(1).replace('.', locale === 'pl' ? ',' : '.')}`}
+                <span className="pick__title">{b.name[locale]}</span>
+                <span className="pick__meta">{b.description[locale]}</span>
+                <span className="mono registration__mult">
+                  {t('new.score')} {b.multiplier === null ? t('new.unranked') : mult(b.multiplier)}
                 </span>
-                <span className="choice__meta">{b.description[locale]}</span>
               </button>
             ))}
           </div>
         </fieldset>
 
-        <fieldset className="fieldset">
-          <legend className="eyebrow">{t('new.difficulty')}</legend>
-          <div className="choices">
+        <fieldset className="registration__group">
+          <legend className="label">{t('new.difficulty')}</legend>
+          <div className="registration__grid registration__grid--two">
             {Object.values(DIFFICULTIES).map((d) => (
               <button
                 key={d.id}
                 type="button"
-                className="choice"
+                className="pick"
                 aria-pressed={difficulty === d.id}
                 onClick={() => setDifficulty(d.id)}
               >
-                <span className="choice__title">{d.name[locale]}</span>
-                <span className="score-tag">
-                  <small>{t('new.score')}</small>×
-                  {d.multiplier.toFixed(2).replace('.', locale === 'pl' ? ',' : '.')}
+                <span className="pick__title">{d.name[locale]}</span>
+                <span className="pick__meta">{d.description[locale]}</span>
+                <span className="mono registration__mult">
+                  {t('new.score')} {mult(d.multiplier)}
                 </span>
-                <span className="choice__meta">{d.description[locale]}</span>
               </button>
             ))}
           </div>
         </fieldset>
 
-        <p className="muted serif" style={{ fontStyle: 'italic' }}>
-          {t('new.family')}
-        </p>
-        <button className="btn btn--primary btn--block" disabled={!valid || busy} onClick={start}>
+        <p className="hand registration__family">{t('new.family')}</p>
+        <button type="submit" className="btn btn--ink btn--block" disabled={!valid || busy}>
           {t('new.go')}
         </button>
-      </div>
-      <button
-        className="btn btn--ghost btn--block"
-        style={{ marginTop: 12 }}
-        onClick={() => go('/slots')}
-      >
-        {t('new.back')}
-      </button>
+      </form>
       <Footer />
     </main>
   );

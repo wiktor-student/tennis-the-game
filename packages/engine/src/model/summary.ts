@@ -48,7 +48,10 @@ export interface CareerSummary {
   proWins: number;
   proLosses: number;
   seriousInjuries: number;
-  decisionsSuper: number;
+  keyMatchesWon: number;
+  tacticsOwned: number;
+  tacticsMastered: number;
+  favouriteTactic: string | null;
   nemesisWon: number;
   nemesisLost: number;
   maxDebt: number;

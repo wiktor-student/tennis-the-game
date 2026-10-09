@@ -9,6 +9,7 @@ import { MuseumScreen } from './screens/Museum';
 import { NewCareerScreen } from './screens/NewCareer';
 import { RacketsScreen } from './screens/Rackets';
 import { SettingsScreen } from './screens/Settings';
+import { DemoScreen } from './screens/Demo';
 import { SlotsScreen } from './screens/Slots';
 import { useSettings } from './store/settings';
 
@@ -34,6 +35,7 @@ export function App() {
         <Route path="/museum" element={<MuseumScreen />} />
         <Route path="/rackets" element={<RacketsScreen />} />
         <Route path="/settings" element={<SettingsScreen />} />
+        {import.meta.env.DEV && <Route path="/demo/:target" element={<DemoScreen />} />}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </HashRouter>

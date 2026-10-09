@@ -34,4 +34,14 @@ export function useContent(): (
   );
 }
 
+/** Translate and resolve [[m|f]] markers for the career's gender. */
+export function useTg(): (
+  key: MessageKey,
+  gender: 'M' | 'F',
+  vars?: Record<string, string | number>,
+) => string {
+  const t = useT();
+  return useCallback((key, gender, vars) => genderize(t(key, vars), gender), [t]);
+}
+
 export type { MessageKey };

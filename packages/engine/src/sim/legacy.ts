@@ -6,6 +6,7 @@ import type { CareerSummary } from '../model/summary';
 import type { CareerState, LevelId, RetireReason, SurfaceGroup } from '../model/types';
 import { surfaceGroup } from '../model/skills';
 import { ENGINE_VERSION } from '../version';
+import { masteryLevel } from './tactics';
 
 const TITLE_VALUE: Partial<Record<LevelId, number>> = {
   gs: 600,
@@ -112,7 +113,12 @@ export function buildSummary(state: CareerState, reason: RetireReason = 'choice'
     proWins: s.proMatchesWon,
     proLosses: s.proMatchesLost,
     seriousInjuries: s.seriousInjuries,
-    decisionsSuper: s.decisionsSuper,
+    keyMatchesWon: s.keyMatchesWon,
+    tacticsOwned: state.tactics.owned.length,
+    tacticsMastered: state.tactics.owned.filter((id) => masteryLevel(state, id) >= 3).length,
+    favouriteTactic:
+      Object.entries(state.tactics.record).sort((a, b) => b[1].played - a[1].played)[0]?.[0] ??
+      null,
     nemesisWon: s.nemesisWon,
     nemesisLost: s.nemesisLost,
     maxDebt: s.maxDebt,

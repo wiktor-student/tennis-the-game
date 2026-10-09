@@ -72,6 +72,14 @@ interface GameState {
   newDaily: (slot: number) => Promise<void>;
   dispatch: (action: Action) => void;
   submit: () => Promise<void>;
+  /** Dev/demo: adopt an already simulated career into a slot. */
+  adopt: (
+    slot: number,
+    config: CareerConfig,
+    seed: string,
+    actions: Action[],
+    snapshot: CareerState,
+  ) => void;
 }
 
 const key = (slot: number) => `slot:${slot}`;
@@ -105,7 +113,8 @@ function persist(slot: number, data: SaveData): void {
 
 function readSlot(slot: number): SaveData | null {
   const data = load<SaveData | null>(key(slot), null);
-  if (!data || data.version !== 1) return null;
+  // Saves from another engine version cannot be replayed or resumed safely.
+  if (!data || data.version !== 1 || data.engineVersion !== ENGINE_VERSION) return null;
   if (!data.snapshot) {
     try {
       data.snapshot = replay(data.config, data.seed, data.actions);
@@ -233,6 +242,16 @@ export const useGame = create<GameState>((set, get) => ({
     persist(activeSlot, data);
     set({ career: next, data: { ...data } });
     if (data.submission?.status === 'pending') void get().submit();
+  },
+
+  adopt: (slot, config, seed, actions, snapshot) => {
+    const data = freshData(config, seed, null, null);
+    data.actions = actions;
+    data.snapshot = snapshot;
+    if (snapshot.phase.kind === 'retired')
+      data.summary = buildSummary(snapshot, snapshot.phase.reason);
+    persist(slot, data);
+    set({ activeSlot: slot, data, career: snapshot, error: null });
   },
 
   submit: async () => {

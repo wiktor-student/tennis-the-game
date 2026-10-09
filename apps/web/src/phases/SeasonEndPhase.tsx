@@ -26,98 +26,93 @@ export function SeasonEndPhase({ state }: { state: CareerState }) {
           : {}),
       }
     : {};
+  const ovrNow = overall(state.player.skills);
+  const legacyGain = prev ? r.legacyAfter - prev.legacyAfter : r.legacyAfter;
 
   return (
-    <div className="panel panel--court stack season-end">
-      <h2 className="phase-title">{t('end.title', { year: r.year })}</h2>
+    <div className="stack season-end">
+      <h2 className="title">{t('end.title', { year: r.year })}</h2>
 
       {headline && (
-        <figure className="newspaper">
-          <figcaption className="newspaper__outlet">
+        <figure className="clipping">
+          <span className="tape tape--tl" />
+          <span className="tape tape--tr" />
+          <figcaption className="clipping__outlet">
             {outlet} · {r.year}
           </figcaption>
-          <blockquote className="newspaper__headline">
+          <blockquote className="clipping__headline">
             {c(headline, state.config.gender, vars)}
           </blockquote>
+          <p className="clipping__body" aria-hidden="true" />
         </figure>
       )}
 
-      <dl className="stat-grid">
+      <dl className="notes-grid">
         <div>
-          <dt>{t('end.rank')}</dt>
-          <dd className="num">
-            {r.rankEnd === null ? '—' : isPro ? `#${r.rankEnd}` : `P${r.rankEnd}`}
+          <dt className="label">{t('end.rank')}</dt>
+          <dd className="hand">
+            {r.rankEnd === null ? '—' : isPro ? `#${r.rankEnd}` : `${r.rankEnd}.`}
           </dd>
         </div>
         <div>
-          <dt>{t('end.titles')}</dt>
-          <dd className="num">{r.titles.length}</dd>
-        </div>
-        <div>
-          <dt>{t('end.record')}</dt>
-          <dd className="num">
+          <dt className="label">{t('end.record')}</dt>
+          <dd className="hand">
             {r.won}–{r.lost}
           </dd>
         </div>
         <div>
-          <dt>{t('end.prize')}</dt>
-          <dd className="num">{money(r.prize, locale)}</dd>
+          <dt className="label">{t('end.titles')}</dt>
+          <dd className="hand">{r.titles.length}</dd>
         </div>
         <div>
-          <dt>{t('end.ovr')}</dt>
-          <dd className="num">
-            {r.ovr} → {overall(state.player.skills)}
+          <dt className="label">{t('end.prize')}</dt>
+          <dd className="hand">{money(r.prize, locale)}</dd>
+        </div>
+        <div>
+          <dt className="label">{t('end.ovr')}</dt>
+          <dd className="hand">
+            {r.ovr} → <span className="hl">{ovrNow}</span>
           </dd>
         </div>
         <div>
-          <dt>{t('end.legacy')}</dt>
-          <dd className="num">
-            {r.legacyAfter}
-            {prev && r.legacyAfter !== prev.legacyAfter && (
-              <small className="is-positive"> {signed(r.legacyAfter - prev.legacyAfter)}</small>
-            )}
+          <dt className="label">{t('end.legacy')}</dt>
+          <dd className="hand">
+            {r.legacyAfter}{' '}
+            {legacyGain > 0 && <small className="is-good">({signed(legacyGain)})</small>}
           </dd>
         </div>
       </dl>
 
       {r.titles.length > 0 && (
-        <ul className="title-list">
+        <ul className="trophy-list">
           {r.titles.map((id, i) => (
-            <li key={`${id}-${i}`}>{c(tournament(id).name)}</li>
+            <li key={`${id}-${i}`} className="hand">
+              {c(tournament(id).name)}
+            </li>
           ))}
         </ul>
       )}
 
-      <div className="row" style={{ flexWrap: 'wrap' }}>
-        <button
-          className="btn btn--primary"
-          style={{ flex: 2 }}
-          onClick={() => dispatch({ t: 'continue' })}
-        >
+      <div className="row wrap">
+        <button className="btn btn--ink grow" onClick={() => dispatch({ t: 'continue' })}>
           {t('end.next')}
         </button>
         <button
           className="btn btn--danger"
-          style={{ flex: 1 }}
           disabled={!canRetire(state)}
-          title={canRetire(state) ? undefined : t('end.retireLocked')}
           onClick={() => setConfirm(true)}
         >
           {t('end.retire')}
         </button>
       </div>
-      {!canRetire(state) && (
-        <p className="muted" style={{ fontSize: 'var(--text-sm)' }}>
-          {t('end.retireLocked')}
-        </p>
-      )}
+      {!canRetire(state) && <p className="pencil">{t('end.retireLocked')}</p>}
 
       <ConfirmDialog
         open={confirm}
         title={t('end.retire')}
         text={t('end.retireConfirm')}
         confirmLabel={t('end.retire')}
-        cancelLabel={t('new.back')}
+        cancelLabel={t('common.back')}
         danger
         onCancel={() => setConfirm(false)}
         onConfirm={() => {
