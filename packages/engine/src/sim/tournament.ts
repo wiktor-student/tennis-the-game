@@ -735,7 +735,7 @@ function advanceRoundRobin(ctx: Ctx, run: TournamentRun): 'paused' | 'continue' 
 }
 
 function advanceKnockout(ctx: Ctx, run: TournamentRun): 'paused' | 'done' {
-  const { state, rng, def } = ctx;
+  const { def } = ctx;
   while (run.draw.length > 1) {
     const roundsLeft = Math.log2(run.draw.length);
     const label = roundLabel(roundsLeft);
@@ -799,17 +799,15 @@ function advanceKnockout(ctx: Ctx, run: TournamentRun): 'paused' | 'done' {
   if (champion === PLAYER_ID) run.reached = 0;
   else if (champion) run.aiReached[champion] = 0;
   run.done = true;
-  void state;
   return 'done';
 }
 
 /** Close the run: points, prize, stats, AI awards. */
-export function finalizeRun(state: CareerState, rng: Rng): TournamentResult {
+export function finalizeRun(state: CareerState, _rng: Rng): TournamentResult {
   const run = state.season.run as TournamentRun;
   const def = tournament(run.tournamentId);
   const level = LEVELS[def.level];
   const ai = aiById(state);
-  void rng;
 
   const rrWinsAI: Record<string, number> = run.groups ? { ...run.groups.wins } : {};
   awardAI(state, def, run.aiReached, rrWinsAI);

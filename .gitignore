@@ -13,3 +13,4 @@ Thumbs.db
 .idea/
 *.tsbuildinfo
 apps/api/prisma/*.db
+.claude/

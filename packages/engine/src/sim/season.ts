@@ -1,5 +1,5 @@
 import { LEVELS } from '../content/levels';
-import { HEADLINES } from '../content/headlines';
+import type { HEADLINES } from '../content/headlines';
 import { STAGES, stageForAge } from '../content/stages';
 import { juniorCalendar, lowerTierForWeek, tourEvents, tournament } from '../content/tournaments';
 import { PHYSIO } from '../content/coaches';

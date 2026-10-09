@@ -1,5 +1,5 @@
 /** Debug: prints a single career season by season (OVR vs field). npx tsx packages/engine/scripts/trajectory.ts academy 3 */
-import { applyAction, createCareer, overall, type BackgroundId } from '../src';
+import { applyAction, createCareer, type BackgroundId } from '../src';
 import { botAction } from '../src/bot';
 
 const bg = (process.argv[2] ?? 'wall') as BackgroundId;

@@ -26,6 +26,8 @@ export interface Situation {
     moment: 'first' | 'deciding' | 'any';
     trailing?: boolean;
     leading?: boolean;
+    /** The previous set was decided in a tie-break. */
+    afterTiebreak?: boolean;
     surfaces?: Surface[];
     minStage?: StageId;
     maxStage?: StageId;
@@ -76,8 +78,8 @@ export const SITUATIONS: Situation[] = [
       'Tie-break w pierwszym secie przegrany na przewagi. {opp} czuje krew. Jak wchodzisz w drugiego seta?',
       'First-set tie-break lost on deuce. {opp} smells blood. How do you start the second set?',
     ),
-    when: { moment: 'first', trailing: true },
-    weight: 8,
+    when: { moment: 'first', trailing: true, afterTiebreak: true },
+    weight: 14,
     options: [
       {
         label: l('Agresja od pierwszej piłki', 'Aggression from ball one'),

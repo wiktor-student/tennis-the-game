@@ -21,6 +21,7 @@ export interface DecisionContext {
   surface: Surface;
   leading: boolean;
   trailing: boolean;
+  afterTiebreak: boolean;
   nemesis: boolean;
 }
 
@@ -33,6 +34,7 @@ export function pickSituation(state: CareerState, rng: Rng, ctx: DecisionContext
     if (w.moment !== 'any' && w.moment !== ctx.moment) return false;
     if (w.leading && !ctx.leading) return false;
     if (w.trailing && !ctx.trailing) return false;
+    if (w.afterTiebreak && !ctx.afterTiebreak) return false;
     if (w.surfaces && !w.surfaces.includes(ctx.surface)) return false;
     if (w.minStage && stageIdx < STAGE_ORDER.indexOf(w.minStage)) return false;
     if (w.maxStage && stageIdx > STAGE_ORDER.indexOf(w.maxStage)) return false;
@@ -81,6 +83,7 @@ export function buildDecision(
     surface,
     leading: won.a > won.b,
     trailing: won.b > won.a,
+    afterTiebreak: match.sets[match.sets.length - 1]?.tb != null,
     nemesis: !!opp.nemesis,
   };
   const situation = pickSituation(state, rng, ctx);

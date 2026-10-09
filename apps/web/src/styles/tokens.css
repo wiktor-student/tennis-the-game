@@ -1,0 +1,72 @@
+/*
+ * Design tokens — "night session on centre court".
+ * Lawn greens for surfaces, chalk cream for text and court lines, optic yellow used sparingly
+ * as the only loud accent (like the ball). Surface colours carry meaning everywhere.
+ */
+:root {
+  color-scheme: dark;
+
+  /* Surfaces of the UI */
+  --bg: #0a1510;
+  --bg-raised: #0e1d16;
+  --panel: #11241b;
+  --panel-2: #152c21;
+  --panel-3: #1a3528;
+  --line: #24453a;
+  --line-soft: #1b3529;
+  --line-chalk: rgba(239, 233, 216, 0.16);
+
+  /* Text */
+  --chalk: #efe9d8;
+  --chalk-2: #c9cfbf;
+  --muted: #8ea395;
+  --faint: #5f7769;
+
+  /* Accents */
+  --ball: #d8ef4a;
+  --ball-ink: #1a2207;
+  --gold: #d9b45a;
+  --silver: #b9c3c8;
+  --bronze: #c08a5a;
+  --purple: #6c4a93;
+  --purple-ink: #b9a1d8;
+  --danger: #d4574c;
+  --ok: #7cc47f;
+  --warn: #e3a74a;
+
+  /* Tennis surfaces */
+  --clay: #c8643b;
+  --clay-soft: rgba(200, 100, 59, 0.16);
+  --grass: #4f9a4a;
+  --grass-soft: rgba(79, 154, 74, 0.16);
+  --hard: #3f78bf;
+  --hard-soft: rgba(63, 120, 191, 0.16);
+  --indoor: #8676c4;
+  --indoor-soft: rgba(134, 118, 196, 0.16);
+
+  /* Decision outcomes */
+  --outcome-super: #a98bdb;
+  --outcome-success: #5fae69;
+  --outcome-fail: #c98b3a;
+
+  /* Type */
+  --font-display: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;
+  --font-body: 'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+
+  /* Shape & rhythm */
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 14px;
+  --gap: 12px;
+  --gap-lg: 20px;
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 12px 30px -18px rgba(0, 0, 0, 0.8);
+
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
