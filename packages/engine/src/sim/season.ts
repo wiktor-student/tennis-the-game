@@ -19,7 +19,7 @@ import type {
 import type { Rng } from '../rng';
 import { developPlayer } from './development';
 import { applySeasonStartFinances, settleSponsors, travelCost } from './economy';
-import { buildJuniorField, buildProPool, developAI, evolveProPool, globalWeek, updateRankings } from './field';
+import { buildJuniorField, buildProPool, developAI, evolveProPool, globalWeek, ratingForRank, updateRankings } from './field';
 import { computeLegacy } from './legacy';
 import { maybeMidseasonEvent, buildPendingEvent } from './story';
 import {
@@ -107,6 +107,7 @@ export function autoPlan(state: CareerState): (string | null)[] {
   let streak = 0;
   let planned = 0;
   let budget = state.finance.budget;
+  const ovr = overall(state.player.skills);
   for (let i = 0; i < slots.length; i++) {
     const slot = slots[i] as SeasonSlot;
     const prev = plan[i - 1] ? tournament(plan[i - 1] as string) : null;
@@ -119,10 +120,17 @@ export function autoPlan(state: CareerState): (string | null)[] {
       const def = tournament(id);
       const level = LEVELS[def.level];
       const entry = projectEntry(state, def);
+      // Expected value: prestige weighted by how competitive the player is against the
+      // typical field of that event (main draw or qualifying).
+      const competitive = (fieldRank: number) => 1 / (1 + Math.exp(-(ovr - ratingForRank(fieldRank)) / 3));
       let score = 0;
-      if (entry.status === 'direct' || entry.status === 'exempt') score = level.prestige;
-      else if (entry.status === 'qualifier') score = level.prestige * 0.45;
-      else if (entry.status === 'wildcard') score = level.prestige * entry.wildcard * 0.9;
+      if (entry.status === 'direct' || entry.status === 'exempt') {
+        score = level.prestige * (0.25 + competitive(Math.min(level.cutoffMain, 900) * 0.6));
+      } else if (entry.status === 'qualifier') {
+        score = level.prestige * 0.6 * competitive(Math.min(level.cutoffQual, 900) * 0.8) ** 2;
+      } else if (entry.status === 'wildcard') {
+        score = level.prestige * entry.wildcard * (0.25 + competitive(Math.min(level.cutoffMain, 900) * 0.6));
+      }
       if (score <= 0) continue;
       if (budget < 60_000) score -= travelCost(state, def) / 2500;
       if (!best || score > best.score) best = { id, score };
