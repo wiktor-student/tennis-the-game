@@ -1,3 +1,4 @@
+import { tournamentOutlook } from './outlook';
 import { LEVELS } from '../content/levels';
 import type { HEADLINES } from '../content/headlines';
 import { STAGES, stageForAge } from '../content/stages';
@@ -25,7 +26,6 @@ import {
   developAI,
   evolveProPool,
   globalWeek,
-  ratingForRank,
   updateRankings,
 } from './field';
 import { computeLegacy } from './legacy';
@@ -79,6 +79,7 @@ export function newSeasonState(state: CareerState, stage: StageId, year: number)
     started: false,
     busy: [],
     restBlocks: 0,
+    locals: [],
   };
 }
 
@@ -105,7 +106,13 @@ export function autoPlan(state: CareerState): (string | null)[] {
   if (state.season.stage !== 'pro') {
     let budget = state.finance.budget;
     return slots.map((slot) => {
-      const id = slot.options[0] as string;
+      // The event of the week that promises the most standing points for this player.
+      const scored = slot.options.map((id) => ({
+        id,
+        points: tournamentOutlook(state, tournament(id)).points,
+      }));
+      scored.sort((a, b) => b.points - a.points);
+      const id = (scored[0]?.id ?? slot.options[0]) as string;
       const cost = travelCost(state, tournament(id));
       if (budget - cost < -5000 && LEVELS[tournament(id).level].prestige < 300) return null;
       budget -= cost;
@@ -116,7 +123,6 @@ export function autoPlan(state: CareerState): (string | null)[] {
   let streak = 0;
   let planned = 0;
   let budget = state.finance.budget;
-  const ovr = overall(state.player.skills);
   for (let i = 0; i < slots.length; i++) {
     const slot = slots[i] as SeasonSlot;
     const prev = plan[i - 1] ? tournament(plan[i - 1] as string) : null;
@@ -127,25 +133,16 @@ export function autoPlan(state: CareerState): (string | null)[] {
     let best: { id: string; score: number } | null = null;
     for (const id of slot.options) {
       const def = tournament(id);
-      const level = LEVELS[def.level];
       const entry = projectEntry(state, def);
-      // Expected value: prestige weighted by how competitive the player is against the
-      // typical field of that event (main draw or qualifying).
-      const competitive = (fieldRank: number) =>
-        1 / (1 + Math.exp(-(ovr - ratingForRank(fieldRank)) / 3));
-      let score = 0;
-      if (entry.status === 'direct' || entry.status === 'exempt') {
-        score = level.prestige * (0.25 + competitive(Math.min(level.cutoffMain, 900) * 0.6));
-      } else if (entry.status === 'qualifier') {
-        score = level.prestige * 0.6 * competitive(Math.min(level.cutoffQual, 900) * 0.8) ** 2;
-      } else if (entry.status === 'wildcard') {
-        score =
-          level.prestige *
-          entry.wildcard *
-          (0.25 + competitive(Math.min(level.cutoffMain, 900) * 0.6));
-      }
+      // Expected ranking points for this player against the event's typical field; a small
+      // bonus keeps the majors attractive once the player is actually in them.
+      const outlook = tournamentOutlook(state, def);
+      if (outlook.verdict === 'closed') continue;
+      const odds = entry.status === 'wildcard' ? entry.wildcard : 1;
+      const major = ['gs', 'm1000', 'finals', 'olympics'].includes(def.level);
+      let score = odds * outlook.points * (major && entry.status === 'direct' ? 1.2 : 1);
       if (score <= 0) continue;
-      if (budget < 60_000) score -= travelCost(state, def) / 2500;
+      if (budget < 60_000) score /= 1 + travelCost(state, def) / 15_000;
       if (!best || score > best.score) best = { id, score };
     }
     const major = best

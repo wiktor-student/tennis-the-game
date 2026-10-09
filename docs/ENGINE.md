@@ -122,19 +122,25 @@ Akcja `train` niesie `TrainingPlan { skills, rest, learn, preferred }`. Liczba b
 - **Igrzyska**: 64 zawodników (TOP 56), mecz o brąz między przegranymi półfinalistami.
 - **Wznawialność**: `TournamentRun` przechowuje drabinkę bieżącej rundy; mecz gracza w rundzie gra się pierwszy, potem mecze AI tej rundy.
 
+### 5.1 Prognoza turnieju (`sim/outlook.ts`)
+
+`tournamentOutlook(state, def)` — czysta funkcja bez RNG: typowy rywal w każdej rundzie (juniorzy: ważone kwantyle pola wg `JUNIOR_TIER`; zawodowcy: `ratingForRank` z pasma rangi, ×0,55 rankingu na rundę), szansa na wygranie 1. meczu (`winChance(gap) = 1/(1+e^(−gap/6))`, dopasowane do symulowanych meczów), typowy wynik (mediana rundy odpadnięcia), oczekiwane punkty i werdykt (*faworyt* ≥ 65%, *wyrównany* ≥ 45%, *outsider* ≥ 25%, *bez szans*, *brak wejścia*). Używają jej terminarz, karta „Następny przystanek” i `autoPlan` (wybiera turniej o najwyższych oczekiwanych punktach).
+
 ## 6. Pule zawodników i ranking
 
 | Etap | Pole | Ranking |
 |---|---|---|
-| Tenis 10 | 15 rywali (PL) | suma punktów sezonu |
-| Krajowy | 31 (12 przeniesionych + nowi) | j.w. |
-| Tennis Europe | 31 (20% PL) | j.w. |
-| ITF Juniors | 63 (7% PL) | j.w., nr 1 na koniec roku = osiągnięcie |
+| Tenis 10 | 39 rywali (PL) | suma punktów sezonu |
+| Krajowy | 79 (12 przeniesionych + nowi) | j.w. |
+| Tennis Europe | 79 (20% PL) | j.w. |
+| ITF Juniors | 127 (7% PL) | j.w., nr 1 na koniec roku = osiągnięcie |
 | Zawodowstwo | 420 AI + gracz | rolling 52 tyg., 19 najlepszych wyników |
 
+- **Poziomy turniejów juniorskich** (`JUNIOR_TIER`, 0–1): turniej losuje drabinkę z wycinka pola dopasowanego do swojej rangi (rozkład normalny wokół kwantyla `1 − tier`, σ = 0,18). Kat. B / TE3 / J60 to słabsza połowa pola, Mistrzostwa Polski / Europy / juniorskie Szlemy — czołówka.
 - Rywale juniorscy są **trwali** i przechodzą z etapu na etap; najgroźniejszy dostaje flagę **Nemesis** (zawsze przenoszony, własne wydarzenia, sytuacje meczowe).
 - Pula zawodowa startuje z syntetycznymi wynikami (16 wyników rozłożonych na 52 tygodnie wg `pointsForRank`), które naturalnie „wygasają”.
 - Co tydzień: rozdział AI na turnieje tygodnia wg rankingu i prestiżu (najlepsi częściej opuszczają 250/500), reszta dolnej połowy gra wirtualne ITF-y.
+- **Pasma obsady** (`FIELD_BAND`): każda ranga ma typowe pasmo rankingowe (np. ITF M15 #350–#3000, Challenger 75 #110–#420). Nikt z rankingiem lepszym niż dolna granica pasma nie „schodzi” do mniejszego turnieju. ITF-y biorą z puli tylko rozstawionych (6/12 graczy); resztę drabinki i rywali w kwalifikacjach uzupełniają **lokalni zawodnicy** (`createLocal`, `season.locals`) z ratingiem z `ratingForRank` — żyją jeden tydzień i nie wchodzą do rankingu.
 - Ranking poza symulowaną pulą jest **ekstrapolowany z punktów** (`rankFromPoints`) — dlatego słaby debiutant widzi np. #1700, a nie #421.
 - Co sezon: rozwój/regres AI, emerytury (od 30 lat), debiutanci 18–20 lat, a **kalibracja puli** ściąga rozkład ratingów do krzywej `ratingForRank` (#1 ≈ 94,5, #10 ≈ 87,5, #100 ≈ 80,5) — tour nie „deflacjonuje” przez dekady.
 

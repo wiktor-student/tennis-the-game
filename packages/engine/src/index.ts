@@ -42,6 +42,7 @@ export {
 } from './sim/legacy';
 export { autoPlan, juniorRank, juniorStandings, validatePlan } from './sim/season';
 export { projectEntry, wildcardChance, PLAYER_ID } from './sim/tournament';
+export { tournamentOutlook, winChance, type Outlook, type Verdict } from './sim/outlook';
 export { equipmentCost, marketability, staffCost, travelCost } from './sim/economy';
 export {
   TACTIC_BLOCK_COST,

@@ -220,6 +220,9 @@ export interface PlayedMatch {
   edge: number;
   keyMatch: boolean;
   nemesis: boolean;
+  /** Ratings at the time of the match (overall), to explain results. */
+  oppOvr: number;
+  meOvr: number;
 }
 
 /** A match about to start (or in progress), possibly waiting for the player's tactic. */
@@ -389,6 +392,8 @@ export interface SeasonState {
   busy: string[];
   /** Training blocks spent on rest this offseason (lowers injury risk). */
   restBlocks: number;
+  /** Untracked local entrants of this week's small pro events (ITF fields, qualifiers). */
+  locals: AIPlayer[];
 }
 
 export interface SeasonRecord {

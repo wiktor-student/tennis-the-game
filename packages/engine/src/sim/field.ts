@@ -74,7 +74,7 @@ function round1(v: number): number {
  * so newly introduced rivals are consistent with existing ones.
  */
 function juniorRatingAt(rng: Rng, potential: number, age: number): number {
-  let rating = rng.normal(24, 4);
+  let rating = rng.normal(22, 3.5);
   for (let a = START_AGE; a < age; a++) {
     rating +=
       Math.max(0, potential - rating) * BASE_GROWTH * ageGrowthFactor(a) * rng.range(0.8, 1.2);
@@ -307,14 +307,55 @@ export function calibratePool(pool: AIPlayer[]): void {
   });
 }
 
-const byIdCache = new WeakMap<AIPlayer[], { size: number; map: Map<string, AIPlayer> }>();
+/**
+ * A local entrant of a small professional event: one of the hundreds of players ranked below
+ * the tracked pool (#420+). Locals live for one week only and never enter the ranking.
+ */
+export function createLocal(
+  state: CareerState,
+  rng: Rng,
+  minRank: number,
+  maxRank: number,
+): AIPlayer {
+  const rank = Math.round(Math.exp(rng.range(Math.log(minRank), Math.log(maxRank))));
+  const rating = ratingForRank(rank) + rng.normal(0, 1.5);
+  const age = Math.round(Math.min(32, Math.max(17, rng.normal(22, 3.5))));
+  const ai = baseAI(
+    state,
+    rng,
+    foreignOrPolish(rng, state.config.gender),
+    state.season.year - age,
+    rating,
+    rating,
+  );
+  ai.rank = rank;
+  return ai;
+}
 
-/** id → player map, cached per field array (field arrays are replaced, never resized in place). */
+interface ByIdEntry {
+  size: number;
+  locals: AIPlayer[];
+  localCount: number;
+  map: Map<string, AIPlayer>;
+}
+const byIdCache = new WeakMap<AIPlayer[], ByIdEntry>();
+
+/**
+ * id → player map (tracked field + this week's locals), cached per field array (field arrays
+ * are replaced, never resized in place).
+ */
 export function aiById(state: CareerState): Map<string, AIPlayer> {
+  const locals = state.season?.locals ?? [];
   const cached = byIdCache.get(state.field);
-  if (cached && cached.size === state.field.length) return cached.map;
-  const map = new Map(state.field.map((ai) => [ai.id, ai]));
-  byIdCache.set(state.field, { size: state.field.length, map });
+  if (
+    cached &&
+    cached.size === state.field.length &&
+    cached.locals === locals &&
+    cached.localCount === locals.length
+  )
+    return cached.map;
+  const map = new Map([...state.field, ...locals].map((ai) => [ai.id, ai]));
+  byIdCache.set(state.field, { size: state.field.length, locals, localCount: locals.length, map });
   return map;
 }
 

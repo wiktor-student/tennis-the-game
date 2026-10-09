@@ -5,10 +5,13 @@ import {
   projectEntry,
   staffCost,
   tournament,
+  tournamentOutlook,
   travelCost,
   type CareerState,
+  type Outlook,
 } from '@ttg/engine';
 import { useMemo, useState } from 'react';
+import { OddsTag } from '../components/Odds';
 import { Stamp } from '../components/Stamp';
 import { useContent, useT, type MessageKey } from '../i18n';
 import { money, pct } from '../lib/format';
@@ -36,6 +39,14 @@ export function SchedulePhase({ state }: { state: CareerState }) {
     });
     return set;
   }, [plan, slots]);
+
+  // Odds against each event's typical field (stable for the whole planning screen).
+  const outlooks = useMemo(() => {
+    const map = new Map<string, Outlook>();
+    for (const slot of slots)
+      for (const id of slot.options) map.set(id, tournamentOutlook(state, tournament(id)));
+    return map;
+  }, [state, slots]);
 
   const planned = plan.filter((id, i) => id && !blocked.has(i)) as string[];
   const travel = planned.reduce((n, id) => n + travelCost(state, tournament(id)), 0);
@@ -66,13 +77,12 @@ export function SchedulePhase({ state }: { state: CareerState }) {
     <div className="stack schedule">
       <div className="spread wrap">
         <h2 className="title">{t('schedule.title', { year: state.season.year })}</h2>
-        {isPro && (
-          <button className="btn btn--sm" onClick={() => setPlan(autoPlan(state))}>
-            {t('schedule.auto')}
-          </button>
-        )}
+        <button className="btn btn--sm" onClick={() => setPlan(autoPlan(state))}>
+          {t('schedule.auto')}
+        </button>
       </div>
       <p>{t('schedule.lead')}</p>
+      <p className="pencil odds-legend">{t('odds.legend')}</p>
 
       {!isPro ? (
         <div className="stamp-grid">
@@ -96,6 +106,7 @@ export function SchedulePhase({ state }: { state: CareerState }) {
                   seed={def.id}
                 />
                 <span className="stamp-cell__name">{c(def.name)}</span>
+                <OddsTag outlook={outlooks.get(def.id)!} gender={gender} />
                 <span className="mono pencil stamp-cell__cost">
                   {money(travelCost(state, def), locale)}
                 </span>
@@ -142,6 +153,9 @@ export function SchedulePhase({ state }: { state: CareerState }) {
                             <span className={`event-chip__entry entry--${entry.status}`}>
                               {entry.text}
                             </span>
+                            {entry.status !== 'none' && (
+                              <OddsTag outlook={outlooks.get(id)!} gender={gender} />
+                            )}
                           </button>
                         );
                       })}

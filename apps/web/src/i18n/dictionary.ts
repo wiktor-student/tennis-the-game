@@ -146,7 +146,7 @@ export const pl = {
   'schedule.title': 'Terminarz sezonu {year}',
   'schedule.lead':
     'Odbij pieczątkę przy turniejach, które grasz. Wejście do drabinki zależy od rankingu w dniu startu.',
-  'schedule.auto': 'Ułóż za mnie',
+  'schedule.auto': 'Ułóż za mnie (najwięcej punktów)',
   'schedule.rest': 'wolne',
   'schedule.travel': 'Wyjazdy: ok. {amount}',
   'schedule.count': '{n} turniejów',
@@ -160,9 +160,43 @@ export const pl = {
   'entry.none': 'brak wejścia',
 
   'season.title': 'Sezon {year}',
-  'season.next': 'Następny turniej ▸',
-  'season.auto': 'Graj dalej sam',
-  'season.stop': 'Stop',
+  'season.next': 'Zagraj ten turniej ▸',
+  'season.nextClosed': 'Dalej ▸',
+  'season.auto': 'Symuluj resztę sezonu',
+  'season.stop': 'Zatrzymaj symulację',
+  'season.autoHint':
+    'Symulacja rozgrywa kolejne turnieje sama i zatrzymuje się przy meczu ♠ albo wydarzeniu.',
+  'season.left': 'Zostało turniejów: {n}',
+  'season.help.title': 'Jak działa turniej?',
+  'season.help.1':
+    'Każdy turniej to drabinka pucharowa: porażka kończy turniej. Za każdą rundę dostajesz punkty do rankingu i premię.',
+  'season.help.2':
+    'Mecze ♠ (końcówki turniejów, nemesis i czasem losowo) rozgrywasz sam — po raporcie skauta wybierasz kartę taktyczną. Resztę meczów gra autopilot twoją ulubioną kartą.',
+  'season.help.3':
+    'O wyniku decyduje głównie różnica OVR: +6 nad rywalem to ok. 73% szans, −6 to ok. 27%. Do tego forma (pogoda), zmęczenie, nawierzchnia i karta taktyczna.',
+  'season.help.4':
+    'Odpadasz ciągle w 1. rundzie? W terminarzu wybieraj turnieje z oceną „wyrównany” albo „faworyt” — niższa ranga, ale wygrane mecze i punkty.',
+  'next.title': 'Następny przystanek',
+  'next.entry.direct': 'Wchodzisz prosto do drabinki.',
+  'next.entry.qualifier': 'Najpierw kwalifikacje: {n} mecze, żeby wejść do drabinki.',
+  'next.entry.wildcard': 'Ranking za niski — liczysz na dziką kartę ({p}% szans).',
+  'next.entry.exempt': 'Wchodzisz dzięki juniorskiemu exemptowi.',
+  'next.entry.none': 'Ranking za niski — nie wejdziesz do drabinki, ten tydzień przepadnie.',
+  'next.field': 'Typowy rywal: OVR {opp} · ty: OVR {me}',
+  'next.first': 'Szansa na wygranie 1. meczu: {p}%',
+  'next.likely': 'Typowy wynik: {round}',
+  'odds.favourite': '[[faworyt|faworytka]]',
+  'odds.even': 'wyrównany',
+  'odds.underdog': '[[outsider|outsiderka]]',
+  'odds.longshot': 'bez szans',
+  'odds.closed': 'brak wejścia',
+  'odds.legend':
+    'Przy każdym turnieju: szansa na wygranie pierwszego meczu z typowym rywalem. Zielone — tu wygrywasz mecze, czerwone — turniej ponad twój poziom.',
+  'protocol.why.gap':
+    'Rywal[[|ka]] miał[[|a]] OVR {opp}, ty {me} — turniej ponad twój obecny poziom. Wybierz niższą rangę albo podciągnij umiejętności zimą.',
+  'protocol.why.close': 'Wyrównany mecz (OVR {opp} vs {me}) — zabrakło niewiele.',
+  'protocol.why.upset':
+    'Porażka z teoretycznie słabszym rywalem (OVR {opp} vs {me}). Zdarza się — forma dnia.',
   'season.end': 'Zamknij sezon ▸',
   'season.timeline': 'Oś sezonu',
   'season.protocol': 'Protokół turnieju',
@@ -459,7 +493,7 @@ export const en: Record<MessageKey, string> = {
 
   'schedule.title': '{year} season calendar',
   'schedule.lead': 'Stamp the tournaments you play. Entry depends on your ranking on the day.',
-  'schedule.auto': 'Plan it for me',
+  'schedule.auto': 'Plan it for me (most points)',
   'schedule.rest': 'off',
   'schedule.travel': 'Travel: approx. {amount}',
   'schedule.count': '{n} tournaments',
@@ -473,9 +507,43 @@ export const en: Record<MessageKey, string> = {
   'entry.none': 'no entry',
 
   'season.title': '{year} season',
-  'season.next': 'Next tournament ▸',
-  'season.auto': 'Autopilot',
-  'season.stop': 'Stop',
+  'season.next': 'Play this tournament ▸',
+  'season.nextClosed': 'Continue ▸',
+  'season.auto': 'Simulate the rest of the season',
+  'season.stop': 'Stop the simulation',
+  'season.autoHint':
+    'The simulation plays the next tournaments by itself and stops at a ♠ match or an event.',
+  'season.left': 'Tournaments left: {n}',
+  'season.help.title': 'How does a tournament work?',
+  'season.help.1':
+    'Every tournament is a knockout draw: one loss and you are out. Each round won brings ranking points and prize money.',
+  'season.help.2':
+    'You play ♠ matches yourself (late rounds, your nemesis, sometimes at random): read the scouting report and pick a tactic card. Other matches are played on autopilot with your preferred card.',
+  'season.help.3':
+    'The rating gap decides most: +6 OVR over the opponent is about a 73% chance, −6 about 27%. Form (weather), fatigue, surface and the tactic card add to that.',
+  'season.help.4':
+    'Losing in round one all the time? In the calendar pick events marked “even” or “favourite” — lower level, but matches won and points earned.',
+  'next.title': 'Next stop',
+  'next.entry.direct': 'You go straight into the main draw.',
+  'next.entry.qualifier': 'Qualifying first: {n} matches to reach the main draw.',
+  'next.entry.wildcard': 'Ranking too low — you hope for a wildcard ({p}% chance).',
+  'next.entry.exempt': 'You get in on a junior exempt.',
+  'next.entry.none': 'Ranking too low — you will not get into the draw, this week is lost.',
+  'next.field': 'Typical opponent: OVR {opp} · you: OVR {me}',
+  'next.first': 'Chance to win the first match: {p}%',
+  'next.likely': 'Typical finish: {round}',
+  'odds.favourite': 'favourite',
+  'odds.even': 'even',
+  'odds.underdog': 'underdog',
+  'odds.longshot': 'long shot',
+  'odds.closed': 'no entry',
+  'odds.legend':
+    'Next to each tournament: your chance to win the first match against a typical opponent. Green — you will win matches here, red — above your level.',
+  'protocol.why.gap':
+    'Your opponent was OVR {opp}, you {me} — this event is above your current level. Pick a lower level or improve over the winter.',
+  'protocol.why.close': 'A close match (OVR {opp} vs {me}) — not much was missing.',
+  'protocol.why.upset':
+    'Lost to a weaker opponent on paper (OVR {opp} vs {me}). It happens — form on the day.',
   'season.end': 'Close the season ▸',
   'season.timeline': 'Season timeline',
   'season.protocol': 'Tournament sheet',

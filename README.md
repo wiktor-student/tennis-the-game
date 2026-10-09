@@ -156,7 +156,7 @@ tennis-the-game/
 
 ## Testy i jakość
 
-- **46 testów jednostkowych** (silnik + API): determinizm RNG, legalność wyników setów, kalibracja modelu meczu, rozstawienie drabinek, ranking 52-tygodniowy, karty taktyk (przewaga, limity, nauczyciele), trening blokowy (malejące zyski, odpoczynek), pełne kariery botem, **replay identyczny bit w bit**, odrzucanie zmanipulowanych logów, integralność treści PL/EN.
+- **51 testów jednostkowych** (silnik + API): determinizm RNG, legalność wyników setów, kalibracja modelu meczu, rozstawienie drabinek, ranking 52-tygodniowy, karty taktyk (przewaga, limity, nauczyciele), trening blokowy (malejące zyski, odpoczynek), obsady turniejów (pasma rankingowe, poziomy juniorskie) i prognoza szans, pełne kariery botem, **replay identyczny bit w bit**, odrzucanie zmanipulowanych logów, integralność treści PL/EN.
 - **Smoke test end-to-end** na prawdziwym PostgreSQL (także w CI): konto → kariera → weryfikacja → rankingi → zasada jednego podejścia Kariery Dnia.
 - **Raport balansu** — rozkłady najwyższego rankingu, LEGACY, Szlemów i werdyktów dla każdego punktu startowego ([docs/ENGINE.md §9](docs/ENGINE.md#9-balans--jak-sprawdzać)).
 - TypeScript `strict` + `noUncheckedIndexedAccess`, ESLint (typescript-eslint, react-hooks), Prettier.

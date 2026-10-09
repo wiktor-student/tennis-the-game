@@ -3,13 +3,14 @@ import { PHYSIO } from '../content/coaches';
 import { LEVELS, pointsFor, prizeFor, roundLabel, type LevelDef } from '../content/levels';
 import { tournament } from '../content/tournaments';
 import { l } from '../i18n';
-import { FORM_BONUS } from '../model/constants';
+import { FORM_BONUS, PRO_POOL_SIZE } from '../model/constants';
 import { overall, surfaceGroup } from '../model/skills';
 import type {
   AIPlayer,
   CareerState,
   EntryType,
   InjuryKind,
+  LevelId,
   MatchProgress,
   MatchScore,
   PlayedMatch,
@@ -21,7 +22,7 @@ import type { Rng } from '../rng';
 import { AUTOPILOT_FACTOR, deckOptions, recordTacticUse, tacticEdge } from './tactics';
 import { addLedger, prizeShare, travelCost } from './economy';
 import { surfaceExperience } from './development';
-import { aiById, displayName, globalWeek } from './field';
+import { aiById, createLocal, displayName, globalWeek } from './field';
 import {
   aiCompetitor,
   continueMatch,
@@ -173,8 +174,31 @@ function rankKey(ai: AIPlayer): number {
 }
 
 /**
+ * Ranking band a level's draw is normally made of. The best players never drop down to small
+ * events; whatever the tracked pool (top ~420) cannot fill is completed with local entrants
+ * drawn from the band — an ITF M15 is played by #350–#3000, not by the world's top 150.
+ */
+export const FIELD_BAND: Partial<Record<LevelId, [min: number, max: number, tracked?: number]>> = {
+  t500: [3, 70],
+  t250: [12, 120],
+  ch175: [40, 200],
+  ch125: [70, 280],
+  ch75: [110, 420],
+  // ITF fields are mostly players outside the tracked pool; only the seeds come from it.
+  itf25: [220, 1200, 12],
+  itf15: [350, 3000, 6],
+};
+
+function addLocals(state: CareerState, players: AIPlayer[]): void {
+  if (players.length === 0) return;
+  // A new array keeps the aiById cache honest.
+  state.season.locals = [...state.season.locals, ...players];
+}
+
+/**
  * Distribute AI professionals across a week's events: the best-ranked available players go to
- * the most prestigious event, top players skip small events more often.
+ * the most prestigious event, top players skip small events more often, and nobody plays
+ * below their level (see FIELD_BAND).
  */
 export function assignWeek(
   state: CareerState,
@@ -197,20 +221,36 @@ export function assignWeek(
     .sort((a, b) => rankKey(a) - rankKey(b));
 
   const used = new Set<string>();
+  const locals: AIPlayer[] = [];
   for (const event of sortedEvents) {
     const level = LEVELS[event.level];
     let size = level.drawSize;
     if (event.level === 'olympics') size = 64;
+    if (event.level === 'finals') size = 8;
+    const band = FIELD_BAND[event.level];
     const entrants: string[] = [];
     for (const ai of available) {
       if (entrants.length >= size) break;
       if (used.has(ai.id)) continue;
-      if (event.level === 'finals' && entrants.length >= 8) break;
+      if (band && rankKey(ai) < band[0]) continue;
+      if (band?.[2] !== undefined && entrants.length >= band[2]) break;
       entrants.push(ai.id);
       used.add(ai.id);
     }
+    if (band) {
+      while (entrants.length < size) {
+        const lo = Math.min(band[1], Math.max(band[0], PRO_POOL_SIZE * 0.8));
+        const local = createLocal(state, rng, lo, band[1]);
+        locals.push(local);
+        entrants.push(local.id);
+      }
+      // Entrants must stay sorted best-first for seeding.
+      const keyOf = new Map([...available, ...locals].map((a) => [a.id, rankKey(a)]));
+      entrants.sort((a, b) => (keyOf.get(a) ?? 99_999) - (keyOf.get(b) ?? 99_999));
+    }
     result.set(event.id, entrants);
   }
+  state.season.locals = locals;
   // Only the lower half of the tour fills the off-screen ITF weeks.
   const leftover = available
     .filter((ai) => !used.has(ai.id) && (ai.rank ?? 9999) > 200)
@@ -264,6 +304,30 @@ export function simulateVirtualEvents(
 
 // ─── Junior entrants ─────────────────────────────────────────────────────────
 
+/**
+ * How strong a junior event's field is within its stage: 0 = local event for anybody,
+ * 1 = championship of the best. Lower categories are where a beginner wins matches.
+ */
+export const JUNIOR_TIER: Partial<Record<LevelId, number>> = {
+  j_mini: 0.25,
+  j_mini_pl: 0.9,
+  j_nat_b: 0.15,
+  j_nat_a: 0.55,
+  j_nat_pl: 0.9,
+  te3: 0.15,
+  te2: 0.45,
+  te1: 0.65,
+  te_super: 0.85,
+  te_euro: 0.95,
+  j60: 0.1,
+  j100: 0.25,
+  j200: 0.45,
+  j300: 0.6,
+  j500: 0.8,
+  j_ob: 0.85,
+  j_slam: 0.95,
+};
+
 export function juniorEntrants(
   state: CareerState,
   rng: Rng,
@@ -273,10 +337,18 @@ export function juniorEntrants(
   const size = LEVELS[def.level].drawSize - (withPlayer ? 1 : 0);
   let ids = state.field.map((ai) => ai.id);
   if (ids.length > size) {
-    const pool = [...state.field];
+    // Rank the field best-first and favour the slice that matches the event's tier.
+    const pool = [...state.field].sort((a, b) => b.rating - a.rating);
+    const centre = 1 - (JUNIOR_TIER[def.level] ?? 0.5);
+    const weight = new Map(
+      pool.map((ai, i) => {
+        const q = i / Math.max(1, pool.length - 1);
+        return [ai.id, Math.exp(-((q - centre) ** 2) / (2 * 0.18 ** 2)) + 0.01];
+      }),
+    );
     const chosen: string[] = [];
     while (chosen.length < size && pool.length > 0) {
-      const pick = rng.weighted(pool, (ai) => Math.max(1, ai.rating - 30) ** 2);
+      const pick = rng.weighted(pool, (ai) => weight.get(ai.id) ?? 0.01);
       chosen.push(pick.id);
       pool.splice(pool.indexOf(pick), 1);
     }
@@ -440,25 +512,15 @@ export function startRun(
   }
 
   // Main-draw entrants: AI sorted best-first, then the player in place of the weakest.
-  const ai = aiById(state);
   let entrants = [...aiEntrants];
   const size = def.level === 'finals' ? 8 : level.drawSize;
   if (entry === 'qualifier') {
-    const inDraw = new Set(entrants);
-    const pool = state.field
-      .filter((a) => !inDraw.has(a.id) && !state.season.busy.includes(a.id))
-      .sort((a, b) => b.rating - a.rating);
-    const band = pool.slice(Math.floor(pool.length * 0.05), Math.floor(pool.length * 0.45));
-    const opponents: string[] = [];
-    const choices = band.length >= level.qualRounds ? band : pool;
-    const picked = new Set<string>();
-    while (opponents.length < level.qualRounds && picked.size < choices.length) {
-      const c = rng.pick(choices);
-      if (picked.has(c.id)) continue;
-      picked.add(c.id);
-      opponents.push(c.id);
-    }
-    opponents.sort((a, b) => (ai.get(a)?.rating ?? 0) - (ai.get(b)?.rating ?? 0));
+    // Qualifiers are ranked just outside the main-draw cut.
+    const lo = level.cutoffMain;
+    const hi = Math.min(level.cutoffQual, level.cutoffMain * 2.2);
+    const players = Array.from({ length: level.qualRounds }, () => createLocal(state, rng, lo, hi));
+    addLocals(state, players);
+    const opponents = players.sort((a, b) => a.rating - b.rating).map((a) => a.id);
     qualifying = { opponents, index: 0 };
   } else {
     if (entrants.length >= size) entrants = entrants.slice(0, size - 1);
@@ -700,6 +762,8 @@ function recordMatch(
     edge: progress.edge,
     keyMatch: progress.key,
     nemesis: !!opp.nemesis,
+    oppOvr: Math.round(opp.rating),
+    meOvr: overall(state.player.skills),
   };
   run.matches.push(match);
   recordTacticUse(state, progress.tactic, won);

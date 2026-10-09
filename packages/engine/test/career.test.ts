@@ -3,6 +3,7 @@ import {
   ACHIEVEMENTS,
   EngineError,
   EVENTS,
+  STAGES,
   TACTICS,
   TOURNAMENTS,
   buildSummary,
@@ -23,7 +24,7 @@ describe('career creation', () => {
     expect(state.player.age).toBe(8);
     expect(state.season.stage).toBe('mini');
     expect(state.phase.kind).toBe('training');
-    expect(state.field).toHaveLength(15);
+    expect(state.field).toHaveLength(STAGES.mini.fieldSize);
     expect(overall(state.player.skills)).toBeGreaterThan(10);
     expect(overall(state.player.skills)).toBeLessThan(45);
   });

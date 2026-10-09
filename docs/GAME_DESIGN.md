@@ -125,13 +125,15 @@ Do tego wybór **planu na co dzień** — karty, którą zawodnik gra „na auto
 
 | Etap | Wiek | Rozgrywki | Turnieje / sezon | Drabinka | Ranking |
 |---|---|---|---|---|---|
-| 1. **Tenis 10** | 8–10 | turnieje regionalne PZT (Orlik / Tenis 10), Mistrzostwa Polski Skrzatów | 6 | 16 | punkty sezonu wśród 15 rywali |
+| 1. **Tenis 10** | 8–10 | turnieje regionalne PZT (Orlik / Tenis 10), Mistrzostwa Polski Skrzatów | 6 | 16 | punkty sezonu wśród 39 rywali |
 | 2. **Ranking krajowy** | 11–13 | turnieje ogólnopolskie kat. A/B, Halowe i Letnie Mistrzostwa Polski | 8 | 32 | punkty sezonu |
 | 3. **Tennis Europe** | 14–15 | kat. 3/2/1 i Super Category: Les Petits As (Tarbes), Avvenire (Mediolan), Mistrzostwa Europy | 9 | 32 | punkty sezonu (pula europejska) |
 | 4. **ITF Juniors** | 16–17 | J60–J500, Orange Bowl, **juniorski Australian Open, Roland Garros, Wimbledon, US Open** | 10 | 32 / 64 | ranking juniorów ITF |
 | 5. **Zawodowstwo** | 18+ | ITF M15/M25 (W15/W35), Challengery / WTA 125, ATP/WTA 250, 500, 1000, **Wielki Szlem**, Finały, Igrzyska | plan gracza (do ~25) | 32–128 | **rolling ranking 52 tygodni**, best 19 wyników |
 
 **Awans** między etapami następuje z wiekiem. Zawodnik z TOP 3 swojej klasyfikacji może dostać propozycję **wcześniejszego awansu** (wydarzenie). W wieku 17 lat pojawia się decyzja **„Przejść na zawodowstwo?”** — rok wcześniej w zawodowym tourze to szybszy ranking, ale koniec juniorskich szans na Szlema juniorów.
+
+**Rangi turniejów mają znaczenie od pierwszego sezonu.** Turniej regionalny, kat. B czy J60 zbiera słabszą część rówieśników, a Mistrzostwa Polski, Super Category czy juniorski Szlem — najlepszych. Ośmiolatek z podwórka zaczyna od turniejów lokalnych i dopiero potem jedzie na mistrzostwa.
 
 Rywale z juniorów są **trwali**: ten sam „Kacper Wiśniewski”, który ogrywał cię w Tenis 10, może być twoim rywalem w finale Challengera w Szczecinie 12 lat później. Najgroźniejszy z nich zostaje oznaczony jako **Nemesis** i ma własne wydarzenia.
 
@@ -141,7 +143,7 @@ Rywale z juniorów są **trwali**: ten sam „Kacper Wiśniewski”, który ogry
 
 Sezon zawodowy to **40 tygodni turniejowych** (styczeń–listopad). W każdym tygodniu dostępne są zwykle 2–4 turnieje różnych rang (np. tydzień Rzymu: Masters 1000 Rzym, Challenger w Turynie, ITF M25 w Polsce). Kalendarz bazuje na realnym kalendarzu 2026 (uproszczonym), z polskimi akcentami: **Challenger Wrocław** (luty, hala), **Poznań Open** (czerwiec, mączka), **Pekao Szczecin Open** (wrzesień, mączka), **ITF-y w Bytomiu, Kozerkach, Gdyni**, a dla WTA **Warsaw Open** i **Polish Open**.
 
-Gracz układa plan sezonu w ekranie **„Plan sezonu”**: zaznacza tygodnie, w których gra, i wybiera turniej. Przycisk **Auto-plan** układa rozsądny kalendarz pod aktualny ranking. Ograniczenia:
+Gracz układa plan sezonu w ekranie **„Plan sezonu”**: zaznacza tygodnie, w których gra, i wybiera turniej. Przy każdym turnieju zeszyt pokazuje **prognozę**: szansę na wygranie pierwszego meczu z typowym rywalem i ocenę (*faworyt / wyrównany / outsider / bez szans*). Przycisk **„Ułóż za mnie”** wybiera turnieje o najwyższych oczekiwanych punktach. W trakcie sezonu karta **„Następny przystanek”** pokazuje drogę wejścia (drabinka / kwalifikacje / dzika karta), typowego rywala, szansę i typowy wynik, a protokół po porażce wyjaśnia, czy rywal był po prostu silniejszy. Obsady są realistyczne: ITF M15 grają zawodnicy z miejsc ~350–3000, a nie czołowa setka. Ograniczenia:
 
 - **Wejście**: ranking ≤ cutoff turnieju → drabinka główna; ranking ≤ cutoff kwalifikacji → kwalifikacje; w przeciwnym razie tylko **dzika karta** (szansa zależna od mediów i reputacji, wyższa w turniejach w Polsce).
 - **Koszty**: każdy wyjazd kosztuje (Europa < Ameryki < Azja/Australia), od rangi 250 wzwyż organizator pokrywa hotel.

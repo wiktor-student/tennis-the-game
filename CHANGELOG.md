@@ -2,6 +2,22 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/) · wersjonowanie: [SemVer](https://semver.org/lang/pl/). Zmiany wpływające na wynik istniejących seedów oznaczamy **[engine]**.
 
+## [2.1.0] — 2026-10-09 — czytelniejsze turnieje
+
+### Naprawione
+- **[engine] Zbyt silne obsady małych turniejów:** w tygodniu bez większej imprezy ITF M15 dostawał zawodników z TOP 150 (mediana rywala w 1. rundzie: #119). Teraz każda ranga ma pasmo rankingowe, ITF-y wypełniają lokalni zawodnicy spoza puli, a kwalifikanci pochodzą spod cutoffu drabinki.
+- **[engine] Wszystkie turnieje juniorskie miały tę samą obsadę** (pole 15–63 graczy = całe pole w każdej drabince). Pola są 2,5× większe, a ranga turnieju decyduje, z której części pola losuje rywali.
+- **[engine] Auto-plan wysyłał słabego debiutanta na Masters 1000 i ATP 500** (dzikie karty, 2% szans). Teraz wybiera wg oczekiwanych punktów z prognozy.
+
+### Dodane
+- Prognoza turnieju (`tournamentOutlook`): szansa na 1. mecz, typowy rywal, typowy wynik, oczekiwane punkty — w terminarzu i na karcie **„Następny przystanek”**.
+- Protokół pokazuje OVR każdego rywala i wyjaśnia porażkę („turniej ponad twój poziom” / „wyrównany mecz” / „niespodzianka”).
+- Ściągawka „Jak działa turniej?” na ekranie sezonu.
+
+### Zmienione
+- Przyciski sezonu: „Zagraj ten turniej ▸” i „Symuluj resztę sezonu” (z opisem, kiedy symulacja się zatrzymuje). „Ułóż za mnie” także dla juniorów.
+- Zapisy z wersji 2.0 nie są wczytywane (zmiana silnika).
+
 ## [2.0.0] — 2026-10-09 — „Zeszyt Tenisisty”
 
 ### Zmienione
